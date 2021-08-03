@@ -29,25 +29,68 @@ Variable (uncontrolled) or specific chromaticity?
 One or multiple modulation directions?
 
 '''
+#from typing import Sequence
 
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.optimize import basinhopping, Bounds
 import pandas as pd
 
-class SilentSubstitution:
-    def __init__(self, nprimaries, background=None, spds, precision, ignore, silence, isolate):
-        self.nprimaries = nprimaries
-        self.background = background
-        self.spds = spds
-        self.precision = precision
+from silentsub.device import StimulationDevice
+
+class SilentSubstitution(StimulationDevice):
+    
+    # retinal photoreceptors
+    receptors = ['S', 'M', 'L', 'R', 'I']
+    
+    def __init__(self, 
+                 nprimaries: int, 
+                 resolution: list[int],
+                 colors: list[str],
+                 spds: pd.DataFrame,
+                 spd_binwidth: int = 1,
+                 ignore: list[str] = ['R'], 
+                 silence: list[str] = ['S', 'M', 'L'], 
+                 isolate: list[str] = ['M'],
+                 background: list[int] = None) -> None:
+        '''
+        
+
+        Parameters
+        ----------
+        nprimaries : int
+            Number of primaries in the light stimultion device.
+        resolution : list of int
+            Resolution depth of primaries, i.e., the number of steps available
+            for specifying intensity. This is a list of integers to allow for
+            systems where primaries may have different resolution depths.
+        spds : pd.DataFrame
+            Spectral measurements to characterise the output of the device.
+            Column headers must be wavelengths and each row a spectrum. 
+            Additional columns are needed to identify the primary/setting. For 
+            example, 380, ..., 780, primary, setting.
+        ignore : list of str
+            List of photoreceptors to ignore. Usually ['R'], because rods are
+            difficult to work with and are often saturated anyway.
+        silence : list of str
+            List of photoreceptors to silence.
+        isolate : list of str
+            List of photoreceptors isolate.
+        background : list of int
+            List of integers defining the background spectrum, if known.
+
+        Returns
+        -------
+        None.
+
+        '''
+        super().__init__(nprimaries, resolution, spds, spd_binwidth)
         self.ignore = ignore
         self.silence = silence
         self.isolate = isolate
-        self.solutions = []
-        self.aopic = None
-    
-    def calculate_illuminance(self, settings):
+        self.background = background
+
+    #def calculate_illuminance(self, settings):
         
     def _illuminance_constraint_function(self, requested_illuminance, weights):
         settings = self.weights_to_settings(weights)

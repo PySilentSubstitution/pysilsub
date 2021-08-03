@@ -445,18 +445,17 @@ def get_CIE_CMF(asdf=False, binwidth=1):
         cmf.index = pd.Int64Index(cmf.index)
     return cmf
         
-def get_CIES026(asdf=False, binwidth=1):
+def get_CIES026(binwidth: int = 1, fillna: bool = True) -> pd.DataFrame:
     '''Get the CIE026 spectral sensitivities.
 
     Parameters
     ----------
-    asdf : bool, optional
-        Whether to return the results as a pandas DataFrame. The default is
-        False.
     binwidth : int, optional
         Width of the wavelength bins in nanometers (must be `1` or `5`). The 
         default is `1`.
-
+    fillna : bool, optional
+        Whether to replace nan values with zero.
+        
     Returns
     -------
     sss : numpy.ndarray or pandas.DataFrame
@@ -466,7 +465,7 @@ def get_CIES026(asdf=False, binwidth=1):
     if binwidth not in [1,5]:
         raise ValueError('Must specify 1 or 5 for binwidth')
         
-    colnames = ['nm','S','M','L','Rods','Mel']
+    colnames = ['nm','S','M','L','R','I']
     
     sss = np.array([
     380,np.nan,np.nan,np.nan,0.000589,0.00091816,
@@ -874,26 +873,25 @@ def get_CIES026(asdf=False, binwidth=1):
     
     sss = sss.reshape(401,6).astype(np.float64).T
     sss = sss[:,::binwidth]
-    if asdf:
-        sss = pd.DataFrame(data=sss.T, columns=colnames)
-        sss.set_index('nm', inplace=True)
-        sss.index = pd.Int64Index(sss.index)
+    sss = pd.DataFrame(data=sss.T, columns=colnames)
+    sss.set_index('nm', inplace=True)
+    sss.index = pd.Int64Index(sss.index)
+    if fillna:
+        sss = sss.fillna(0)
     return sss
 
-def get_CIE_1924_photopic_vl(asdf=False, binwidth=1):
+def get_CIE_1924_photopic_vl(binwidth: int = 1) -> pd.DataFrame:
     '''Get the CIE1924 photopic luminosity function.
     
     Parameters
     ----------
-    asdf : bool, optional
-        Whether to return the results as a pandas DataFrame. The default is
-        False.
     binwidth : int, optional
         Width of the wavelength bins in nanometers (must be `1` or `5`). The 
         default is `1`.
+        
     Returns
     -------
-    vl : numpy.ndarray or pandas.DataFrame
+    vl : pd.DataFrame
         The CIE1924 photopic luminosity function.
 
     '''
@@ -1308,8 +1306,7 @@ def get_CIE_1924_photopic_vl(asdf=False, binwidth=1):
     
     vl = vl.reshape(401,2).astype(np.float64).T
     vl = vl[:,::binwidth]    
-    if asdf:
-        vl = pd.DataFrame(data=vl.T, columns=colnames)
-        vl.set_index('nm', inplace=True)
-        vl.index = pd.Int64Index(vl.index)
+    vl = pd.DataFrame(data=vl.T, columns=colnames)
+    vl.set_index('nm', inplace=True)
+    vl.index = pd.Int64Index(vl.index)
     return vl
