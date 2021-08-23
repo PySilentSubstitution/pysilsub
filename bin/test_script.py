@@ -8,6 +8,7 @@ Created on Tue Aug  3 10:57:40 2021
 
 import pandas as pd
 
+from silentsub.silentsub import SilentSubstitution
 from silentsub.device import StimulationDevice
 
 spds = pd.read_csv('/Users/jtm/Projects/PySilentSubstitution/data/S2_corrected_oo_spectra.csv', index_col=['led','intensity'])
@@ -36,3 +37,10 @@ any([s > r for s, r in zip(settings, res)])
 
 w = device.settings_to_weights(settings)
 s = device.weights_to_settings(w)
+
+ss = SilentSubstitution(
+    nprimaries=10, 
+    resolution=[4095]*10,
+    colors=colors,
+    spds=spds,
+    spd_binwidth=1)
