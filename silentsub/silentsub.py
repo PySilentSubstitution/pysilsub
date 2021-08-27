@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''
+"""
 silentsub.silentsub
 ===============
 
@@ -38,45 +38,39 @@ function taht takes XYZ coordinates into l,m,s coordinates
 - add constraint to say coordinates of background are as specified
 - function that turns XYZ coordinate in lms coordinate
 
-'''
+"""
 
-import random
-
+from typing import List, Union, Optional
 import numpy as np
-from scipy.interpolate import interp1d
-from scipy.optimize import basinhopping, Bounds, minimize
+from scipy.optimize import Bounds, minimize, basinhopping
 import pandas as pd
 
 from silentsub.device import StimulationDevice
 from silentsub.colorfunc import xyY_to_LMS
 
-class SilentSubstitution(StimulationDevice):
-    '''Class to perform silent substitution with a stimulation device.
-    
-    '''
 
-    # retinal photoreceptors
+class SilentSubstitution(StimulationDevice):
+    """Class to perform silent substitution with a stimulation device.
+
+    """
+
+    # Retinal photoreceptors.
     receptors = ['S', 'M', 'L', 'R', 'I']
 
     def __init__(self,
-                 nprimaries: int,
-                 resolution: list[int],
-                 colors: list[str],
+                 resolutions: List[int],
+                 colors: List[str],
                  spds: pd.DataFrame,
                  spd_binwidth: int = 1,
-                 ignore: list[str] = ['R'],
-                 silence: list[str] = ['S', 'M', 'L'],
-                 isolate: list[str] = ['I'],
-                 background: list[int] = None) -> None:
-
-        '''Class to perform silaent substitution.
-
+                 ignore: List[str] = ['R'],
+                 silence: List[str] = ['S', 'M', 'L'],
+                 isolate: List[str] = ['I'],
+                 background: Optional[List[float]] = None) -> None:
+        """Class to perform silaent substitution.
 
         Parameters
         ----------
-        nprimaries : int
-            Number of primaries in the light stimultion device.
-        resolution : list of int
+        resolutions : list of int
             Resolution depth of primaries, i.e., the number of steps available
             for specifying intensity. This is a list of integers to allow for
             systems where primaries may have different resolution depths.
@@ -101,93 +95,115 @@ class SilentSubstitution(StimulationDevice):
         -------
         None.
 
-        '''
-        super().__init__(nprimaries, resolution, colors, spds, spd_binwidth)
+        """
+        super().__init__(resolutions, colors, spds, spd_binwidth)
         self.ignore = ignore
         self.silence = silence
         self.isolate = isolate
         self.background = background
-        
-    def find_background_spectrum(self, xyY=[.33, .44, 400]):
-        lms = xyY_to_LMS(xyY)
-        x0 = np.random.rand(1, self.nprimaries)[0]
-        bounds = Bounds(np.ones((self.nprimaries * 2))*0,
-                        np.ones((self.nprimaries * 2))*1)
-        minimize(fun=lambda x: x-lms, x0=x0, method='SLSQP', bounds=bounds)
-        
-    # #def calculate_illuminance(self, settings):
+        self.modulation = None
 
-    # def _illuminance_constraint_function(self, requested_illuminance, weights):
-    #     settings = self.weights_to_settings(weights)
-    #     spd = self.redict_spd(settings)
-    #     illuminance = spd.dot
-    #     return requested_illuminance - illuminance
+    def find_background_spectrum(self, requested_xyY: List[float]):
+        """Find the settings for a spectrum based on xyY.
 
-    # def create_bacgkround_spd(self, requested_illuminance, requested_colour):
+        Parameters
+        ----------
+        requested_xyY : List[float]
+            Chromaticity coordinates (xy) and luminance (Y).
 
-    #     x0 = np.random.rand(1, self.nprimaries * 1)[0]
-    #     bounds = Bounds(np.ones((self.nprimaries * 2))*0,
-    #                     np.ones((self.nprimaries * 2))*1)
-    #     constraints = {'type': 'eq',
-    #                    'fun': lambda x: self._illuminance_constraint_function(x)}
-    #     minimizer_kwargs = {'method': 'SLSQP',
-    #                         'constraints': constraints,
-    #                         'bounds': bounds}
+        Returns
+        -------
+        result
+            The result of the optimisation procedure, with result.x as the
+            ssettings that will produce the spectrum.
 
-    # def smlri_calculator(self, x0):
-    #     bg_weights = x0[0:self.nprimaries]
-    #     stim_weights = x0[self.nprimaries:self.nprimaries * 2]
-    #     smlr1 = self.predict_aopic(self.weights_to_settings(bg_weights))
-    #     smlr2 = self.predict_aopic(self.weights_to_settings(stim_weights))
-    #     return (pd.Series(smlr1, index=self.aopic.columns),
-    #             pd.Series(smlr2, index=self.aopic.columns))
+        """
+        requested_LMS = xyY_to_LMS(requested_xyY)
 
-    # # type of optimisation argument for this func?
-    # def _objective_function(self, weights):
-    #     bg_settings, stim_settings = self.smlri_calculator(weights)
-    #     contrast = ((stim_settings[self.isolate]-bg_settings[self.isolate])
-    #                 / bg_settings[self.isolate])
-    #     return -contrast
+# TODO: sort out naming conventions
+        def objective_function(x0: List[float]):
+            aopic = self.predict_multiprimary_aopic(x0)
+            return sum(
+                pow(requested_LMS - aopic[['L', 'M', 'S']].to_numpy()[0], 2)
+            )
 
-    # def _silencing_constraint_function(self, weights):
-    #     bg_settings, stim_settings = self.smlri_calculator(weights)
-    #     contrast = []
-    #     for s in self.silence:
-    #         c = (stim_settings[s]-bg_settings[s]) / bg_settings[s]
-    #         contrast.append(c)
-    #     return contrast
+        x0 = np.random.uniform(0, 1, self.nprimaries)
+        bounds = Bounds(np.ones(self.nprimaries) * 0,
+                        np.ones(self.nprimaries) * 1)
+        result = minimize(
+            fun=objective_function, x0=x0,
+            bounds=bounds, options={'maxiter': 1000}
+        )
+        return result
 
-    # def _callback(self, x, f, accepted):
-    #     print('{self.isolate} contrast at minimum: {f}, accepted: {accepted}')
-    #     pass
+    def _get_aopic(self, weights):
+        if self.background is not None:
+            bg_smlri = self.predict_multiprimary_aopic(self.background)
+            stim_smlri = self.predict_multiprimary_aopic(weights)
+        else:
+            bg_weights = weights[0:self.nprimaries]
+            stim_weights = weights[self.nprimaries:self.nprimaries * 2]
+            bg_smlri = self.predict_multiprimary_aopic(bg_weights)
+            stim_smlri = self.predict_multiprimary_aopic(stim_weights)
+        return (bg_smlri.T.squeeze(), stim_smlri.T.squeeze())
 
-    # def find_solutions(self):
-    #     x0 = np.random.rand(1, self.nprimaries * 2)[0]
-    #     # define constraints and bounds
-    #     bounds = Bounds(np.ones((self.nprimaries * 2))*0,
-    #                     np.ones((self.nprimaries * 2))*1)
-    #     # Equality constraint means that the constraint function result is to
-    #     # be zero whereas inequality means that it is to be non-negative.
-    #     constraints = {'type': 'eq',
-    #                    'fun': lambda x: self._silencing_constraint_function(x)}
-    #     minimizer_kwargs = {'method': 'SLSQP',
-    #                         'constraints': constraints,
-    #                         'bounds': bounds}
+    def _objective_function(self, weights):
+        '''Calculates negative melanopsin contrast for background
+        and modulation spectra. We want to minimise this.'''
+        bg_smlri, mod_smlri = self._get_aopic(weights)
+        contrast = (mod_smlri.I - bg_smlri.I) / bg_smlri.I
+        return -contrast
 
-    #     # callback function to give info on all minima found
-    #     # def print_fun(x, f, accepted):
-    #     #     print("Melanopsin contrast at minimum: %.4f, accepted %d" % (f, int(accepted)))
-    #     #     # this can be used to stop the search if a target contrast is reached
-    #     #     if accepted:
-    #     #         self.solutions.append(x)
-    #     #         if f < -4. and accepted:
-    #     #             return True
+    def _cone_contrast_constraint_function(self, weights):
+        '''Calculates S-, M-, and L-opic contrast for background
+        and modulation spectra. We want to this to be zero'''
+        bg_smlri, mod_smlri = self._get_aopic(weights)
+        contrast = np.array([(mod_smlri.S-bg_smlri.S) / bg_smlri.S,
+                             (mod_smlri.M-bg_smlri.M) / bg_smlri.M,
+                             (mod_smlri.L-bg_smlri.L) / bg_smlri.L])
+        return contrast
 
-    #     # do the optimsation
-    #     res = basinhopping(self._objective_function,
-    #                        x0,
-    #                        minimizer_kwargs=minimizer_kwargs,
-    #                        niter=100,
-    #                        stepsize=0.5)#,
-    #                        #callback=print_fun)
-    #     return res
+    def find_modulation_spectra(self, target_contrast: float):
+        if self.background is not None:
+            x0 = np.random.uniform(0, 1, self.nprimaries)
+            bounds = Bounds(np.ones((10)) * 0, np.ones((10)) * 1)
+
+        else:
+            x0 = np.random.uniform(0, 1, self.nprimaries * 2)
+            # Define bounds of 0-1, which makes sure the settings are
+            # within the gamut of STLAB
+            bounds = Bounds(np.ones((20)) * 0, np.ones((20)) * 1)
+
+        # Define constraints and local minimizer
+        constraints = {
+            'type': 'eq',
+            'fun': lambda x: self._cone_contrast_constraint_function(x)}
+
+        minimizer_kwargs = {'method': 'SLSQP',
+                            'constraints': constraints,
+                            'bounds': bounds,
+                            'options': {'maxiter': 100}
+                            }
+
+        # List to store valid solutions
+        self.minima = []
+
+        # Callback function to give info on all minima found and
+        # call off the search when we hit a target melanopic contrast
+        def print_fun(x, f, accepted):
+            print(f'Melanopsin contrast at minimum: {f}, accepted {accepted}')
+            if accepted:
+                self.minima.append(x)
+                if f < -target_contrast and accepted:
+                    return True
+
+        # Start the global search
+        result = basinhopping(self._objective_function,
+                              x0,
+                              minimizer_kwargs=minimizer_kwargs,
+                              niter=100,
+                              stepsize=0.5,
+                              callback=print_fun)
+
+        self.modulation = result.x
+        return result

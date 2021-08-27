@@ -4,18 +4,21 @@
 silentsub.colorfunc
 ===================
 
-Tools for navigating between colorspaces, mostly translated from MATLAB's
-Psychtoolbox/PsychColormetric
+Tools for navigating between colorspaces.
+
+Many have been translated from MATLAB's Psychtoolbox/PsychColormetric
 
 @author: jtm
 """
 
+from typing import List
+
 import numpy as np
 
-from silentsub.CIE import get_matrix_LMStoXYZ
+from silentsub.CIE import get_matrix_LMStoXYZ, get_CIE_CMF
 
 
-def xyY_to_XYZ(xyY):
+def xyY_to_XYZ(xyY: List[float]) -> List[float]:
     """Compute tristimulus values from chromaticity and luminance.
 
     Parameters
@@ -37,7 +40,7 @@ def xyY_to_XYZ(xyY):
     return XYZ
 
 
-def XYZ_to_xyY(XYZ):
+def XYZ_to_xyY(XYZ: List[float]) -> List[float]:
     """Compute chromaticity and luminance from tristimulus values.
 
     Parameters
@@ -58,7 +61,7 @@ def XYZ_to_xyY(XYZ):
     return xyY
 
 
-def XYZ_to_LMS(XYZ):
+def XYZ_to_LMS(XYZ: List[float]) -> List[float]:
     """Compute cone excitation (LMS) coordinates from tristimulus values.
 
     Parameters
@@ -75,7 +78,7 @@ def XYZ_to_LMS(XYZ):
     return np.dot(XYZ, np.linalg.inv(get_matrix_LMStoXYZ()).T)
 
 
-def LMS_to_XYZ(LMS):
+def LMS_to_XYZ(LMS: List[float]) -> List[float]:
     """Compute tristimulus values from cone excitation (LMS) coordinates.
 
     Parameters
@@ -92,7 +95,7 @@ def LMS_to_XYZ(LMS):
     return np.dot(LMS, get_matrix_LMStoXYZ().T)  # transposed matrix
 
 
-def xyY_to_LMS(xyY):
+def xyY_to_LMS(xyY: List[float]) -> List[float]:
     """Compute cone excitation (LMS) coordinates from chromaticity and
     luminance.
 
@@ -108,4 +111,39 @@ def xyY_to_LMS(xyY):
 
     """
     XYZ = xyY_to_XYZ(xyY)
-    return XYZ_to_LMS(XYZ)  # / 683. # required to account for lux?
+    return XYZ_to_LMS(XYZ) / 683.  # required to account for lux?
+
+
+def LMS_to_xyY(LMS: List[float]) -> List[float]:
+    """Compute xyY coordinates from LMS values.
+
+    Parameters
+    ----------
+    LMS : np.array
+        LMS (cone excitation) coordinates.
+
+    Returns
+    -------
+    list
+        Array of values representing chromaticity (xy) and luminance (Y).
+
+    """
+    LMS *= 683.  # required to account for lux?
+    XYZ = LMS_to_XYZ(LMS)
+    return XYZ_to_xyY(XYZ)
+
+
+# TODO: check this
+def spd_to_XYZ(spd):
+    '''Convert a spectrum to an xyz point.
+
+    The spectrum must be on the same grid of points as the colour-matching
+    function, cmf: 380-780 nm in 5 nm steps.
+
+    '''
+    cmf = get_CIE_CMF(asdf=True)
+    XYZ = cmf.T.dot(spd)
+    denom = np.sum(XYZ)
+    if denom == 0.:
+        return XYZ
+    return XYZ / denom
