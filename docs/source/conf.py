@@ -48,6 +48,15 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 html_theme = 'alabaster'
+html_logo = '../../logo/photoreceptor_characters.png'
+html_theme_options = {
+    'github_user': 'PySilentSubstitution',
+    'github_repo': 'silent-sub'}
+#    ,
+#    'extra_nav_links': {'PyPi': 'https://pypi.org/project/pyplr/', 
+#    'bioRxiv preprint':'https://www.biorxiv.org/content/10.1101/2021.06.02.446731v1'},
+#    'description': 'A Python software for researching the pupillary light reflex.'
+#}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

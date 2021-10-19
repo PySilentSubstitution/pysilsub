@@ -10,6 +10,8 @@ Welcome to PySilentSubstitution's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   01_includeme
+ 
 
 
 Indices and tables
