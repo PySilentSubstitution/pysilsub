@@ -42,12 +42,55 @@ function taht takes XYZ coordinates into l,m,s coordinates
 
 from typing import List, Union, Optional
 import numpy as np
+from scipy.interpolate import interp1d
 from scipy.optimize import Bounds, minimize, basinhopping
 import pandas as pd
 
 from silentsub.device import StimulationDevice
 from silentsub.colorfunc import xyY_to_LMS
 
+
+class OptimisationProblem:
+    def __init__(self, aopic):
+        self.aopic = aopic
+
+    def smlri_calculator(self, weights):
+        '''Calculates a-opic irradiance for the given weights.
+        The first 10 values in weights define the background
+        spectrum and the second 10 values define the modulation'''
+        background = weights[0:10]
+        modulation = weights[10:20]
+        bg_smlri = 0
+        mod_smlri = 0
+        for led in range(10):
+            x = self.aopic.loc[led].index / 4095
+            y = self.aopic.loc[led]
+            f = interp1d(x, y, axis=0, fill_value='extrapolate')
+            bg_smlri += f(background[led])
+            mod_smlri += f(modulation[led])
+        return (pd.Series(bg_smlri, index=self.aopic.columns, name='Background'),
+                pd.Series(mod_smlri, index=self.aopic.columns, name='Modulation'))
+
+    def objective_function(self, weights):
+        '''Calculates negative melanopsin contrast for background
+        and modulation spectra. We want to minimise this.'''
+        bg_smlri, mod_smlri = self.smlri_calculator(weights)
+        contrast = (mod_smlri.I-bg_smlri.I) / bg_smlri.I
+        return -contrast
+
+    def cone_contrast_constraint_function(self, weights):
+        '''Calculates S-, M-, and L-opic contrast for background
+        and modulation spectra. We want to this to be zero'''
+        bg_smlri, mod_smlri = self.smlri_calculator(weights)
+        contrast = np.array([(mod_smlri.S-bg_smlri.S) / bg_smlri.S,
+                             (mod_smlri.M-bg_smlri.M) / bg_smlri.M,
+                             (mod_smlri.L-bg_smlri.L) / bg_smlri.L])
+        return contrast
+
+    def weights_to_settings(self, weights):
+        '''Turns weights to 12-bit STLAB settings.'''
+        return ([int(val*4095) for val in weights[0:10]],
+                [int(val*4095) for val in weights[10:20]])
 
 class SilentSubstitution(StimulationDevice):
     """Class to perform silent substitution with a stimulation device.
