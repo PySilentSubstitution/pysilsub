@@ -6,8 +6,9 @@ Created on Wed Aug 25 13:48:39 2021
 @author: jtm
 """
 
+import pandas as pd
 import matplotlib.pyplot as plt
-
+import seaborn as sns
 from colour.plotting import plot_chromaticity_diagram_CIE1931
 
 from silentsub.CIE import get_CIE170_2_chromaticity_coordinates
@@ -45,5 +46,22 @@ def stim_plot():
     return fig, axs
 
 
-def plot_solution():
-    pass
+def plot_aopic(background, modulation):
+    
+    fig, ax = plt.subplots()   
+    
+    df = (
+        pd.concat([background, modulation], axis=1)
+        .T.melt(
+            value_name='aopic',
+            var_name='Photoreceptor',
+            ignore_index=False)
+        .reset_index()
+        .rename(
+            columns={'index': 'Spectrum'})
+         )
+    sns.barplot(data=df, x='Photoreceptor', y='aopic', 
+                hue='Spectrum', ax=ax)
+    plt.show()
+
+    

@@ -25,6 +25,8 @@ from silentsub.CIE import (get_CIES026,
                            get_CIE170_2_chromaticity_coordinates)
 from silentsub.colorfunc import spd_to_XYZ
 
+Settings = Union[List[int], List[float]]
+
 
 class StimulationDevice:
     """Generic class for multiprimary stimultion device."""
@@ -80,10 +82,21 @@ class StimulationDevice:
         # create important data
         self.nprimaries = len(self.resolutions)
         self.wls = self.spds.columns
-        self.aopic = self.calculate_aopic_irradiances()
-        self.lux = self.calculate_lux()
         self.irradiance = self.spds.sum(axis=1).to_frame(name='Irradiance')
 
+    # Notes
+    def foo(self, x):  # Can only be called from an instance of the class
+        print(f"executing foo({self}, {x})")
+
+    @classmethod  # Can be called directly from the class
+    def class_foo(cls, x):
+        print(f"executing class_foo({cls}, {x})")
+
+    @staticmethod  # Can be called directly from the class. Basically useless,just use a module function
+    def static_foo(x):
+        print(f"executing static_foo({x})")
+        
+    # Starts properly here    
     def plot_spds(self) -> plt.Figure:
         """Plot the spectral power distributions for the stimulation device.
 
@@ -103,11 +116,11 @@ class StimulationDevice:
         _ = sns.lineplot(
             x='Wavelength (nm)', y='Flux', data=data, hue='Primary',
             palette=self.colors, units='Setting', ax=ax, lw=.1, estimator=None
-            )
+        )
         ax.set_title('Stimulation Device SPDs')
         return fig
 
-    def plot_gamut(self):
+    def plot_gamut(self) -> plt.Figure:
         """Plot the gamut of the stimulation device on the CIE 1931 horseshoe.
 
         Returns
@@ -165,8 +178,13 @@ class StimulationDevice:
         return lux
 
     def predict_primary_spd(
-            self, primary: int, setting: Union[int, float]) -> np.ndarray:
+            self,
+            primary: int,
+            setting: Union[int, float],
+            name: Union[int, str] = 0) -> np.ndarray:
         """Predict output for a single device primary at a given setting.
+        
+        This is the basis for all predictions.
 
         Parameters
         ----------
@@ -175,6 +193,8 @@ class StimulationDevice:
         setting : int or float
             Device primary setting. Must be int (0-max resolution) or float
             (0.-1.).
+        name : int or str, optional
+            A name for the spectrum. The default is 0.
 
         Raises
         ------
@@ -195,10 +215,12 @@ class StimulationDevice:
         f = interp1d(x=self.spds.loc[primary].index.values,
                      y=self.spds.loc[primary],
                      axis=0, fill_value='extrapolate')
-        return f(setting)
-
+        return pd.Series(f(setting), name=name, index=self.wls)
+       
     def predict_multiprimary_spd(
-            self, settings: Union[List[int], List[float]]) -> pd.DataFrame:
+            self,
+            settings: Union[List[int], List[float]],
+            name: Union[int, str] = 0) -> pd.Series:
         """Predict spectral power distribution of device for given settings.
 
         Predict the SPD output of the stimulation device for a given list of
@@ -210,6 +232,8 @@ class StimulationDevice:
             List of settings for the device primaries. Must be of length
             `self.nprimaries` and consist entirely of float (0.-1.) or int
             (0-max resolution).
+        name : int or str, optional
+            A name for the spectrum, e.g. 'Background'. The default is 0.
 
         Raises
         ------
@@ -221,7 +245,7 @@ class StimulationDevice:
 
         Returns
         -------
-        spd : pd.DataFrame
+        pd.Series
             Predicted spectrum for given device settings.
 
         """
@@ -232,13 +256,17 @@ class StimulationDevice:
         if not (all(isinstance(s, int) for s in settings) or
                 all(isinstance(s, float) for s in settings)):
             raise ValueError('Can not mix float and int in settings.')
+        if name is None:
+            name = 0
         spd = 0
         for primary, setting in enumerate(settings):
             spd += self.predict_primary_spd(primary, setting)
-        return pd.DataFrame(spd, index=self.wls).T
+        return pd.Series(spd, name=name, index=self.wls)
 
     def predict_multiprimary_aopic(
-            self, settings: Union[List[int], List[float]]) -> pd.DataFrame:
+            self,
+            settings: Union[List[int], List[float]],
+            name: Union[int, str] = 0) -> pd.Series:
         """Predict a-opic irradiances of device for given settings.
 
         Parameters
@@ -247,6 +275,8 @@ class StimulationDevice:
             List of settings for the device primaries. Must be of length
             `self.nprimaries` and consist entirely of float (0.-1.) or int
             (0-max resolution).
+        name : int or str, optional
+            A name for the output, e.g. 'Background'. The default is 0.
 
         Returns
         -------
@@ -254,7 +284,7 @@ class StimulationDevice:
             Predicted a-opic irradiances for given device settings.
 
         """
-        spd = self.predict_multiprimary_spd(settings)
+        spd = self.predict_multiprimary_spd(settings, name=name)
         sss = get_CIES026(binwidth=self.spd_binwidth, fillna=True)
         return spd.dot(sss)
 
@@ -309,7 +339,10 @@ class StimulationDevice:
 
         return fig
 
-    def optimise(self, primary, settings):
+    def optimise(
+            self,
+            primary: int,
+            settings: Union[List[int], List[float]]) -> Union[List[int], List[float]]:
         '''Optimise a stimulus profile by applying the curve parameters.
 
         Parameters

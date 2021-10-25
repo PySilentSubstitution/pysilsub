@@ -34,7 +34,7 @@ def get_CIE_CMF(asdf: Optional[bool] = True, binwidth: Optional[int] = 1):
         The CIE 1931 XYZ 2-deg CMFs.
 
     '''
-    colnames = ['nm', 'X', 'Y', 'Z']
+    colnames = ['Wavelength', 'X', 'Y', 'Z']
 
     cmf = np.array([
         380, 0.001368000000, 0.000039000000, 0.006450001000,
@@ -444,7 +444,7 @@ def get_CIE_CMF(asdf: Optional[bool] = True, binwidth: Optional[int] = 1):
     cmf = cmf[:, ::binwidth]
     if asdf:
         cmf = pd.DataFrame(data=cmf.T, columns=colnames)
-        cmf.set_index('nm', inplace=True)
+        cmf.set_index('Wavelength', inplace=True)
         cmf.index = pd.Int64Index(cmf.index)
     return cmf
 
@@ -470,7 +470,7 @@ def get_CIES026(binwidth: Optional[int] = 1,
     if binwidth not in [1, 5]:
         raise ValueError('Must specify 1 or 5 for binwidth')
 
-    colnames = ['nm', 'S', 'M', 'L', 'R', 'I']
+    colnames = ['Wavelength', 'S', 'M', 'L', 'R', 'I']
 
     sss = np.array([
         380, np.nan, np.nan, np.nan, 0.000589, 0.00091816,
@@ -879,7 +879,7 @@ def get_CIES026(binwidth: Optional[int] = 1,
     sss = sss.reshape(401, 6).astype(np.float64).T
     sss = sss[:, ::binwidth]
     sss = pd.DataFrame(data=sss.T, columns=colnames)
-    sss.set_index('nm', inplace=True)
+    sss.set_index('Wavelength', inplace=True)
     sss.index = pd.Int64Index(sss.index)
     if fillna:
         sss = sss.fillna(0)
@@ -897,14 +897,12 @@ def get_CIE_1924_photopic_vl(binwidth: Optional[int] = 1) -> pd.DataFrame:
 
     Returns
     -------
-    vl : pd.DataFrame
+    vl : pd.Series
         The CIE1924 photopic luminosity function.
 
     '''
     if binwidth not in [1, 5]:
         raise ValueError('Must specify 1 or 5 for binwidth')
-
-    colnames = ['nm', 'vl']
 
     vl = np.array([
         380, 0.0000390000000,
@@ -1312,10 +1310,8 @@ def get_CIE_1924_photopic_vl(binwidth: Optional[int] = 1) -> pd.DataFrame:
 
     vl = vl.reshape(401, 2).astype(np.float64).T
     vl = vl[:, ::binwidth]
-    vl = pd.DataFrame(data=vl.T, columns=colnames)
-    vl.set_index('nm', inplace=True)
-    vl.index = pd.Int64Index(vl.index)
-    return vl
+    idx = pd.Int64Index(vl[0], name='Wavelength')
+    return pd.Series(data=vl[1], index=idx, name='vl')
 
 
 def get_matrix_LMStoXYZ():
@@ -1337,7 +1333,7 @@ def get_matrix_LMStoXYZ():
 def get_CIE170_2_chromaticity_coordinates(
         binwidth: int = 1, connect: bool = True) -> pd.DataFrame():
 
-    colnames = ['nm', 'x', 'y', 'z']
+    colnames = ['Wavelength', 'x', 'y', 'z']
     coord = np.array([
         390, 0.17842, 0.02464, 0.79694,
         391, 0.17838, 0.02482, 0.79679,
@@ -1785,7 +1781,7 @@ def get_CIE170_2_chromaticity_coordinates(
     coord = coord.reshape(441, 4).astype(np.float64).T
     coord = coord[:, ::binwidth]
     coord = pd.DataFrame(data=coord.T, columns=colnames)
-    coord.set_index('nm', inplace=True)
+    coord.set_index('Wavelength', inplace=True)
     coord.index = pd.Int64Index(coord.index)
     if connect:
         coord = coord.append(coord.iloc[0], ignore_index=True)
