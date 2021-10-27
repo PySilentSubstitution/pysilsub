@@ -109,65 +109,19 @@ class SilentSubstitutionDevice(StimulationDevice):
         self.silence = silence
         self.isolate = isolate
         self.background = background
-        self.modulation = None
         self.bounds = bounds
+        self.modulation = None
         if self.bounds is None:  # Default bounds if not specified
             self.bounds = [(0., 1.,) for primary in self.resolutions]
     
+    def print_state(self):
+        print('Silent substitution')
+        print(f'Ignoring: {self.ignore}')
+        print(f'Silencing: {self.silence}')
+        print(f'Isolating: {self.isolate}')
+        
     def set_background(self, background):
         self.background = background
-        
-    def find_xyY(self, requested_xyY: List[float]):
-        """Find the settings for a spectrum in xyY space.
-
-        Parameters
-        ----------
-        requested_xyY : List[float]
-            Chromaticity coordinates (xy) and luminance (Y).
-
-        Returns
-        -------
-        result
-            The result of the optimisation procedure, with result.x as the
-            ssettings that will produce the spectrum.
-
-        """
-        requested_LMS = xyY_to_LMS(requested_xyY)
-
-        # Objective function to find background
-        def _xyY_objective_function(x0: List[float]):
-            aopic = self.predict_multiprimary_aopic(x0)
-            return sum(
-                pow(requested_LMS - aopic[['L', 'M', 'S']].to_numpy(), 2)
-            )
- 
-        # Random starting point
-        x0 = np.random.uniform(0, 1, self.nprimaries)
-        
-        # Do the minimization
-        result = minimize(
-            fun=_xyY_objective_function,
-            x0=x0,
-            args=(),
-            method='SLSQP',
-            jac=None,
-            hess=None,
-            hessp=None,
-            bounds=self.bounds,
-            constraints=(),
-            tol=None,
-            callback=None,
-            options={'maxiter': 1000, 'disp': False},
-            )
-        
-        # Print results
-        requested_lms = xyY_to_LMS(requested_xyY)
-        solution_lms = self.predict_multiprimary_aopic(
-            result.x)[['L','M','S']].values
-        print(f'Requested LMS: {requested_lms}')
-        print(f'Solution LMS: {solution_lms}')
-        
-        return result
 
     def smlri_calculator(
             self, 
@@ -199,7 +153,6 @@ class SilentSubstitutionDevice(StimulationDevice):
                 self.background, name='Background')
             mod_smlri = self.predict_multiprimary_aopic(
                 weights, name='Modulation')
-
         return (bg_smlri, mod_smlri)
 
     def _isolation_objective(
@@ -212,13 +165,16 @@ class SilentSubstitutionDevice(StimulationDevice):
         bg_smlri, mod_smlri = self.smlri_calculator(weights)
         contrast = (mod_smlri[self.isolate]
                     .sub(bg_smlri[self.isolate])
-                    .div(bg_smlri[self.isolate])).values[0] 
+                    .div(bg_smlri[self.isolate])).values
         # contrast = ((mod_smlri[self.isolate] - bg_smlri[self.isolate]) 
         #             / bg_smlri[self.isolate]).values[0]
         if target_contrast is None:
-            return -contrast
+            return -contrast  # In this case we aim to maximise contrast
         else:
-            return pow(contrast-target_contrast, 2)
+            if self.background is not None:
+                return abs(contrast-target_contrast)
+            else:
+                return pow(contrast-target_contrast, 2) # should this be squared?
 
     def _silencing_constraint(
             self,
@@ -238,18 +194,23 @@ class SilentSubstitutionDevice(StimulationDevice):
             DESCRIPTION.
 
         """
+        #breakpoint()
         bg_smlri, mod_smlri = self.smlri_calculator(weights)
         contrast = (mod_smlri[self.silence]
                     .sub(bg_smlri[self.silence])
-                    .div(bg_smlri[self.silence])).values[0]
+                    .div(bg_smlri[self.silence])).values
         
         # Same as bellow but more flexible
         # contrast = np.array([(mod_smlri.S-bg_smlri.S) / bg_smlri.S,
-        #                      (mod_smlri.M-bg_smlri.M) / bg_smlri.M,
-        #                      (mod_smlri.L-bg_smlri.L) / bg_smlri.L])    
+        #                       (mod_smlri.M-bg_smlri.M) / bg_smlri.M,
+        #                       (mod_smlri.L-bg_smlri.L) / bg_smlri.L])    
         return contrast
     
-    def find_modulation_spectra(self, target_contrast: float = None):
+    def find_modulation_spectra(
+            self,
+            target_contrast: float = None,
+            tollerance: float = None) -> Any:
+        
         #breakpoint()
         if self.background is None:
             x0 = np.random.uniform(0, 1, self.nprimaries * 2)
@@ -273,14 +234,14 @@ class SilentSubstitutionDevice(StimulationDevice):
         }
         
         # List to store valid solutions
-        minima = []
+        # minima = []
         
         def print_fun(x, f, accepted):            
             bg, mod = self.smlri_calculator(x)
             self.plot_solution(bg, mod)
-            if accepted:
-                minima.append(x)
-                if f < .0001 and accepted: # For now, this is how we define our tollerance
+            if accepted and tollerance is not None:
+                #minima.append(x)
+                if f < tollerance: # For now, this is how we define our tollerance
                     return True
         
         # Do basinhopping

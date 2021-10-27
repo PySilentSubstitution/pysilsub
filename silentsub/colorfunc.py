@@ -114,7 +114,7 @@ def xyY_to_LMS(xyY: List[float]) -> List[float]:
 
     """
     XYZ = xyY_to_XYZ(xyY)
-    return XYZ_to_LMS(XYZ) / LUX_FACTOR  # required to account for lux?
+    return XYZ_to_LMS(XYZ)# / LUX_FACTOR  # required to account for lux?
 
 
 def LMS_to_xyY(LMS: List[float]) -> List[float]:
@@ -131,12 +131,12 @@ def LMS_to_xyY(LMS: List[float]) -> List[float]:
         Array of values representing chromaticity (xy) and luminance (Y).
 
     """
-    LMS *= LUX_FACTOR  # required to account for lux?
+    #LMS /= LUX_FACTOR  # required to account for lux?
     XYZ = LMS_to_XYZ(LMS)
     return XYZ_to_xyY(XYZ)
 
 
-# TODO: check this
+# TODO: # Failing tests
 def spd_to_XYZ(spd):
     '''Convert a spectrum to an xyz point.
 
@@ -154,5 +154,5 @@ def spd_to_XYZ(spd):
 
 def spd_to_lux(spd, binwidth=1):
     vl = get_CIE_1924_photopic_vl(binwidth=binwidth)
-    return spd.dot(vl) * LUX_FACTOR
+    return spd.dot(vl) #* LUX_FACTOR
 

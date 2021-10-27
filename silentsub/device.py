@@ -12,7 +12,7 @@ A generic device class for multiprimary light stimulators.
 from typing import List, Union, Optional
 
 from scipy.interpolate import interp1d
-from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit, minimize
 from scipy.stats import beta
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -23,7 +23,7 @@ from colour.plotting import plot_chromaticity_diagram_CIE1931
 from silentsub.CIE import (get_CIES026,
                            get_CIE_1924_photopic_vl,
                            get_CIE170_2_chromaticity_coordinates)
-from silentsub.colorfunc import spd_to_XYZ
+from silentsub.colorfunc import spd_to_XYZ, xyY_to_LMS
 
 Settings = Union[List[int], List[float]]
 
@@ -288,6 +288,58 @@ class StimulationDevice:
         sss = get_CIES026(binwidth=self.spd_binwidth, fillna=True)
         return spd.dot(sss)
 
+    def find_settings_xyY(self, requested_xyY: List[float]):
+        """Find the settings for a spectrum in xyY space.
+
+        Parameters
+        ----------
+        requested_xyY : List[float]
+            Chromaticity coordinates (xy) and luminance (Y).
+
+        Returns
+        -------
+        result
+            The result of the optimisation procedure, with result.x as the
+            ssettings that will produce the spectrum.
+
+        """
+        requested_LMS = xyY_to_LMS(requested_xyY)
+
+        # Objective function to find background
+        def _xyY_objective_function(x0: List[float]):
+            aopic = self.predict_multiprimary_aopic(x0)
+            return sum(
+                pow(requested_LMS - aopic[['L', 'M', 'S']].to_numpy(), 2)
+            )
+ 
+        # Random starting point
+        x0 = np.random.uniform(0, 1, self.nprimaries)
+        
+        # Do the minimization
+        result = minimize(
+            fun=_xyY_objective_function,
+            x0=x0,
+            args=(),
+            method='SLSQP',
+            jac=None,
+            hess=None,
+            hessp=None,
+            bounds=self.bounds,
+            constraints=(),
+            tol=None,
+            callback=None,
+            options={'maxiter': 1000, 'disp': False},
+            )
+        
+        # Print results
+        requested_lms = xyY_to_LMS(requested_xyY)
+        solution_lms = self.predict_multiprimary_aopic(
+            result.x)[['L','M','S']].values
+        print(f'Requested LMS: {requested_lms}')
+        print(f'Solution LMS: {solution_lms}')
+        
+        return result
+    
 # TODO: decide whether to keep these
 
     def fit_curves(self):

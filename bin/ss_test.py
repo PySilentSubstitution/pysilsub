@@ -40,15 +40,17 @@ ss = SilentSubstitutionDevice(
     resolutions=[4095]*10,
     colors=colors,
     spds=spds,
-    spd_binwidth=1)
+    spd_binwidth=1,
+    isolate=['S'],
+    silence=['M','L','I'])
 
 #%%
 
-# Orange background of 600 lx
-requested_xyY = [.4, .4, 100.]
+# Orange background of _ lx
+requested_xyY = [.2, .35, 5.]
 
 # Find the spectrum
-result = ss.find_xyY(requested_xyY) 
+result = ss.find_settings_xyY(requested_xyY) 
 
 # Get the LMS of solution and print
 requested_lms = xyY_to_LMS(requested_xyY)
@@ -84,4 +86,4 @@ device_ao.plot(kind='bar', color=colors, ax=axs[2]);
 #%%
 
 ss.background = None
-res = ss.find_modulation_spectra(target_contrast=1.)
+res = ss.find_modulation_spectra(target_contrast=2.)
