@@ -49,10 +49,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from silentsub.device import StimulationDevice
-from silentsub.colorfunc import xyY_to_LMS
+from silentsub.colorfunc import xyY_to_LMS, spd_to_lux
 
 
-class SilentSubstitutionDevice(StimulationDevice):
+class SilentSubstitutionSolver(StimulationDevice):
     """Class to perform silent substitution with a stimulation device.
 
     """
@@ -113,21 +113,21 @@ class SilentSubstitutionDevice(StimulationDevice):
         self.modulation = None
         if self.bounds is None:  # Default bounds if not specified
             self.bounds = [(0., 1.,) for primary in self.resolutions]
-    
+
     def print_state(self):
         print('Silent substitution')
         print(f'Ignoring: {self.ignore}')
         print(f'Silencing: {self.silence}')
         print(f'Isolating: {self.isolate}')
-        
+
     def set_background(self, background):
         self.background = background
 
     def smlri_calculator(
-            self, 
+            self,
             weights: List[float]) -> Tuple[pd.Series, pd.Series]:
         """Calculate alphaopic irradiances for optimisation vector.
-        
+
         Parameters
         ----------
         weights : List[float]
@@ -156,33 +156,40 @@ class SilentSubstitutionDevice(StimulationDevice):
         return (bg_smlri, mod_smlri)
 
     def _isolation_objective(
-            self, 
-            weights: List[float], 
+            self,
+            weights: List[float],
             target_contrast: float = None) -> Any:
         '''Calculates negative melanopsin contrast for background
         and modulation spectra. We want to minimise this.'''
-        #breakpoint()
+        # breakpoint()
         bg_smlri, mod_smlri = self.smlri_calculator(weights)
         contrast = (mod_smlri[self.isolate]
                     .sub(bg_smlri[self.isolate])
                     .div(bg_smlri[self.isolate])).values
-        # contrast = ((mod_smlri[self.isolate] - bg_smlri[self.isolate]) 
+        # contrast = ((mod_smlri[self.isolate] - bg_smlri[self.isolate])
         #             / bg_smlri[self.isolate]).values[0]
-        if target_contrast is None:
-            return -contrast  # In this case we aim to maximise contrast
+        # breakpoint()
+        if target_contrast is None:  # In this case we aim to maximise contrast
+            if len(self.isolate) == 1:
+                return -contrast
+            else:
+                return -sum(pow(contrast-target_contrast, 2))
         else:
             if self.background is not None:
                 return abs(contrast-target_contrast)
             else:
-                return pow(contrast-target_contrast, 2) # should this be squared?
+                if len(self.isolate) == 1:
+                    return pow(contrast-target_contrast, 2)
+                else:
+                    return sum(pow(contrast-target_contrast, 2))
 
     def _silencing_constraint(
             self,
             weights: List[float]) -> float:
         """Calculates irradiance contrast for silenced photoreceptors. 
-        
+
         We want to this to be zero.
-        
+
         Parameters
         ----------
         weights : List[float]
@@ -194,24 +201,24 @@ class SilentSubstitutionDevice(StimulationDevice):
             DESCRIPTION.
 
         """
-        #breakpoint()
         bg_smlri, mod_smlri = self.smlri_calculator(weights)
         contrast = (mod_smlri[self.silence]
                     .sub(bg_smlri[self.silence])
                     .div(bg_smlri[self.silence])).values
-        
-        # Same as bellow but more flexible
-        # contrast = np.array([(mod_smlri.S-bg_smlri.S) / bg_smlri.S,
-        #                       (mod_smlri.M-bg_smlri.M) / bg_smlri.M,
-        #                       (mod_smlri.L-bg_smlri.L) / bg_smlri.L])    
         return contrast
-    
+
+    def _chromaticity_constraint():
+        pass
+
+    def _luminance_constraint():
+        pass
+
     def find_modulation_spectra(
             self,
             target_contrast: float = None,
             tollerance: float = None) -> Any:
-        
-        #breakpoint()
+
+        # breakpoint()
         if self.background is None:
             x0 = np.random.uniform(0, 1, self.nprimaries * 2)
             bnds = self.bounds * 2
@@ -232,18 +239,18 @@ class SilentSubstitutionDevice(StimulationDevice):
             'options': {'maxiter': 500},
             'constraints': constraints
         }
-        
+
         # List to store valid solutions
         # minima = []
-        
-        def print_fun(x, f, accepted):            
+
+        def print_fun(x, f, accepted):
             bg, mod = self.smlri_calculator(x)
             self.plot_solution(bg, mod)
             if accepted and tollerance is not None:
-                #minima.append(x)
-                if f < tollerance: # For now, this is how we define our tollerance
+                # minima.append(x)
+                if f < tollerance:  # For now, this is how we define our tollerance
                     return True
-        
+
         # Do basinhopping
         result = basinhopping(
             func=self._isolation_objective,
@@ -263,7 +270,7 @@ class SilentSubstitutionDevice(StimulationDevice):
 
         return result
 
-            # Plotting func for call back
+        # Plotting func for call back
     def plot_solution(self, background, modulation, ax=None):
         df = (
             pd.concat([background, modulation], axis=1)
@@ -274,7 +281,8 @@ class SilentSubstitutionDevice(StimulationDevice):
             .reset_index()
             .rename(
                 columns={'index': 'Spectrum'})
-             )
+        )
         fig, ax = plt.subplots()
-        sns.barplot(data=df, x='Photoreceptor', y='aopic', hue='Spectrum', ax=ax)
+        sns.barplot(data=df, x='Photoreceptor',
+                    y='aopic', hue='Spectrum', ax=ax)
         plt.show()

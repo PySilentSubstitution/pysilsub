@@ -16,7 +16,7 @@ from typing import List
 import numpy as np
 
 from silentsub.CIE import (get_matrix_LMStoXYZ, 
-                           get_CIE_CMF, 
+                           get_CIE_2006_10_deg_CMF, 
                            get_CIE_1924_photopic_vl)
 
 LUX_FACTOR = 683.002
@@ -136,23 +136,43 @@ def LMS_to_xyY(LMS: List[float]) -> List[float]:
     return XYZ_to_xyY(XYZ)
 
 
-# TODO: # Failing tests
 def spd_to_XYZ(spd):
-    '''Convert a spectrum to an xyz point.
+    """Convert a spectrum to an XYZ point.
 
-    The spectrum must be on the same grid of points as the colour-matching
-    function, cmf: 380-780 nm in 5 nm steps.
+    Parameters
+    ----------
+    spd : TYPE
+        DESCRIPTION.
+    binwidth : TYPE, optional
+        DESCRIPTION. The default is 1.
 
-    '''
-    cmf = get_CIE_CMF(asdf=True)
-    XYZ = cmf.T.dot(spd)
-    denom = np.sum(XYZ)
-    if denom == 0.:
-        return XYZ
-    return XYZ / denom
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    """
+    cmf = get_CIE_2006_10_deg_CMF()
+    return spd.dot(cmf)
 
 
 def spd_to_lux(spd, binwidth=1):
-    vl = get_CIE_1924_photopic_vl(binwidth=binwidth)
-    return spd.dot(vl) #* LUX_FACTOR
+    """Convert a spectrum to luminance (lux).
+    
+
+    Parameters
+    ----------
+    spd : TYPE
+        DESCRIPTION.
+    binwidth : TYPE, optional
+        DESCRIPTION. The default is 1.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    """
+    Y = get_CIE_2006_10_deg_CMF(binwidth=binwidth)['Y']
+    return spd.dot(Y) * LUX_FACTOR
 
