@@ -87,3 +87,9 @@ device_ao.plot(kind='bar', color=colors, ax=axs[2]);
 
 ss.background = None
 res = ss.find_modulation_spectra(target_contrast=2.)
+
+
+#%%
+
+b = ss.predict_multiprimary_spd([0, 0, 17, 226, 1504, 8, 0, 9, 3820, 3956], 'Background')
+spd_to_lux(b)

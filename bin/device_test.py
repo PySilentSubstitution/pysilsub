@@ -39,32 +39,34 @@ device = StimulationDevice(
     spd_binwidth=1)
 
 
-device.plot_spds()
+# device.plot_spds()
 
-device.plot_gamut()
+# device.plot_gamut()
 
-device.calculate_aopic_irradiances()
+# device.calculate_aopic_irradiances()
 
-s1 = device.predict_primary_spd(1, 500, 'dave')
+# s1 = device.predict_primary_spd(1, 500, 'dave')
 
-spec = [0, 500, 0, 0, 0, 0, 0, 0, 0, 0]
+# spec = [0, 500, 0, 0, 0, 0, 0, 0, 0, 0]
 
-s2 = device.predict_multiprimary_spd(spec, 'Spectrum')
+# s2 = device.predict_multiprimary_spd(spec, 'Spectrum')
 
 
-ao = device.predict_multiprimary_aopic(spec, 'iarad')
+# ao = device.predict_multiprimary_aopic(spec, 'iarad')
 
-ci = get_CIES026(binwidth=1)
+# ci = get_CIES026(binwidth=1)
 
-test = s.dot(ci)
+# test = s.dot(ci)
 
-spd = device.predict_multiprimary_spd([100]*10, 'scup')
+# spd = device.predict_multiprimary_spd([100]*10, 'scup')
 
-ao = device.predict_multiprimary_aopic([100]*10, name='scup')
+# ao = device.predict_multiprimary_aopic([100]*10, name='scup')
 
-def make_func():
-    def add(num: int):
-        return 2
-    return add
+# def make_func():
+#     def add(num: int):
+#         return 2
+#     return add
     
+res = device.find_settings_xyY(xy=[.28, .5], luminance=500.)
 
+device.predict_multiprimary_spd(res.x).plot()

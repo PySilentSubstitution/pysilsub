@@ -16,8 +16,7 @@ from typing import List
 import numpy as np
 
 from silentsub.CIE import (get_matrix_LMStoXYZ, 
-                           get_CIE_2006_10_deg_CMF, 
-                           get_CIE_1924_photopic_vl)
+                           get_CIE_2006_10_deg_CMF)
 
 LUX_FACTOR = 683.002
 

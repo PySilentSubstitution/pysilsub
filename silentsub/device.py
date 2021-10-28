@@ -23,7 +23,7 @@ from colour.plotting import plot_chromaticity_diagram_CIE1931
 from silentsub.CIE import (get_CIES026,
                            get_CIE_1924_photopic_vl,
                            get_CIE170_2_chromaticity_coordinates)
-from silentsub.colorfunc import spd_to_XYZ, xyY_to_LMS
+from silentsub import colorfunc
 
 Settings = Union[List[int], List[float]]
 
@@ -83,7 +83,8 @@ class StimulationDevice:
         self.nprimaries = len(self.resolutions)
         self.wls = self.spds.columns
         self.irradiance = self.spds.sum(axis=1).to_frame(name='Irradiance')
-
+        self.bounds = [(0., 1.,) for primary in self.resolutions]
+        
     # Notes
     def foo(self, x):  # Can only be called from an instance of the class
         print(f"executing foo({self}, {x})")
@@ -130,7 +131,7 @@ class StimulationDevice:
 
         """
         max_spds = self.spds.loc[(slice(None), self.resolutions), :]
-        xyz = max_spds.apply(spd_to_XYZ, axis=1)
+        xyz = max_spds.apply(colorfunc.spd_to_XYZ, axis=1)
         xyz = xyz.append(xyz.iloc[0], ignore_index=True)  # to join the dots
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
 
@@ -288,22 +289,30 @@ class StimulationDevice:
         sss = get_CIES026(binwidth=self.spd_binwidth, fillna=True)
         return spd.dot(sss)
 
-    def find_settings_xyY(self, requested_xyY: List[float]):
+    def find_settings_xyY(
+            self, 
+            xy: List[float], 
+            luminance: float):
         """Find the settings for a spectrum in xyY space.
 
         Parameters
         ----------
         requested_xyY : List[float]
             Chromaticity coordinates (xy) and luminance (Y).
+        luminance : float
+            Lux or 
 
         Returns
         -------
         result
             The result of the optimisation procedure, with result.x as the
-            ssettings that will produce the spectrum.
+            settings that will produce the spectrum.
 
         """
-        requested_LMS = xyY_to_LMS(requested_xyY)
+        #breakpoint()
+        luminance /= colorfunc.LUX_FACTOR
+        requested_xyY = xy + [luminance] 
+        requested_LMS = colorfunc.xyY_to_LMS(requested_xyY)
 
         # Objective function to find background
         def _xyY_objective_function(x0: List[float]):
@@ -326,16 +335,15 @@ class StimulationDevice:
             hessp=None,
             bounds=self.bounds,
             constraints=(),
-            tol=None,
+            tol=1e-10,  # What is reasoanble?
             callback=None,
-            options={'maxiter': 1000, 'disp': False},
+            options={'maxiter': 1000, 'disp': True},
             )
         
         # Print results
-        requested_lms = xyY_to_LMS(requested_xyY)
         solution_lms = self.predict_multiprimary_aopic(
             result.x)[['L','M','S']].values
-        print(f'Requested LMS: {requested_lms}')
+        print(f'Requested LMS: {requested_LMS}')
         print(f'Solution LMS: {solution_lms}')
         
         return result

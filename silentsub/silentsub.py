@@ -121,6 +121,7 @@ class SilentSubstitutionSolver(StimulationDevice):
         print(f'Isolating: {self.isolate}')
 
     def set_background(self, background):
+        print('Background spectrum now fixed at: {background}')
         self.background = background
 
     def smlri_calculator(
