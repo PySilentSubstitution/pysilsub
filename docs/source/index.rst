@@ -10,7 +10,8 @@ Welcome to PySilentSubstitution's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   01_includeme
+   00_includeme
+   01_introduction
  
 
 

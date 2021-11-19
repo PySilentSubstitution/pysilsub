@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''
-pyplr.CIE
-=========
+silentsub.CIE
+=============
 
 Convenience functions for accessing CIE standards.
+
+Obtained from http://www.cvrl.org/
 
 @author: jtm
 

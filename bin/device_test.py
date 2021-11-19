@@ -20,8 +20,9 @@ from scipy.interpolate import interp1d
 from silentsub.device import StimulationDevice
 from silentsub.plotting import stim_plot
 from silentsub.CIE import get_CIES026
+from silentsub.colorfunc import LMS_to_xyY, xyY_to_LMS, LUX_FACTOR, xy_luminance_to_xyY
 
-sns.set_style('whitegrid')
+sns.set_style('darkgrid')
 
 spds = pd.read_csv('../data/S2_corrected_oo_spectra.csv', index_col=['led','intensity'])
 spds.index.rename(['Primary', 'Setting'], inplace=True)
@@ -38,35 +39,42 @@ device = StimulationDevice(
     spds=spds,
     spd_binwidth=1)
 
-
-# device.plot_spds()
-
-# device.plot_gamut()
-
-# device.calculate_aopic_irradiances()
-
-# s1 = device.predict_primary_spd(1, 500, 'dave')
-
-# spec = [0, 500, 0, 0, 0, 0, 0, 0, 0, 0]
-
-# s2 = device.predict_multiprimary_spd(spec, 'Spectrum')
-
-
-# ao = device.predict_multiprimary_aopic(spec, 'iarad')
-
-# ci = get_CIES026(binwidth=1)
-
-# test = s.dot(ci)
-
-# spd = device.predict_multiprimary_spd([100]*10, 'scup')
-
-# ao = device.predict_multiprimary_aopic([100]*10, name='scup')
-
-# def make_func():
-#     def add(num: int):
-#         return 2
-#     return add
     
-res = device.find_settings_xyY(xy=[.28, .5], luminance=500.)
-
+# Orange background of 600 lx
+xy = [.398, .433]
+luminance = 600.
+requested_xyY = xy_luminance_to_xyY(xy, luminance)
+res = device.find_settings_xyY(xy=xy, luminance=luminance, plot_solution=True, verbose=True)
 device.predict_multiprimary_spd(res.x).plot()
+fig, axs = stim_plot()
+
+
+# Get the LMS of solution and print
+requested_lms = xyY_to_LMS(requested_xyY)
+solution_lms = device.predict_multiprimary_aopic(res.x)[['L','M','S']].values
+
+# Plot the spectrum
+device.predict_multiprimary_spd(res.x).plot(legend=False)
+
+# Plot solution on horseshoe (is this even helpful?)
+solution_xyY = LMS_to_xyY(solution_lms)
+axs[1].scatter(x=requested_xyY[0], 
+               y=requested_xyY[1],
+               s=100, marker='o', 
+               facecolors='none', 
+               edgecolors='k', 
+               label='Requested')
+axs[1].scatter(x=solution_xyY[0], 
+               y=solution_xyY[1],
+               s=100, c='k',
+               marker='x', 
+               label='Resolved')
+gamut = device._get_gamut()
+axs[1].plot(gamut['x'], gamut['y'], color='k',
+        lw=2, marker='x', markersize=8, label='Gamut')
+axs[1].legend()
+
+from colour.plotting import colour_cycle
+colour_cycle()
+
+device.plot_gamut()

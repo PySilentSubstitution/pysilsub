@@ -9,12 +9,13 @@ A generic device class for multiprimary light stimulators.
 @author: jtm
 """
 
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Tuple, Any
 
 from scipy.interpolate import interp1d
-from scipy.optimize import curve_fit, minimize
+from scipy.optimize import curve_fit, minimize, basinhopping, OptimizeResult
 from scipy.stats import beta
 import matplotlib.pyplot as plt
+import matplotlib.path as mplpath
 import seaborn as sns
 import pandas as pd
 import numpy as np
@@ -24,6 +25,7 @@ from silentsub.CIE import (get_CIES026,
                            get_CIE_1924_photopic_vl,
                            get_CIE170_2_chromaticity_coordinates)
 from silentsub import colorfunc
+from silentsub.plotting import stim_plot
 
 Settings = Union[List[int], List[float]]
 
@@ -31,7 +33,9 @@ Settings = Union[List[int], List[float]]
 class StimulationDevice:
     """Generic class for multiprimary stimultion device."""
 
-    # class attribute colors for aopic irradiances
+    # Class attribute colors for photoreceptors
+    photoreceptors = ['S', 'M', 'L', 'R', 'I']
+    
     aopic_colors = {
         'S': 'tab:blue',
         'M': 'tab:green',
@@ -82,22 +86,67 @@ class StimulationDevice:
         # create important data
         self.nprimaries = len(self.resolutions)
         self.wls = self.spds.columns
-        self.irradiance = self.spds.sum(axis=1).to_frame(name='Irradiance')
         self.bounds = [(0., 1.,) for primary in self.resolutions]
         
-    # Notes
-    def foo(self, x):  # Can only be called from an instance of the class
-        print(f"executing foo({self}, {x})")
-
-    @classmethod  # Can be called directly from the class
-    def class_foo(cls, x):
-        print(f"executing class_foo({cls}, {x})")
-
-    @staticmethod  # Can be called directly from the class. Basically useless,just use a module function
-    def static_foo(x):
-        print(f"executing static_foo({x})")
         
-    # Starts properly here    
+    # Starts properly here
+    def _get_gamut(self):
+        max_spds = self.spds.loc[(slice(None), self.resolutions), :]
+        XYZ = max_spds.apply(colorfunc.spd_to_XYZ, axis=1)
+        xy = (XYZ[['X', 'Y']].div(XYZ.sum(axis=1), axis=0)
+              .rename(columns={'X':'x','Y':'y'}))
+        xy = xy.append(xy.iloc[0], ignore_index=True)  # Join the dots
+        return xy
+
+    def _xy_in_gamut(self, xy_coord: Tuple[float]):
+        """Return True if xy_coord is within the gamut of the device"""
+        poly_path = mplpath.Path(self._get_gamut().to_numpy())
+        return poly_path.contains_point(xy_coord)
+
+    def plot_gamut(self, 
+                   ax: plt.Axes = None, 
+                   show_1931_horseshoe: bool = True, 
+                   show_CIE170_2_horseshoe: bool = True
+                   ) -> Union[plt.Figure, None]:
+        """Plot the gamut of the stimulation device.
+        
+        Parameters
+        ----------
+        ax : plt.Axes, optional
+            Axes on which to plot. The default is None.
+        show_1931_horseshoe : bool, optional
+            Whether to show the CIE1931 chromaticity horseshoe. The default is 
+            True.
+        show_CIE170_2_horseshoe : bool, optional
+            Whether to show the CIE170_2 chromaticity horseshoe. The default is 
+            True.
+            
+        Returns
+        -------
+        fig : plt.Figure or None
+            The plot.
+
+        """
+        gamut = self._get_gamut()
+        if ax is None:
+            fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+        if show_1931_horseshoe:
+            plot_chromaticity_diagram_CIE1931(
+                axes=ax, title=False, standalone=False)
+        if show_CIE170_2_horseshoe:
+            cie170_2 = get_CIE170_2_chromaticity_coordinates(connect=True)
+            ax.plot(cie170_2['x'], cie170_2['y'],
+                    c='k', ls=':', label='CIE 170-2')
+        ax.plot(gamut['x'], gamut['y'], color='k',
+                lw=2, marker='x', markersize=8, label='Gamut')
+        ax.set(xlim=(-.15, .9),
+               ylim=(-.1, 1),
+               title='Stimulation Device gamut')
+        if ax is None:
+            return fig
+        else:
+            return None
+            
     def plot_spds(self) -> plt.Figure:
         """Plot the spectral power distributions for the stimulation device.
 
@@ -119,33 +168,6 @@ class StimulationDevice:
             palette=self.colors, units='Setting', ax=ax, lw=.1, estimator=None
         )
         ax.set_title('Stimulation Device SPDs')
-        return fig
-
-    def plot_gamut(self) -> plt.Figure:
-        """Plot the gamut of the stimulation device on the CIE 1931 horseshoe.
-
-        Returns
-        -------
-        fig : plt.Figure
-            The plot.
-
-        """
-        max_spds = self.spds.loc[(slice(None), self.resolutions), :]
-        xyz = max_spds.apply(colorfunc.spd_to_XYZ, axis=1)
-        xyz = xyz.append(xyz.iloc[0], ignore_index=True)  # to join the dots
-        fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-
-        plot_chromaticity_diagram_CIE1931(
-            axes=ax, title=False, standalone=False)
-        cie170_2 = get_CIE170_2_chromaticity_coordinates(connect=True)
-        ax.plot(cie170_2['x'], cie170_2['y'],
-                c='k', ls=':', label='CIE 170-2')
-        ax.plot(xyz["X"], xyz["Y"], color='k',
-                lw=2, marker='x', markersize=8)
-        ax.set(xlim=(-.15, .9),
-               ylim=(-.1, 1),
-               title='Stimulation Device gamut')
-        ax.legend()
         return fig
 
     def calculate_aopic_irradiances(self) -> pd.DataFrame:
@@ -291,65 +313,125 @@ class StimulationDevice:
 
     def find_settings_xyY(
             self, 
-            xy: List[float], 
-            luminance: float):
-        """Find the settings for a spectrum in xyY space.
+            xy: Union[List[float], Tuple[float]], 
+            luminance: float,
+            tollerance: Optional[float] = 1e-6,
+            plot_solution: Optional[bool] = False,
+            verbose: Optional[bool] = True) -> OptimizeResult:
+        """Find device settings for a spectrum with requested xyY values.
 
         Parameters
         ----------
-        requested_xyY : List[float]
-            Chromaticity coordinates (xy) and luminance (Y).
+        xy : List[float]
+            Requested chromaticity coordinates (xy).
         luminance : float
-            Lux or 
+            Requested luminance.
+        tollerance : float, optional
+            Acceptable precision for result.
+        plot_solution : bool, optional
+            Set to True to plot the solution. The default is False.
+        verbose : bool, optional
+            Set to True to print status messages. The default is False.
 
         Returns
         -------
-        result
+        result : OptimizeResult
             The result of the optimisation procedure, with result.x as the
             settings that will produce the spectrum.
 
         """
-        #breakpoint()
-        luminance /= colorfunc.LUX_FACTOR
-        requested_xyY = xy + [luminance] 
+        if len(xy) != 2:
+            raise ValueError('xy must be of length 2.')
+            
+        if not self._xy_in_gamut(xy):
+            print("WARNING: specified xy coordinates are outside of")
+            print("the device's gamut. Searching for closest match.")
+            print("This could take a while, and results may be useless.\n")
+
+        requested_xyY = colorfunc.xy_luminance_to_xyY(xy, luminance)
         requested_LMS = colorfunc.xyY_to_LMS(requested_xyY)
 
-        # Objective function to find background
+        # Objective function to find device settings for given xyY
         def _xyY_objective_function(x0: List[float]):
             aopic = self.predict_multiprimary_aopic(x0)
             return sum(
                 pow(requested_LMS - aopic[['L', 'M', 'S']].to_numpy(), 2)
             )
  
+        # Arguments for local solver
+        minimizer_kwargs = {
+            'method': 'SLSQP',
+            'bounds': self.bounds,
+            'options': {'maxiter': 500}
+        }
+        
+        # Callback for global search
+        def _callback(x, f, accepted):
+            if accepted and tollerance is not None:
+                if f < tollerance:
+                    return True
+                
         # Random starting point
         x0 = np.random.uniform(0, 1, self.nprimaries)
-        
-        # Do the minimization
-        result = minimize(
-            fun=_xyY_objective_function,
+
+        # Do global search
+        result = basinhopping(
+            func=_xyY_objective_function,
             x0=x0,
-            args=(),
-            method='SLSQP',
-            jac=None,
-            hess=None,
-            hessp=None,
-            bounds=self.bounds,
-            constraints=(),
-            tol=1e-10,  # What is reasoanble?
-            callback=None,
-            options={'maxiter': 1000, 'disp': True},
-            )
+            niter=100,
+            T=1.0,
+            stepsize=0.5,
+            minimizer_kwargs=minimizer_kwargs,
+            take_step=None,
+            accept_test=None,
+            callback=_callback,
+            interval=50,
+            disp=True,
+            niter_success=None,
+            seed=None,
+        )
         
-        # Print results
+        # TODO: refactor this
         solution_lms = self.predict_multiprimary_aopic(
             result.x)[['L','M','S']].values
+        solution_xyY = colorfunc.LMS_to_xyY(solution_lms)
         print(f'Requested LMS: {requested_LMS}')
         print(f'Solution LMS: {solution_lms}')
         
-        return result
-    
-# TODO: decide whether to keep these
-
+        # Reacfactor!
+        if plot_solution is not None:
+            fig, axs = stim_plot()
+            # Plot the spectrum
+            self.predict_multiprimary_spd(
+                result.x, 
+                name=f'solution_xyY:\n{solution_xyY.round(3)}').plot(
+                    ax=axs[0],
+                    legend=True)
+            axs[1].scatter(
+                x=requested_xyY[0], 
+                y=requested_xyY[1],
+                s=100, marker='o', 
+                facecolors='none', 
+                edgecolors='k', 
+                label='Requested'
+                )
+            axs[1].scatter(
+                x=solution_xyY[0], 
+                y=solution_xyY[1],
+                s=100, c='k',
+                marker='x', 
+                label='Resolved'
+                )
+            self.plot_gamut(ax=axs[1], show_CIE170_2_horseshoe=False)
+            axs[1].legend()
+            device_ao = self.predict_multiprimary_aopic(
+                result.x, name='Background')
+            colors = [val[1] for val in self.aopic_colors.items()]
+            device_ao.plot(kind='bar', color=colors, ax=axs[2])
+            
+        return result     
+        
+    # TODO: decide whether to keep these
     def fit_curves(self):
         """Fit curves to the unweighted irradiance of spectral measurements
         and save the parameters.
@@ -402,8 +484,9 @@ class StimulationDevice:
     def optimise(
             self,
             primary: int,
-            settings: Union[List[int], List[float]]) -> Union[List[int], List[float]]:
-        '''Optimise a stimulus profile by applying the curve parameters.
+            settings: Union[List[int], List[float]]
+            ) -> Union[List[int], List[float]]:
+        """Optimise a stimulus profile by applying the curve parameters.
 
         Parameters
         ----------
@@ -417,7 +500,7 @@ class StimulationDevice:
         np.array
             Optimised intensity values.
 
-        '''
+        """
         if not self.curveparams:
             print('No parameters yet. Run .fit_curves(...) first...')
         params = self.curveparams[primary]

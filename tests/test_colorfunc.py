@@ -20,7 +20,7 @@ from silentsub import colorfunc
 
 class TestColorFunc(unittest.TestCase):
     """Testing suite for silentsub.colorfunc.
-    unit
+    
     """
 
     def setUp(self):
@@ -36,7 +36,7 @@ class TestColorFunc(unittest.TestCase):
         self.xyY = self.results[['x', 'y', 'Y.1']].values[0]
         self.XYZ = self.results[['X', 'Y', 'Z']].values[0]
         self.LMS = self.results[['L', 'M', 'S']].values[0]
-        self.lux = self.results['Y.1'] * colorfunc.LUX_FACTOR  # Correct?
+        self.lux = float(self.results['Y.1'] * colorfunc.LUX_FACTOR)
 
     def tearDown(self):
         del self.spd
@@ -77,7 +77,14 @@ class TestColorFunc(unittest.TestCase):
     def test_spd_to_lux(self):
         result_lux = colorfunc.spd_to_lux(self.spd)
         np.testing.assert_allclose(result_lux, self.lux, rtol=1e-04)
-
-
+        
+    def test_spd_to_xyY(self):
+        result_lux = colorfunc.spd_to_lux(self.spd)
+        np.testing.assert_allclose(result_lux, self.lux, rtol=1e-04)
+        
+    def test_xy_luminance_to_xyY(self):
+        result_xyY = colorfunc.xy_luminance_to_xyY(self.xyY[:2], self.lux)
+        np.testing.assert_allclose(result_xyY, self.xyY, rtol=1e-10)
+        
 if __name__ == '__main__':
     unittest.main()

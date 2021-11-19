@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-from silentsub.silentsub import SilentSubstitutionDevice
+from silentsub.silentsub import SilentSubstitutionSolver
 from silentsub.colorfunc import LMS_to_xyY, xyY_to_LMS
 from silentsub.plotting import stim_plot
 
@@ -36,60 +36,16 @@ spds.columns.name = 'Wavelength'
 colors = ['blueviolet', 'royalblue', 'darkblue', 'blue', 'cyan', 
           'green', 'lime', 'orange', 'red', 'darkred']
 
-ss = SilentSubstitutionDevice(
+ss = SilentSubstitutionSolver(
     resolutions=[4095]*10,
     colors=colors,
     spds=spds,
     spd_binwidth=1,
-    isolate=['S'],
-    silence=['M','L','I'])
+    isolate=['I'],
+    silence=['S', 'M', 'L'],
+    )
 
 #%%
 
-# Orange background of _ lx
-requested_xyY = [.2, .35, 5.]
+res = ss.find_modulation_spectra()
 
-# Find the spectrum
-result = ss.find_settings_xyY(requested_xyY) 
-
-# Get the LMS of solution and print
-requested_lms = xyY_to_LMS(requested_xyY)
-solution_lms = ss.predict_multiprimary_aopic(result.x)[['L','M','S']].values
-
-# Plot
-f, axs = stim_plot()
-
-# Plot the spectrum
-ss.predict_multiprimary_spd(result.x).T.plot(ax=axs[0], legend=False)
-
-# Plot solution on horseshoe (is this even helpful?)
-solution_xyY = LMS_to_xyY(solution_lms)
-axs[1].scatter(x=requested_xyY[0], 
-               y=requested_xyY[1],
-               s=100, marker='o', 
-               facecolors='none', 
-               edgecolors='k', 
-               label='Requested')
-axs[1].scatter(x=solution_xyY[0], 
-               y=solution_xyY[1],
-               s=100, c='k',
-               marker='x', 
-               label='Resolved')
-axs[1].legend()
-
-
-# Plot aopic irradiances
-device_ao = ss.predict_multiprimary_aopic(result.x, 'Background')
-colors = [val[1] for val in ss.aopic_colors.items()]
-device_ao.plot(kind='bar', color=colors, ax=axs[2]);
-
-#%%
-
-ss.background = None
-res = ss.find_modulation_spectra(target_contrast=2.)
-
-
-#%%
-
-b = ss.predict_multiprimary_spd([0, 0, 17, 226, 1504, 8, 0, 9, 3820, 3956], 'Background')
-spd_to_lux(b)
