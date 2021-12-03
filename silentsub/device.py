@@ -233,17 +233,18 @@ class StimulationDevice:
         if isinstance(setting, float):
             setting *= self.resolutions[primary]
         if setting > self.resolutions[primary]:
-            raise ValueError(f'Requested setting {int(setting)} exceeds'
-                             'resolution of device primary {primary}')
+            raise ValueError(f'Requested setting {int(setting)} exceeds '
+                              'resolution of device primary {primary}')
         f = interp1d(x=self.spds.loc[primary].index.values,
                      y=self.spds.loc[primary],
                      axis=0, fill_value='extrapolate')
         return pd.Series(f(setting), name=name, index=self.wls)
-       
+            
     def predict_multiprimary_spd(
             self,
             settings: Union[List[int], List[float]],
-            name: Union[int, str] = 0) -> pd.Series:
+            name: Union[int, str] = 0,
+            nosum: Optional[bool] = False) -> pd.Series:
         """Predict spectral power distribution of device for given settings.
 
         Predict the SPD output of the stimulation device for a given list of
@@ -257,6 +258,8 @@ class StimulationDevice:
             (0-max resolution).
         name : int or str, optional
             A name for the spectrum, e.g. 'Background'. The default is 0.
+        nosum : bool, optional
+            Whether t
 
         Raises
         ------
@@ -268,8 +271,8 @@ class StimulationDevice:
 
         Returns
         -------
-        pd.Series
-            Predicted spectrum for given device settings.
+        pd.DataFrame if nosum else pd.Series
+            Predicted spectra or spectrum for given device settings.
 
         """
         if len(settings) > self.nprimaries:
@@ -281,10 +284,16 @@ class StimulationDevice:
             raise ValueError('Can not mix float and int in settings.')
         if name is None:
             name = 0
-        spd = 0
+        spd = []
         for primary, setting in enumerate(settings):
-            spd += self.predict_primary_spd(primary, setting)
-        return pd.Series(spd, name=name, index=self.wls)
+            spd.append(self.predict_primary_spd(primary, setting, primary))        
+        spd = pd.concat(spd, axis=1)
+        if nosum:
+            return spd
+        else:
+            spd = spd.sum(axis=1)
+            spd.name = name
+            return spd
 
     def predict_multiprimary_aopic(
             self,
@@ -315,7 +324,7 @@ class StimulationDevice:
             self, 
             xy: Union[List[float], Tuple[float]], 
             luminance: float,
-            tollerance: Optional[float] = 1e-6,
+            tolerance: Optional[float] = 1e-6,
             plot_solution: Optional[bool] = False,
             verbose: Optional[bool] = True) -> OptimizeResult:
         """Find device settings for a spectrum with requested xyY values.
@@ -326,7 +335,7 @@ class StimulationDevice:
             Requested chromaticity coordinates (xy).
         luminance : float
             Requested luminance.
-        tollerance : float, optional
+        tolerance : float, optional
             Acceptable precision for result.
         plot_solution : bool, optional
             Set to True to plot the solution. The default is False.
@@ -367,8 +376,8 @@ class StimulationDevice:
         
         # Callback for global search
         def _callback(x, f, accepted):
-            if accepted and tollerance is not None:
-                if f < tollerance:
+            if accepted and tolerance is not None:
+                if f < tolerance:
                     return True
                 
         # Random starting point
@@ -540,3 +549,47 @@ class StimulationDevice:
 
         """
         return [int(w * r) for w, r in zip(weights, self.resolutions)]
+    
+    
+    def spd_to_settings(self, target_spd, tolerance=1e-6):
+        #breakpoint()
+        target_xyY = colorfunc.spd_to_xyY(target_spd)
+        
+        def _objective(x0):
+            xyY = colorfunc.spd_to_xyY(self.predict_multiprimary_spd(x0))
+            error = target_xyY - xyY
+            return sum(pow(error, 2))
+        
+        # Callback for global search
+        def _callback(x, f, accepted):
+            if accepted and tolerance is not None:
+                if f < tolerance:
+                    return True
+                
+        x0 = np.array([np.random.uniform(0, 1) for val in self.resolutions])
+        bounds = [(0., 1.,) for primary in self.resolutions]
+        
+        minimizer_kwargs = {
+            'method': 'SLSQP',
+            'bounds': bounds,
+            'options': {'maxiter': 500}
+        }
+                
+
+        # Do global search
+        res = basinhopping(
+            func=_objective,
+            x0=x0,
+            niter=100,
+            T=1.0,
+            stepsize=0.5,
+            minimizer_kwargs=minimizer_kwargs,
+            take_step=None,
+            accept_test=None,
+            callback=_callback,
+            interval=50,
+            disp=True,
+            niter_success=None,
+            seed=None,
+        )        
+        return res

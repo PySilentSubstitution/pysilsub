@@ -38,6 +38,9 @@ function taht takes XYZ coordinates into l,m,s coordinates
 - add constraint to say coordinates of background are as specified
 - function that turns XYZ coordinate in lms coordinate
 
+- look into numba - accelerate functions
+- pseudo inverse
+
 """
 
 from typing import List, Union, Optional, Tuple, Any, Sequence
@@ -47,6 +50,7 @@ from scipy.optimize import Bounds, minimize, basinhopping
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from cyipopt import minimize_ipopt
 
 from silentsub.device import StimulationDevice
 from silentsub.colorfunc import (xyY_to_LMS,
@@ -55,9 +59,10 @@ from silentsub.colorfunc import (xyY_to_LMS,
                                  spd_to_xyY,
                                  LUX_FACTOR)
 from silentsub.plotting import stim_plot
+from silentsub.CIE import get_CIES026
 
 
-class SilentSubstitutionSolver(StimulationDevice):
+class SilentSubstitutionProblem(StimulationDevice):
     """Class to perform silent substitution with a stimulation device.
 
     """
@@ -73,6 +78,9 @@ class SilentSubstitutionSolver(StimulationDevice):
                  ignore: List[str] = ['R'],
                  silence: List[str] = ['S', 'M', 'L'],
                  isolate: List[str] = ['I'],
+                 target_contrast: float = None,
+                 target_xy: List[float] = None,
+                 target_luminance: float = None,
                  bounds: Optional[List[Tuple[float, float]]] = None,
                  background: Optional[List[float]] = None,
                  ) -> None:
@@ -98,12 +106,16 @@ class SilentSubstitutionSolver(StimulationDevice):
             List of photoreceptors to silence.
         isolate : list of str
             List of photoreceptors isolate.
-        background : list of int
-            List of integers defining the background spectrum, if known.
+        target_contrast : float
+            Desired contrast for isolated photoreceptor(s).
         bounds : list of tuples, optional
             Min/max pairs to act as boundaries for each channel. Must be same 
             length as `self.resolutions`. The default is None.
-
+        background : list of int
+            List of weights to define a specific background spectrum. If this
+            option is passed, the background will be 'pinned' and will not be 
+            subject to the optimisation. 
+            
         Returns
         -------
         None.
@@ -114,6 +126,9 @@ class SilentSubstitutionSolver(StimulationDevice):
         self.ignore = ignore
         self.silence = silence
         self.isolate = isolate
+        self.target_contrast = target_contrast
+        self.target_xy = target_xy
+        self.target_luminance = target_luminance
         self.bounds = bounds
         if self.bounds is None:  # Default bounds if not specified
             self.bounds = [(0., 1.,) for primary in self.resolutions]
@@ -124,16 +139,32 @@ class SilentSubstitutionSolver(StimulationDevice):
         print(f'Ignoring: {self.ignore}')
         print(f'Silencing: {self.silence}')
         print(f'Isolating: {self.isolate}')
+    
+    def initial_guess_x0(self) -> np.array:
+        """Return an initial guess for the optimization problem.
+        
+        Returns
+        -------
+        np.array
+            Initial guess for optimization. 
+
+        """
+        if self.background is not None:
+            return np.array(
+                [np.random.uniform(lb, ub) for lb, ub in self.bounds])
+        else:
+            return np.array(
+                [np.random.uniform(lb, ub) for lb, ub in self.bounds * 2])
 
     def smlri_calculator(
             self,
-            x0: List[float]) -> Tuple[pd.Series]:
+            x0: Sequence[float]) -> Tuple[pd.Series]:
         """Calculate alphaopic irradiances for optimisation vector.
 
         Parameters
         ----------
-        weights : List[float]
-            DESCRIPTION.
+        x0 : Sequence[float]
+            Optimization vector.
 
         Returns
         -------
@@ -153,103 +184,86 @@ class SilentSubstitutionSolver(StimulationDevice):
             bg_weights, name='Background')
         mod_smlri = self.predict_multiprimary_aopic(
             mod_weights, name='Modulation')
-        return (bg_smlri, mod_smlri)
-
-    # Bundle objectives / constraints in a separate class and inherit?
-    def _isolation_objective(
-            self,
-            weights: List[float],
-            target_contrast: float = None) -> float:
-        """Calculates negative melanopsin contrast for background
-        and modulation spectra. We want to minimise this."""
-        # breakpoint()
-        bg_smlri, mod_smlri = self.smlri_calculator(weights)
-        contrast = (mod_smlri[self.isolate]
-                    .sub(bg_smlri[self.isolate])
-                    .div(bg_smlri[self.isolate])).values
-
-        # Help!
-        if target_contrast is None:  # In this case we aim to maximise contrast
-            if len(self.isolate) == 1:  # We are only isolating a single photoreceptor
-                return -contrast[0]
-            else:
-                return sum(pow(contrast-target_contrast, 2))
-        else:
-            return abs(contrast-target_contrast)
-
-    # Works fine
-    def _silencing_constraint(self, x0: Sequence[float]) -> float:
-        """Calculates irradiance contrast for silenced photoreceptors. 
-
-        We want to this to be zero.
-
-        """
-        # breakpoint()
-        bg_smlri, mod_smlri = self.smlri_calculator(x0)
-        contrast = (mod_smlri[self.silence]
-                    .sub(bg_smlri[self.silence])
-                    .div(bg_smlri[self.silence])).values
-        return pow(contrast, 2)
-
-    def _xy_chromaticity_constraint(
-            self,
-            x0: Sequence[float],
-            xy: Optional[Sequence[float]] = None) -> np.array:
-        bg_smlri, mod_smlri = self.smlri_calculator(x0)
-        bg_xy = LMS_to_xyY(bg_smlri[['L', 'M', 'S']])[:2]
-        mod_xy = LMS_to_xyY(mod_smlri[['L', 'M', 'S']])[:2]
-        xy_contrast = bg_xy - mod_xy
-        return pow(xy_contrast, 2)
-
-    def _luminance_constraint(
-            self,
-            x0: Sequence[float],
-            target_luminance: Optional[float] = None) -> float:
-        bg_smlri, mod_smlri = self.smlri_calculator(x0)
-        bg_lum = LMS_to_xyY(bg_smlri[['L', 'M', 'S']])[2] * LUX_FACTOR
-        mod_lum = LMS_to_xyY(mod_smlri[['L', 'M', 'S']])[2] * LUX_FACTOR
-        if target_luminance is not None:
-            # In this case
-            return pow(target_luminance - bg_lum, 2)
-        else:
-            return pow(mod_lum - bg_lum, 2)
-
-    def solve(
-            self,
-            target_contrast: float = None,
-            target_xy: Optional[bool] = False,
-            target_luminance: Optional[bool] = False,
-            tollerance: float = None) -> Any:
-        """Search for silent substitution spectra that match constraints.
-
+        return (bg_smlri, mod_smlri,)
+    
+    def get_photoreceptor_contrasts(self, 
+                                    x0: Sequence[float]) -> Tuple[np.array]:
+        """Return contrasts for ignored, silenced and isolated photoreceptors.
+        
         Parameters
         ----------
-        target_contrast : float, optional
-            Contrast goal for isolated photoreceptor(s). The default is None, 
-            in which case the optimsation will aim to maximise contrast 
-            (subject to constraints).
-        target_xy : Optional[Sequence[float]], optional
-            DESCRIPTION. The default is None.
-        target_luminance : Optional[float], optional
-            DESCRIPTION. The default is None.
-        tollerance : float, optional
-            DESCRIPTION. The default is None.
+        x0 : Sequence[float]
+            Optimization vector.
 
         Returns
         -------
-        Any
-            DESCRIPTION.
+        Tuple[np.array]
+            Photoreceptor contrasts.
 
         """
+        bg_smlri, mod_smlri = self.smlri_calculator(x0)
+        ignore = (mod_smlri[self.ignore]
+                    .sub(bg_smlri[self.ignore])
+                    .div(bg_smlri[self.ignore])).values
+        silence = (mod_smlri[self.silence]
+                    .sub(bg_smlri[self.silence])
+                    .div(bg_smlri[self.silence])).values
+        isolate = (mod_smlri[self.isolate]
+                    .sub(bg_smlri[self.isolate])
+                    .div(bg_smlri[self.isolate])).values
+        return (ignore, silence, isolate,)
+        
+        
+    # Bundle objectives / constraints in a separate class and inherit?
+    def objective_function(self, x0: Sequence[float]) -> float:
+        """Calculates negative melanopsin contrast for background
+        and modulation spectra. We want to minimise this."""
+        #breakpoint()
+        _, _, contrast = self.get_photoreceptor_contrasts(x0)
+        if self.target_contrast is None:  # In this case we aim to maximise contrast
+            return -sum(pow(contrast, 2))
+        else:
+            return sum(pow(self.target_contrast-contrast, 2))
+
+    # Works fine
+    def silencing_constraint(self, x0: Sequence[float]) -> float:
+        """Calculates irradiance contrast for silenced photoreceptors. 
+
+        """
+        #breakpoint()
+        bg_smlri, mod_smlri = self.smlri_calculator(x0)
+        _, contrast, _ = self.get_photoreceptor_contrasts(x0)
+        return sum(pow(contrast, 2))
+    
+    def xy_chromaticity_constraint(self, x0: Sequence[float]) -> float:
+        """Constraint for chromaticity of background spectrum. 
+
+        """
+        #breakpoint()
+        bg_smlri, _ = self.smlri_calculator(x0)
+        bg_xy = LMS_to_xyY(bg_smlri[['L', 'M', 'S']])[:2]
+        return sum(pow(self.target_xy - bg_xy, 2))
+    
+    def luminance_constraint(self, x0: Sequence[float]) -> float:
+        """Constraint for luminance of background spectrum. 
+
+        """
+        #breakpoint()
+        bg_smlri, _ = self.smlri_calculator(x0)
+        bg_lum = LMS_to_xyY(bg_smlri[['L', 'M', 'S']])[2] * LUX_FACTOR
+        return pow(self.target_luminance - bg_lum, 2)
+
+    def solve(self) -> Any:
+
         self.print_state()
-        if target_contrast is None:
+        if self.target_contrast is None:
             print(f'Target contrast for {self.isolate} not specified.')
             print('Searching for maximum contrast.')
         # TODO: fix  bnds / bounds. Is it ever a good idea to pin the
         # background spectrum? Probably not, because there are many ways to
         # produce the same background, which means we are adding an unecessary
         # / rigid constraint to the optimisation.
-        # breakpoint()
+        #breakpoint()
         if self.background is not None:
             x0 = np.array(
                 [np.random.uniform(lb, ub) for lb, ub in self.bounds])
@@ -257,72 +271,47 @@ class SilentSubstitutionSolver(StimulationDevice):
         else:
             x0 = np.array(
                 [np.random.uniform(lb, ub) for lb, ub in self.bounds * 2])
+            #x0 = np.array([.5 for val in self.bounds * 2])
             bnds = self.bounds * 2
 
         # Define constraints and local minimizer
         constraints = [{
             'type': 'eq',
-            'fun': lambda x: self._silencing_constraint(x)
+            'fun': self.silencing_constraint
         }]
 
         # TODO: check this
-        if target_luminance is True:
+        if self.target_xy is not None:
             constraints.append({
                 'type': 'eq',
-                'fun': lambda x: self._luminance_constraint(x),
-                'args': (target_luminance,)
+                'fun': self.xy_chromaticity_constraint
             })
 
-        if target_xy is not None:
+        if self.target_luminance is not None:
             constraints.append({
-                'type': 'eq',
-                'fun': lambda x: self._xy_chromaticity_constraint(x),
+                'type': 'ineq',
+                'fun': self.luminance_constraint
             })
 
-        # Start the global search
-        minimizer_kwargs = {
-            'method': 'SLSQP',
-            'args': (target_contrast),
-            'bounds': bnds,
-            'options': {'maxiter': 500},
-            'constraints': constraints
-        }
-
-        # List to store valid solutions
-        # minima = []
-
-        def print_fun(x, f, accepted):
-            #bg, mod = self.smlri_calculator(x)
-            # self.plot_solution(bg, mod)
-            self.debug_callback_plot(x)
-            print(f'\txy_contrast: {self._xy_chromaticity_constraint(x)}')
-            print(f'\tluminance_contrast: {self._luminance_constraint(x)}')
-            print(f'\tsilence: {self._silencing_constraint(x)}')
-            if accepted and tollerance is not None:
-                if f < tollerance:  # For now, this is how we define our tollerance
-                    return True
-
-        # TODO: Should probably wrap this and allow for other global minimizers.
-        # Do basinhopping.
-        result = basinhopping(
-            func=self._isolation_objective,
+        result = minimize_ipopt(
+            fun=self.objective_function,
             x0=x0,
-            niter=100,
-            T=1.0,
-            stepsize=0.5,
-            minimizer_kwargs=minimizer_kwargs,
-            take_step=None,
-            accept_test=None,
-            callback=print_fun,
-            interval=50,
-            disp=True,
-            niter_success=None,
-            seed=None,
+            args=(),
+            kwargs=None,
+            method=None,
+            jac=None,
+            hess=None,
+            hessp=None,
+            bounds=bnds,
+            constraints=constraints,
+            tol=1e-6,
+            callback=None,
+            options={b'print_level': 5},
         )
 
         return result
 
-        # Plotting func for call back
+    # Plotting func for call back
     def plot_solution(self, background, modulation, ax=None):
         df = (
             pd.concat([background, modulation], axis=1)
@@ -339,9 +328,9 @@ class SilentSubstitutionSolver(StimulationDevice):
                     y='aopic', hue='Spectrum', ax=ax)
         plt.show()
 
-    def debug_callback_plot(self, x):
+    def debug_callback_plot(self, x0):
         # get aopic
-        bg_ao, mod_ao = self.smlri_calculator(x)
+        bg_ao, mod_ao = self.smlri_calculator(x0)
         df_ao = pd.concat([bg_ao, mod_ao], axis=1).T.melt(
             value_name='aopic',
             var_name='Photoreceptor',
@@ -349,11 +338,19 @@ class SilentSubstitutionSolver(StimulationDevice):
                 columns={'index': 'Spectrum'})
 
         # get spds
-        bg_spd = self.predict_multiprimary_spd(
-            x[:self.nprimaries], name='Background')
-        mod_spd = self.predict_multiprimary_spd(
-            x[self.nprimaries:self.nprimaries * 2], name='Modulation')
+        if self.background is not None:
+            bg_spd = self.predict_multiprimary_spd(
+                self.background, name='Background')
+            mod_spd = self.predict_multiprimary_spd(x0, name='Modulation')
+        else:
+            bg_spd = self.predict_multiprimary_spd(
+                x0[:self.nprimaries], name='Background')
+            mod_spd = self.predict_multiprimary_spd(
+                x0[self.nprimaries:self.nprimaries * 2], name='Modulation')
 
+        # Print contrasts
+        print(f'\t{self.get_photoreceptor_contrasts(x0)}')
+        
         # Print luminance
         print(f'\tBackground luminance: {spd_to_lux(bg_spd)}')
         print(f'\tModulation luminance: {spd_to_lux(mod_spd)}')
@@ -393,3 +390,31 @@ class SilentSubstitutionSolver(StimulationDevice):
         sns.barplot(data=df_ao, x='Photoreceptor',
                     y='aopic', hue='Spectrum', ax=axs[2])
         plt.show()
+
+    def pseudo_inverse_contrast(
+            self, 
+            background: Union[List[int], List[float]], 
+            contrasts: List[float] = [0., 0., 0., 0., 0.]) -> np.array:
+        """Use Moore-Penrose pseudo inverse function to find contrast around
+        a background. Use this as a starting point for further optimisation.
+
+        Parameters
+        ----------
+        background : Union[List[int], List[float]]
+            The background spectrum.
+        contrasts : List[float]
+            Desired contrasts on photoreceptors (['S', 'M', 'L', 'R', 'I']).
+            The default is [0., 0., 0., 0., 0.].
+
+        Returns
+        -------
+        List of float
+            The modulation. Add this to the background for desired contrast. 
+
+        """
+        #breakpoint()
+        spds = self.predict_multiprimary_spd(background, nosum=True)
+        sss = get_CIES026()
+        mat = np.dot(spds.T, sss)
+        pinv_mat = np.linalg.pinv(mat)
+        return np.dot(pinv_mat.T, np.array(contrasts))

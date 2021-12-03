@@ -84,7 +84,7 @@ print(f'Solution LMS: {solution_lms}')
 # In[6]:
     
 #SSS.background = res.x
-result = SSS.solve(target_contrast=.5, tollerance=.1, target_luminance=600.)
+result = SSS.solve(target_contrast=.5, tollerance=.1)
 
 # In[ ]:
 

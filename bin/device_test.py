@@ -78,3 +78,15 @@ from colour.plotting import colour_cycle
 colour_cycle()
 
 device.plot_gamut()
+
+spd = device.predict_multiprimary_spd(res.x)
+
+
+spdres = device.spd_to_settings(spd)
+
+device.weights_to_settings(res.x)
+device.weights_to_settings(spdres.x)
+
+device.predict_multiprimary_spd(res.x).plot(legend=False)
+
+device.predict_multiprimary_spd(spdres.x).plot(legend=False)

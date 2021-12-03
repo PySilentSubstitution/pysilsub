@@ -1,21 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 25 12:41:40 2021
-
-@author: jtm545
-"""
-#%%
-
 import sys
 sys.path.insert(0, '../')
-import random
 
-from colour.plotting import plot_chromaticity_diagram_CIE1931
-import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-from scipy.optimize import minimize
+import nlopt
+from numpy import *
 
 
 from silentsub.silentsub import SilentSubstitutionProblem
@@ -25,7 +14,6 @@ from silentsub.plotting import stim_plot
 sns.set_context('notebook')
 sns.set_style('whitegrid')
 
-#%%
 
 spds = pd.read_csv('../data/S2_corrected_oo_spectra.csv', index_col=['led','intensity'])
 spds.index.rename(['Primary', 'Setting'], inplace=True)
@@ -33,12 +21,10 @@ spds.columns = pd.Int64Index(spds.columns.astype(int))
 spds.columns.name = 'Wavelength'
 
 
-#%%
 # list of colors for the primaries
 colors = ['blueviolet', 'royalblue', 'darkblue', 'blue', 'cyan', 
           'green', 'lime', 'orange', 'red', 'darkred']
 
-#%% Test pseudo inverse
 ss = SilentSubstitutionProblem(
     resolutions=[4095]*10,
     colors=colors,
@@ -46,37 +32,39 @@ ss = SilentSubstitutionProblem(
     spd_binwidth=1,
     isolate=['I'],
     silence=['S', 'M', 'L'],
-    target_contrast=.5
+    target_contrast=1.
     )
 
-bg = [.1 for val in range(10)]
-contrasts = [0.2, 0., 0., 0., 0.]
-mod = ss.pseudo_inverse_contrast(bg, contrasts)
-mod += bg
-ss.predict_multiprimary_spd(mod, 'mod').plot(legend=True); 
-ss.predict_multiprimary_spd(bg, 'notmod').plot(legend=True);
-ss.background=bg
-#%%
+target_xy=[.33, .33]
+target_luminance=600.
 
+bg = ss.find_settings_xyY(target_xy, target_luminance)
+ss.background = bg.x
 
+# Define constraints and local minimizer
 constraints = [{
     'type': 'eq',
     'fun': ss.silencing_constraint
 }]
 
-result = minimize(
-    fun=ss.objective_function,
-    x0=mod,
-    args=(),
-    method='SLSQP',
-    jac=None,
-    hess=None,
-    hessp=None,
-    bounds=ss.bounds,
-    constraints=constraints,
-    tol=1e-08,
-    callback=None,
-    options={'disp': True},
-)
 
-ss.debug_callback_plot(result.x)
+# Set up nlopt
+lb = zeros(10)
+ub = ones(10)
+opt = nlopt.opt(nlopt.LD_SLSQP, 10)
+opt.set_lower_bounds(lb)
+opt.set_upper_bounds(ub)
+opt.set_min_objective(lambda x, *args: ss.objective_function(x))
+opt.add_equality_constraint(lambda x, *args: ss.silencing_constraint(x))
+opt.set_xtol_rel(1e-4)
+x = opt.optimize(ss.initial_guess_x0())
+minf = opt.last_optimum_value()
+print("optimum at ", x[0], x[1])
+print("minimum value = ", minf)
+print("result code = ", opt.last_optimize_result())
+
+
+# Plot result
+# bg, mod = ss.smlri_calculator(result.x)
+# ss.plot_solution(bg, mod)
+# ss.debug_callback_plot(result.x)
