@@ -7,7 +7,7 @@ import nlopt
 from numpy import *
 
 
-from silentsub.silentsub import SilentSubstitutionProblem
+from silentsub.problem import SilentSubstitutionProblem
 from silentsub.colorfunc import LMS_to_xyY, xyY_to_LMS
 from silentsub.plotting import stim_plot
 
@@ -56,7 +56,7 @@ opt.set_lower_bounds(lb)
 opt.set_upper_bounds(ub)
 opt.set_min_objective(lambda x, *args: ss.objective_function(x))
 opt.add_equality_constraint(lambda x, *args: ss.silencing_constraint(x))
-opt.set_xtol_rel(1e-4)
+opt.set_xtol_rel(1e-2)
 x = opt.optimize(ss.initial_guess_x0())
 minf = opt.last_optimum_value()
 print("optimum at ", x[0], x[1])

@@ -43,6 +43,7 @@ def get_CIE_2006_10_deg_CMF(
         The CIE 2006 XYZ 10-deg physiologically relevant CMFs.
 
     """
+    #breakpoint()
     colnames = ['Wavelength', 'X', 'Y', 'Z']
     
     cmf = np.array([
@@ -494,7 +495,7 @@ def get_CIE_2006_10_deg_CMF(
             [[wl, 0.00E+00, 0.00E+00, 0.00E+00] for wl in range(380,390)])
         cmf = np.vstack((prepend, cmf.T))
         cmf = cmf[cmf[:, 0] < 781]
-    cmf = cmf[:, ::binwidth]
+    cmf = cmf.T[:, ::binwidth].T
     if asdf:
         cmf = pd.DataFrame(data=cmf, columns=colnames)
         cmf.set_index('Wavelength', inplace=True)
@@ -952,7 +953,7 @@ def get_CIES026(binwidth: Optional[int] = 1,
         CIES026 spectral sensitivities for s, m, l, rods, and melanopsin.
 
     '''
-    if binwidth not in [1, 5]:
+    if binwidth not in [1, 2, 5]:
         raise ValueError('Must specify 1 or 5 for binwidth')
 
     colnames = ['Wavelength', 'S', 'M', 'L', 'R', 'I']

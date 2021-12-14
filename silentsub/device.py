@@ -51,7 +51,8 @@ class StimulationDevice:
                  resolutions: List[int],
                  colors: List[str],
                  spds: pd.DataFrame,
-                 spd_binwidth: Optional[int] = 1) -> None:
+                 spd_binwidth: Optional[int] = 1,
+                 name: Optional[str] = None) -> None:
         """Instantiate class for multiprimary light stimulation devices.
 
         Parameters
@@ -82,6 +83,9 @@ class StimulationDevice:
         self.colors = colors
         self.spds = spds
         self.spd_binwidth = spd_binwidth
+        self.name = name
+        if self.name is None:
+            self.name = 'Stimulation Device'
 
         # create important data
         self.nprimaries = len(self.resolutions)
@@ -91,8 +95,9 @@ class StimulationDevice:
         
     # Starts properly here
     def _get_gamut(self):
+        #breakpoint()
         max_spds = self.spds.loc[(slice(None), self.resolutions), :]
-        XYZ = max_spds.apply(colorfunc.spd_to_XYZ, axis=1)
+        XYZ = max_spds.apply(colorfunc.spd_to_XYZ, args=(self.spd_binwidth,), axis=1)
         xy = (XYZ[['X', 'Y']].div(XYZ.sum(axis=1), axis=0)
               .rename(columns={'X':'x','Y':'y'}))
         xy = xy.append(xy.iloc[0], ignore_index=True)  # Join the dots
@@ -141,13 +146,13 @@ class StimulationDevice:
                 lw=2, marker='x', markersize=8, label='Gamut')
         ax.set(xlim=(-.15, .9),
                ylim=(-.1, 1),
-               title='Stimulation Device gamut')
+               title=f'{self.name} gamut')
         if ax is None:
             return fig
         else:
             return None
             
-    def plot_spds(self) -> plt.Figure:
+    def plot_spds(self, *args, **kwargs) -> plt.Figure:
         """Plot the spectral power distributions for the stimulation device.
 
         Returns
@@ -156,6 +161,7 @@ class StimulationDevice:
             The plot.
 
         """
+        #breakpoint()
         data = (self.spds.reset_index()
                     .melt(id_vars=['Primary', 'Setting'],
                           value_name='Flux',
@@ -165,9 +171,9 @@ class StimulationDevice:
 
         _ = sns.lineplot(
             x='Wavelength (nm)', y='Flux', data=data, hue='Primary',
-            palette=self.colors, units='Setting', ax=ax, lw=.1, estimator=None
-        )
-        ax.set_title('Stimulation Device SPDs')
+            palette=self.colors, units='Setting', ax=ax, lw=.1, estimator=None,
+        **kwargs)
+        ax.set_title(f'{self.name} SPDs')
         return fig
 
     def calculate_aopic_irradiances(self) -> pd.DataFrame:
@@ -234,7 +240,9 @@ class StimulationDevice:
             setting *= self.resolutions[primary]
         if setting > self.resolutions[primary]:
             raise ValueError(f'Requested setting {int(setting)} exceeds '
-                              'resolution of device primary {primary}')
+                             f'resolution of device primary {primary}')
+        
+        #TODO: fix wavelength thing
         f = interp1d(x=self.spds.loc[primary].index.values,
                      y=self.spds.loc[primary],
                      axis=0, fill_value='extrapolate')
@@ -316,6 +324,7 @@ class StimulationDevice:
             Predicted a-opic irradiances for given device settings.
 
         """
+        #breakpoint()
         spd = self.predict_multiprimary_spd(settings, name=name)
         sss = get_CIES026(binwidth=self.spd_binwidth, fillna=True)
         return spd.dot(sss)

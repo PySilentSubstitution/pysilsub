@@ -15,7 +15,7 @@ import pandas as pd
 from cyipopt import minimize_ipopt
 
 
-from silentsub.silentsub import SilentSubstitutionProblem
+from silentsub.problem import SilentSubstitutionProblem
 from silentsub.colorfunc import LMS_to_xyY, xyY_to_LMS
 from silentsub.plotting import stim_plot
 
@@ -39,36 +39,47 @@ ss = SilentSubstitutionProblem(
     colors=colors,
     spds=spds,
     spd_binwidth=1,
-    isolate=['I'],
-    silence=['S', 'M', 'L'],
-    target_contrast=1.,
-    target_luminance=600.,
-    target_xy=[.33, .33]
+    isolate=['L', 'M'],
+    silence=['S', 'I'],
+    target_contrast=.35
     )
 
-target_xy=[.33, .33]
+target_xy=[0.31271, 0.32902]  # D65
 target_luminance=600.
-
-#bg = ss.find_settings_xyY(target_xy, target_luminance)
-#ss.background = bg.x
+bg = ss.find_settings_xyY(target_xy, target_luminance)
+ss.background = bg.x
 
 # Define constraints and local minimizer
-constraints = [{
+constraints = (
+    {
     'type': 'eq',
     'fun': ss.silencing_constraint
-}]
+    }
+    )
 
-if ss.target_xy is not None:
-    constraints.append({
-        'type': 'eq',
-        'fun': ss.xy_chromaticity_constraint
-    })
+# if ss.target_xy is not None:
+#     constraints.append({
+#         'type': 'eq',
+#         'fun': ss.xy_chromaticity_constraint
+#     })
 
-if ss.target_luminance is not None:
-    constraints.append({
-        'type': 'eq',
-        'fun': ss.luminance_constraint
-    })
+# if ss.target_luminance is not None:
+#     constraints.append({
+#         'type': 'eq',
+#         'fun': ss.luminance_constraint
+#     })
+
+# from scipy.optimize import basinhopping
+# minimizer_kwargs = {
+#     'method': 'SLSQP', 
+#     'bounds': ss.bounds,
+#     'constraints': constraints}
+# basinhopping(    
+#     func=ss.objective_function,
+#     x0=ss.initial_guess_x0(),
+#     minimizer_kwargs=minimizer_kwargs,
+#     disp=True)
+
 
 result = minimize_ipopt(
     fun=ss.objective_function,
@@ -79,11 +90,11 @@ result = minimize_ipopt(
     jac=None,
     hess=None,
     hessp=None,
-    bounds=ss.bounds * 2,
+    bounds=ss.bounds,
     constraints=constraints,
-    tol=1e-4,
+    tol=1e-6,
     callback=None,
-    options={b'print_level': 5, b'constr_viol_tol': 1e-2},
+    options={b'print_level': 5, b'constr_viol_tol': 1e-6},
 )
 
 # Plot solution
@@ -91,4 +102,41 @@ bg, mod = ss.smlri_calculator(result.x)
 ss.plot_solution(bg, mod)
 ss.debug_callback_plot(result.x)
 
+#%% Make modulation
 
+target_contrasts = np.linspace(.35, 0, 20)
+new_bounds = [(min(val), max(val)) for val in zip(ss.background, result.x)]
+
+results = []
+for tc in target_contrasts[1:-1]:
+    print(f'target contrast: {tc}\n')
+    ss.target_contrast = tc
+    r = minimize_ipopt(
+        fun=ss.objective_function,
+        x0=ss.initial_guess_x0(),
+        args=(),
+        kwargs=None,
+        method=None,
+        jac=None,
+        hess=None,
+        hessp=None,
+        bounds=new_bounds,
+        constraints=constraints,
+        tol=1e-6,
+        callback=None,
+        options={b'print_level': 5, b'constr_viol_tol': 1e-6},
+    )
+    results.append(r)
+    
+#%% plot
+
+new = []
+for i in results:
+    ss.debug_callback_plot(i.x)
+    c = ss.get_photoreceptor_contrasts(i.x)[2][0]
+    new.append(c)
+    
+#%%
+bg = np.array([.5] *10)
+mod = np.array([-0.3568, -0.2557, 0.1752, 0.4446, 0.3304, -0.1898, -0.1393, 0.1307, 0.1147, 0.0494])
+mod+bg

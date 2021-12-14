@@ -141,7 +141,7 @@ def LMS_to_xyY(LMS: Triplet) -> np.array:
     return XYZ_to_xyY(XYZ)
 
 
-def spd_to_XYZ(spd: SPD) -> np.array:
+def spd_to_XYZ(spd: SPD, binwidth: int = 1) -> np.array:
     """Convert a spectrum to an XYZ point.
 
     Parameters
@@ -157,7 +157,7 @@ def spd_to_XYZ(spd: SPD) -> np.array:
         Tristimulus values.
 
     """
-    cmf = get_CIE_2006_10_deg_CMF()
+    cmf = get_CIE_2006_10_deg_CMF(binwidth=binwidth)
     return spd.dot(cmf)
 
 

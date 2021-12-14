@@ -18,7 +18,7 @@ import pandas as pd
 from scipy.optimize import minimize
 
 
-from silentsub.silentsub import SilentSubstitutionProblem
+from silentsub.problem import SilentSubstitutionProblem
 from silentsub.colorfunc import LMS_to_xyY, xyY_to_LMS
 from silentsub.plotting import stim_plot
 
@@ -44,13 +44,13 @@ ss = SilentSubstitutionProblem(
     colors=colors,
     spds=spds,
     spd_binwidth=1,
-    isolate=['I'],
-    silence=['S', 'M', 'L'],
+    isolate=['S'],
+    silence=['I', 'M', 'L'],
     target_contrast=.5
     )
 
-bg = [.1 for val in range(10)]
-contrasts = [0.2, 0., 0., 0., 0.]
+bg = [.5 for val in range(10)]
+contrasts = [0.5, 0., 0., 0., 0.]
 mod = ss.pseudo_inverse_contrast(bg, contrasts)
 mod += bg
 ss.predict_multiprimary_spd(mod, 'mod').plot(legend=True); 

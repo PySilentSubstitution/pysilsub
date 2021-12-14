@@ -16,7 +16,7 @@ from scipy.optimize import minimize
 import seaborn as sns
 import pandas as pd
 
-from silentsub.silentsub import SilentSubstitutionSolver
+from silentsub.problem import SilentSubstitutionProblem
 from silentsub.CIE import get_CIES026
 from silentsub import colorfunc
 
@@ -34,7 +34,7 @@ spds
 colors = ['blueviolet', 'royalblue', 'darkblue', 'blue', 'cyan', 
           'green', 'lime', 'orange', 'red', 'darkred']
 
-ss = SilentSubstitutionSolver(
+ss = SilentSubstitutionProblem(
     resolutions=[4095]*10,
     colors=colors,
     spds=spds,
@@ -44,22 +44,23 @@ ss = SilentSubstitutionSolver(
     )
 
 # Define arbitrary background
-bg = ss.predict_multiprimary_spd(
-    [.2 for val in range(10)],
-    'background',
-    nosum=True)
+bg_settings = [.2 for val in range(10)]
+
+bg = ss.predict_multiprimary_spd(bg_settings, 'background', nosum=True)
 
 sss = get_CIES026()
 mat = bg.T.dot(sss)
 
 pinv_mat = np.linalg.pinv(mat)
 
-mod = np.dot(pinv_mat.T, np.array([0, 0, 0, 0, .4]))
+mod = np.dot(pinv_mat.T, np.array([0, 0, 0, 0, .1]))
 
 ss.predict_multiprimary_spd(
-    [.2 for val in range(10)] + (.4*mod), 'mod').plot(legend=True); 
+    [.2 for val in range(10)] + mod, 'mod').plot(legend=True); 
 
 ss.predict_multiprimary_spd(
     [.2 for val in range(10)], 'notmod').plot(legend=True);
 
-# find scalaer 
+x0 = np.hstack([np.array(bg_settings), mod+bg_settings])
+
+ss.debug_callback_plot(x0)
