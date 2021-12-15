@@ -1,0 +1,10 @@
+Introduction
+============
+
+Silent substitution is an elegant technique that uses pairs of lights to selectively stimulate inidividual classes of retinal photoreceptor whilst maintaining a constant level of activation in others. Given a multiprimary stimulation device whose output is well-characterised, we need to find the settings to produce light stimuli that satisfy the spectral requirements and constraints.
+
+.. image:: ../../img/eye_retina.png
+  :alt: Eye, retina and photoreceptors.
+
+  
+
