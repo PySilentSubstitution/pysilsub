@@ -6,6 +6,8 @@
 Welcome to PySilentSubstitution's documentation!
 ================================================
 
+This is a work in progress...
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

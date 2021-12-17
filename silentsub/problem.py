@@ -211,7 +211,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         isolate = (mod_smlri[self.isolate]
                     .sub(bg_smlri[self.isolate])
                     .div(bg_smlri[self.isolate])).values
-        return (ignore, silence, isolate,)
+        return (ignore, silence, isolate)
         
         
     # Bundle objectives / constraints in a separate class and inherit?
@@ -394,7 +394,7 @@ class SilentSubstitutionProblem(StimulationDevice):
     def pseudo_inverse_contrast(
             self, 
             background: Union[List[int], List[float]], 
-            contrasts: List[float] = [0., 0., 0., 0., 0.]) -> np.array:
+            contrasts: List[float] = [0., 0., 0., 0.]) -> np.array:
         """Use Moore-Penrose pseudo inverse function to find contrast around
         a background. Use this as a starting point for further optimisation.
 
@@ -413,10 +413,11 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         """
         #breakpoint()
-        contrasts = np.array(contrasts).reshape(1,5)[0]
+        contrasts = np.array(contrasts).reshape(1, 4)[0]
         spds = self.predict_multiprimary_spd(background, nosum=True)
         #spds.div(spds.max().max()).plot()
         sss = get_CIES026(binwidth=self.spd_binwidth)
+        sss = sss[['S','M','L','I']]
         p2s_mat = sss.T.dot(spds)
         pinv_mat = np.linalg.pinv(p2s_mat)
         #r = np.linalg.lstsq(p2s_mat, contrasts)

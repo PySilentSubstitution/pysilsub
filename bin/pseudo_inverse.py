@@ -20,15 +20,36 @@ from silentsub.problem import SilentSubstitutionProblem
 from silentsub.CIE import get_CIES026
 from silentsub import colorfunc
 
-sns.set_context('notebook')
-sns.set_style('whitegrid')
+# Functions for waveform
+def get_time_vector(duration):
+    t = np.arange(0, (duration*1000), 10).astype("int")
+    return t
 
+
+def sinusoid_modulation(f, duration, Fs=50):
+    x = np.arange(duration*Fs)
+    sm = np.sin(2 * np.pi * f * x / Fs)
+    return sm
+
+
+def modulate_intensity_amplitude(sm, background, amplitude):
+    ivals = (background + (sm*amplitude)).astype("int")
+    return ivals
+
+# Target contrast vals for modulation
+contrast_waveform = sinusoid_modulation(1, 1, 50)*1.5
+plt.plot(contrast_waveform)
+peak = np.argmax(contrast_waveform)
+trough = np.argmin(contrast_waveform)
+target_contrasts = contrast_waveform[peak:trough+1]
+plt.plot(target_contrasts)
+
+# Set up calibration data
 spds = pd.read_csv('../data/S2_corrected_oo_spectra.csv', index_col=['led', 'intensity'])
 spds.index.rename(['Primary', 'Setting'], inplace=True)
 spds.columns = pd.Int64Index(spds.columns.astype(int))
 spds.columns.name = 'Wavelength'
 spds = spds.sort_index()
-spds
 
 # list of colors for the primaries
 colors = ['blueviolet', 'royalblue', 'darkblue', 'blue', 'cyan', 
@@ -39,28 +60,65 @@ ss = SilentSubstitutionProblem(
     colors=colors,
     spds=spds,
     spd_binwidth=1,
-    isolate=['I'],
-    silence=['S', 'M', 'L'],
+    isolate=['S'],
+    silence=['M', 'L', 'I'],
     )
 
-# Define arbitrary background
-bg_settings = [.2 for val in range(10)]
+# Background is all channels at half power
+bg_settings = np.array([.5]*10)
+ss.background = bg_settings
 
-bg = ss.predict_multiprimary_spd(bg_settings, 'background', nosum=True)
+contrast_mods = [ss.pseudo_inverse_contrast(bg_settings, [tc, 0, 0, 0]) for tc in target_contrasts]
 
-sss = get_CIES026()
-mat = bg.T.dot(sss)
+plt.figure()
+plt.plot(ss.predict_multiprimary_spd(bg_settings+contrast_mods[0]), lw=1, label='+ve')
+plt.plot(ss.predict_multiprimary_spd(bg_settings), lw=1, label='background')
+plt.plot(ss.predict_multiprimary_spd(bg_settings+contrast_mods[-1]), lw=1, label='-ve')
+plt.legend()
 
-pinv_mat = np.linalg.pinv(mat)
+# # plot peak and trough
+# ss.debug_callback_plot(ss.background+contrast_mods[0])
+# ss.debug_callback_plot(ss.background+contrast_mods[-1])
 
-mod = np.dot(pinv_mat.T, np.array([0, 0, 0, 0, .1]))
 
-ss.predict_multiprimary_spd(
-    [.2 for val in range(10)] + mod, 'mod').plot(legend=True); 
+# Plot contrast modulations
+palette = sns.diverging_palette(220, 20, n=len(contrast_mods), l=65, as_cmap=False)
+bg_spd = ss.predict_multiprimary_spd(ss.background)
+for i, s in enumerate(contrast_mods):
+    mod_spd = ss.predict_multiprimary_spd(ss.background + s) 
+    plt.plot(mod_spd-bg_spd, c=palette[i], lw=1)
+    
+plt.xlabel('Wavelength (nm)')
+plt.ylabel('S-cone contrast (%)');
 
-ss.predict_multiprimary_spd(
-    [.2 for val in range(10)], 'notmod').plot(legend=True);
 
-x0 = np.hstack([np.array(bg_settings), mod+bg_settings])
+#%% Iterate to account for error
+#contrasts = [1.5, -0.09, -0.09, -0.048]
+contrasts = [1.5, 0., 0., 0.]
+contrasts = np.array(contrasts).reshape(1, 4)[0]
+sss = get_CIES026(binwidth=ss.spd_binwidth)
+sss = sss[['S','M','L','I']]
+settings = ss.background
 
-ss.debug_callback_plot(x0)
+for i in range(1):
+    spds = ss.predict_multiprimary_spd(settings, nosum=True)
+    p2s_mat = sss.T.dot(spds)
+    pinv_mat = np.linalg.pinv(p2s_mat)
+    solution = ss.background + pinv_mat.dot(contrasts)
+    ss.debug_callback_plot(solution)
+    settings = solution
+
+#%% minimize?
+from scipy.optimize import minimize
+
+constraints = ({'fun': ss.silencing_constraint,
+               'type': 'eq'})
+
+for cm, tc in target_contrasts:
+    ss.target_contrast = 2.11
+    res = minimize(
+        fun=ss.objective_function,
+        x0 = solution,
+        bounds=ss.bounds,
+        constraints=constraints,
+        options={'disp':True})

@@ -424,7 +424,15 @@ class StimulationDevice:
                 result.x, 
                 name=f'solution_xyY:\n{solution_xyY.round(3)}').plot(
                     ax=axs[0],
-                    legend=True)
+                    legend=True,
+                    c='k')
+            self.predict_multiprimary_spd(
+                result.x, 
+                name=f'solution_xyY:\n{solution_xyY.round(3)}',
+                nosum=True).plot(
+                    ax=axs[0],
+                    color=self.colors,
+                    legend=False)
             axs[1].scatter(
                 x=requested_xyY[0], 
                 y=requested_xyY[1],
