@@ -1,0 +1,20 @@
+cff-version: 0.0.1
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Martin"
+  given-names: "Joel, T."
+  orcid: "https://orcid.org/0000-0002-4475-3835"
+- family-names: "Spitschan"
+  given-names: "Manuel"
+  orcid: "https://orcid.org/0000-0002-8572-9268"
+- family-names: "Baker"
+  given-names: "Daniel, H."
+  orcid: "https://orcid.org/0000-0002-0161-443X"
+- family-names: "Wade"
+  given-names: "Alex"
+  orcid: "https://orcid.org/0000-0003-0656-2664"
+title: "silentsub"
+version: 0.0.1
+doi: 10.5281/zenodo.1234
+date-released: 2022-01-07
+url: "https://github.com/PySilentSubstitution/silentsub"
