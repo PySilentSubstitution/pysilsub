@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'PySilentSubstitution'
+project = 'PySilSub'
 copyright = '2021, Joel T. Martin'
 author = 'Joel T. Martin'
 
@@ -30,7 +30,7 @@ release = '0.0.1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
+extensions = ["nbsphinx", "sphinxcontrib.napoleon"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -51,11 +51,13 @@ html_theme = 'alabaster'
 html_logo = '../../logo/photoreceptor_characters.png'
 html_theme_options = {
     'github_user': 'PySilentSubstitution',
-    'github_repo': 'silent-sub'}
+    'github_repo': 'silentsub',
+    'description': 'A Python software for performing the method of silent substitution.'
+}
 #    ,
 #    'extra_nav_links': {'PyPi': 'https://pypi.org/project/pyplr/', 
 #    'bioRxiv preprint':'https://www.biorxiv.org/content/10.1101/2021.06.02.446731v1'},
-#    'description': 'A Python software for researching the pupillary light reflex.'
+#    
 #}
 
 # Add any paths that contain custom static files (such as style sheets) here,

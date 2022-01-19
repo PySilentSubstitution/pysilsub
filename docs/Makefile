@@ -6,9 +6,9 @@
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = source
-BUILDDIR      = ../../PySilentSubstitution-sphinx-docs
-PDFBUILDDIR   = tmp/
-PDF           = ../manuel.pdf
+BUILDDIR      = ../../PySilSub-sphinx-docs
+PDFBUILDDIR   = /tmp
+PDF           = ../manual.pdf
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -18,12 +18,9 @@ help:
 
 latexpdf:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(PDFBUILDDIR)/latex
-	#                                          ^^^
 	@echo "Running LaTeX files through pdflatex..."
 	make -C $(PDFBUILDDIR)/latex all-pdf
-	#         ^^^
 	cp $(PDFBUILDDIR)/latex/*.pdf $(PDF)
-	#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	@echo "pdflatex finished; see $(PDF)"
     
 # Catch-all target: route all unknown targets to Sphinx using the new

@@ -108,17 +108,32 @@ for i in range(1):
     ss.debug_callback_plot(solution)
     settings = solution
 
-#%% minimize?
+#%% minimize to complete silencing?
 from scipy.optimize import minimize
 
 constraints = ({'fun': ss.silencing_constraint,
                'type': 'eq'})
 
-for cm, tc in target_contrasts:
-    ss.target_contrast = 2.11
+new_res = []
+for s, tc in zip(ss.background + contrast_mods, target_contrasts):
+    ss.target_contrast = tc
     res = minimize(
         fun=ss.objective_function,
-        x0 = solution,
+        x0 = s,
         bounds=ss.bounds,
         constraints=constraints,
-        options={'disp':True})
+        options={'disp':True,
+                 'maxiter':500})
+    new_res.append(res)
+    
+    
+temp = [val.x for val in new_res]
+temp = [v-ss.background for v in temp]
+palette = sns.diverging_palette(220, 20, n=len(temp), l=65, as_cmap=False)
+bg_spd = ss.predict_multiprimary_spd(ss.background)
+for i, s in enumerate(temp):
+    mod_spd = ss.predict_multiprimary_spd(ss.background + s) 
+    plt.plot(mod_spd-bg_spd, c=palette[i], lw=1)
+    
+plt.xlabel('Wavelength (nm)')
+plt.ylabel('S-cone contrast (%)');
