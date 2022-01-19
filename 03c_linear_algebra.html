@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>&lt;no title&gt; &#8212; PySilSub 0.0.1 documentation</title>
+    <title>Linear algebra &#8212; PySilSub 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -14,10 +14,12 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Background" href="01_background.html" />
-    <link rel="prev" title="Welcome to PySilSub’s documentation!" href="index.html" />
+    <link rel="next" title="Numerical optimization" href="03d_numerical_optimization.html" />
+    <link rel="prev" title="Stimulus problems" href="03b_stimulus_problems.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -34,7 +36,15 @@
 
           <div class="body" role="main">
             
-  
+  <section id="Linear-algebra">
+<h1>Linear algebra<a class="headerlink" href="#Linear-algebra" title="Permalink to this headline">¶</a></h1>
+<p>Information on how to solve silent substitution problems with linear algebra. For example…</p>
+<p><span class="math notranslate nohighlight">\(A=\begin{bmatrix}1 &amp; 2 &amp; 3\\ a &amp; b &amp; c\end{bmatrix}=\)</span></p>
+<p><span class="math notranslate nohighlight">\(PC_{d}=\begin{bmatrix}L\\ M\\ S\\ R\\ \end{bmatrix}=B\times\begin{bmatrix}RCd\\ GCd\\ BCd\\ ACd\\ \end{bmatrix}PCd=\begin{bmatrix}0\\ 0\\ 0\\ 0.25\\ \end{bmatrix}\)</span></p>
+<p>Maguire, J., Parry, N. R. A., Kremers, J., Kommanapalli, D., Murray, I. J., &amp; McKeefry, D. J. (2016). Rod electroretinograms elicited by silent substitution stimuli from the light-adapted human eye. Translational Vision Science and Technology, 5(4). <a class="reference external" href="https://doi.org/10.1167/tvst.5.4.13">https://doi.org/10.1167/tvst.5.4.13</a></p>
+<p>More info coming soon.</p>
+</section>
+
 
           </div>
           
@@ -65,10 +75,16 @@
 
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="03_overview.html">Overview</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="03a_stimulation_devices.html">Stimulation devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03b_stimulus_problems.html">Stimulus problems</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Linear algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03d_numerical_optimization.html">Numerical optimization</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
@@ -78,8 +94,10 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to <em>PySilSub</em>’s documentation!</a></li>
-      <li>Next: <a href="01_background.html" title="next chapter">Background</a></li>
+  <li><a href="03_overview.html">Overview</a><ul>
+      <li>Previous: <a href="03b_stimulus_problems.html" title="previous chapter">Stimulus problems</a></li>
+      <li>Next: <a href="03d_numerical_optimization.html" title="next chapter">Numerical optimization</a></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>
@@ -113,7 +131,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/00_includeme.rst.txt"
+      <a href="_sources/03c_linear_algebra.ipynb.txt"
           rel="nofollow">Page source</a>
     </div>
 
