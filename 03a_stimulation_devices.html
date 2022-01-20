@@ -287,21 +287,24 @@ div.rendered_html tbody tr:hover {
 <section id="Stimulation-devices">
 <h1>Stimulation devices<a class="headerlink" href="#Stimulation-devices" title="Permalink to this headline">¶</a></h1>
 <p>To stimulate one class of retinal photoreceptor without changing the activation in others—which is to perform the method of silent substitution—requires a multiprimary stimulation device with at least as many primaries as there are photoreceptors on the retina. This generally means that <a class="reference internal" href="01_background.html"><span class="doc">5 primaries are needed</span></a>, although 4 primaries may suffice when working in the photopic range as rod photoreceptors become saturated and incapable of signalling above 300 cd/m<span class="math notranslate nohighlight">\(^2\)</span>
-(<a class="reference external" href="https://doi.org/10.1080/713818657">Aguiller and Stiles, 1954</a>; but see <a class="reference external" href="https://iovs.arvojournals.org/article.aspx?articleid=2200107">Shapiro, 2002</a>; <a class="reference external" href="https://doi.org/10.1007/s10633-008-9159-0">Kremers et al., 2009</a>). The primaries should be independantly addressable, additive, narrowband, and ideally stable over time with a linear gamma function. The light source should also be integrated into an optical system for stimulus delivery, which is usually a full field ganzfeld stimulator
-(e.g., <a class="reference external" href="https://doi.org/10.3758/s13428-021-01759-3">Martin et al., 2021</a>) or a maxwellian setup (e.g., <a class="reference external" href="https://doi.org/10.1167/15.1.27">Cao et al., 2015</a>).</p>
-<p><a class="reference external" href="https://doi.org/10.3390/photonics7040121">Conus and Geiser (2020)</a> reviewed the stimulation devices from a range of silent substitution studies and found that in most cases the device had 4 or 5 primaries and was built from scratch using LEDs, optical bench components, and microprocessors, such as Arduino, for pulse width modulation control of brightness. Regardless of the device that is used, an external calibration with a spectrometer is necessary, and that is where <em>PySilSub</em> becomes
+(<a class="reference external" href="https://doi.org/10.1080/713818657">Aguiller and Stiles, 1954</a>; but see <a class="reference external" href="https://iovs.arvojournals.org/article.aspx?articleid=2200107">Shapiro, 2002</a>; <a class="reference external" href="https://doi.org/10.1007/s10633-008-9159-0">Kremers et al., 2009</a>). The primaries should be independantly addressable, additive, narrowband, and ideally stable over time with a linear gamma function. The light source will also needed to be integrated into an optical system for stimulus delivery, which is usually a full field ganzfeld
+stimulator (e.g., <a class="reference external" href="https://doi.org/10.3758/s13428-021-01759-3">Martin et al., 2021</a>) or a maxwellian setup (e.g., <a class="reference external" href="https://doi.org/10.1167/15.1.27">Cao et al., 2015</a>).</p>
+<p><a class="reference external" href="https://doi.org/10.3390/photonics7040121">Conus and Geiser (2020)</a> reviewed the stimulation devices from a range of silent substitution studies and found that in most cases the device had 4 or 5 primaries and was built from scratch using LEDs, optical bench components and microprocessors, such as Arduino, for pulse width modulation control of intensity. Regardless of the device that is used, an external calibration with a spectrometer is necessary, and that is where <em>PySilSub</em> becomes
 useful.</p>
 <section id="pysilsub.device.StimulationDevice">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.device.StimulationDevice</span></code><a class="headerlink" href="#pysilsub.device.StimulationDevice" title="Permalink to this headline">¶</a></h2>
-<p><em>PySilSub</em> has a <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> class which provides generic support for multiprimary devices integrated into an optical stimulation setup. The starting point is a calibration file with spectral measurements</p>
+<p><em>PySilSub</em> has a <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> class which offers generic support for multiprimary stimulation devices. A calibration file with spectral measurements is all that is required to get going. The following example is for a linear 4-primary device with 8-bit resolution depth, which is to say that the intensity of each LED is set with a number between 0 and 255. The full range of intensities was sampled in steps of 8, so there are 33 measurements for each LED. The first row of the calibration
+file contains the wavelength and a column to identify the primary and setting in question. We can load the CSV file with pandas.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../data/RGBA_linear_artificial.csv&#39;</span><span class="p">,</span>
-                   <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Primary&#39;</span><span class="p">,</span> <span class="s1">&#39;Setting&#39;</span><span class="p">])</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s1">&#39;../../data/RGBA_linear_artificial.csv&#39;</span><span class="p">,</span>
+    <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Primary&#39;</span><span class="p">,</span> <span class="s1">&#39;Setting&#39;</span><span class="p">]</span>
+<span class="p">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Wavelength&#39;</span>
 <span class="n">data</span>
@@ -653,11 +656,15 @@ useful.</p>
 <p>132 rows × 401 columns</p>
 </div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<p>Now we can pass the data to <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> along with some further information.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">silentsub.device</span> <span class="kn">import</span> <span class="n">StimulationDevice</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">pysilsub.device</span> <span class="kn">import</span> <span class="n">StimulationDevice</span>
 
 <span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="p">(</span>
     <span class="n">resolutions</span><span class="o">=</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span>
@@ -666,8 +673,17 @@ useful.</p>
     <span class="n">spd_binwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RGBA (8-bit, linear)&#39;</span>
 <span class="p">)</span>
-
-<span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_spds</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Plot-SPDs-from-calibration-file">
+<h2>Plot SPDs from calibration file<a class="headerlink" href="#Plot-SPDs-from-calibration-file" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spd_fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_spds</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -675,11 +691,143 @@ useful.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/03a_stimulation_devices_3_0.png" src="_images/03a_stimulation_devices_3_0.png" />
+<img alt="_images/03a_stimulation_devices_6_0.png" src="_images/03a_stimulation_devices_6_0.png" />
 </div>
 </div>
+</section>
+<section id="Plot-gamut-of-the-device">
+<h2>Plot gamut of the device<a class="headerlink" href="#Plot-gamut-of-the-device" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gamut_fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_gamut</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03a_stimulation_devices_8_0.png" src="_images/03a_stimulation_devices_8_0.png" />
+</div>
+</div>
+</section>
+<section id="Predict-output-for-a-specific-primary-at-a-given-setting">
+<h2>Predict output for a specific primary at a given setting<a class="headerlink" href="#Predict-output-for-a-specific-primary-at-a-given-setting" title="Permalink to this headline">¶</a></h2>
+<p>Uses interpolation function. This is the engine of all predicitons.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">primary_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_primary_spd</span><span class="p">(</span>
+    <span class="n">primary</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">setting</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Primary 3 (half power)&#39;</span>
+<span class="p">)</span>
+<span class="c1"># plot primary spd?</span>
+<span class="n">primary_spd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$/nm&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03a_stimulation_devices_10_0.png" src="_images/03a_stimulation_devices_10_0.png" />
+</div>
+</div>
+</section>
+<section id="Predict-multiprimary-output">
+<h2>Predict multiprimary output<a class="headerlink" href="#Predict-multiprimary-output" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">half_max</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span> <span class="c1">#  We could also say [128, 128, 128, 128]</span>
+<span class="n">device_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">half_max</span><span class="p">,</span> <span class="s1">&#39;Random SPD&#39;</span><span class="p">)</span>
+<span class="n">device_spd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$/nm&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Predicted output for device settings: </span><span class="si">{</span><span class="n">half_max</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">device_spd</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Predicted output for device settings: [0.5, 0.5, 0.5, 0.5]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Wavelength
+380    0.005528
+381    0.006206
+382    0.005771
+383    0.006024
+384    0.004957
+         ...
+776    0.004927
+777    0.004805
+778    0.004182
+779    0.004609
+780    0.005069
+Name: Random SPD, Length: 401, dtype: float64
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03a_stimulation_devices_12_2.png" src="_images/03a_stimulation_devices_12_2.png" />
+</div>
+</div>
+</section>
+<section id="Predict-a-opic-irradiances-for-a-list-of-device-settings-and-plot-with-nice-colours">
+<h2>Predict <em>a</em>-opic irradiances for a list of device settings and plot with nice colours<a class="headerlink" href="#Predict-a-opic-irradiances-for-a-list-of-device-settings-and-plot-with-nice-colours" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device_ao</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_aopic</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+<span class="n">ao_colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">aopic_colors</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="n">device_ao</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ao_colors</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$&#39;</span><span class="p">)</span>
+<span class="n">device_ao</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+S     1.822494
+M     8.617252
+L    11.326228
+R     6.975350
+I     5.790513
+Name: 0, dtype: float64
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03a_stimulation_devices_14_1.png" src="_images/03a_stimulation_devices_14_1.png" />
+</div>
+</div>
+</section>
+<section id="Find-a-spectrum-based-on-xy-chromaticity-coordinates-and-luminance">
+<h2>Find a spectrum based on xy chromaticity coordinates and luminance<a class="headerlink" href="#Find-a-spectrum-based-on-xy-chromaticity-coordinates-and-luminance" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">target_xy</span><span class="o">=</span><span class="p">[</span><span class="mf">0.31271</span><span class="p">,</span> <span class="mf">0.32902</span><span class="p">]</span>  <span class="c1"># D65</span>
@@ -693,89 +841,19 @@ useful.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-basinhopping step 0: f 7.95618e-11
-basinhopping step 1: f 6.40024e-08 trial_f 6.40024e-08 accepted 1  lowest_f 7.95618e-11
+basinhopping step 0: f 4.61953e-07
+basinhopping step 1: f 1.54193e-07 trial_f 1.54193e-07 accepted 1  lowest_f 1.54193e-07
+found new global minimum on step 1 with function value 1.54193e-07
 Requested LMS: [ 0.87374046  0.78105394  0.44556496]
-Solution LMS: [ 0.87374198  0.78105108  0.44557328]
+Solution LMS: [ 0.87390469  0.78089385  0.4458837 ]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/03a_stimulation_devices_4_1.png" src="_images/03a_stimulation_devices_4_1.png" />
+<img alt="_images/03a_stimulation_devices_16_1.png" src="_images/03a_stimulation_devices_16_1.png" />
 </div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">silentsub.problem</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span>
-
-<span class="n">ss</span> <span class="o">=</span> <span class="n">SilentSubstitutionProblem</span><span class="p">(</span>
-    <span class="n">resolutions</span><span class="o">=</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">],</span>
-    <span class="n">spds</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-    <span class="n">spd_binwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">isolate</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span>
-    <span class="n">silence</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">plot_spds</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/03a_stimulation_devices_5_0.png" src="_images/03a_stimulation_devices_5_0.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ss</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
-<span class="n">solution</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">pseudo_inverse_contrast</span><span class="p">(</span><span class="n">ss</span><span class="o">.</span><span class="n">background</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">.15</span><span class="p">])</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">debug_callback_plot</span><span class="p">(</span><span class="n">ss</span><span class="o">.</span><span class="n">background</span> <span class="o">+</span> <span class="n">solution</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-        {&#39;ignore&#39;: array([ 0.04204338]), &#39;silence&#39;: array([  1.17195941e-13,  -3.54556904e-14,  -1.22794788e-13]), &#39;isolate&#39;: array([ 0.04339031])}
-        Background luminance: 8606.517702611187
-        Modulation luminance: 8606.49680924542
-        Background xy: [ 0.42657932  0.38791074]
-        Modulation xy: [ 0.42657343  0.38791507]
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/03a_stimulation_devices_6_1.png" src="_images/03a_stimulation_devices_6_1.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ss</span><span class="o">.</span><span class="n">background</span><span class="o">+</span><span class="n">solution</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([ 0.59217207,  0.38386115,  0.57859024,  0.0023667 ])
-</pre></div></div>
 </div>
 </section>
 <section id="References">
@@ -820,7 +898,7 @@ array([ 0.59217207,  0.38386115,  0.57859024,  0.0023667 ])
 
 
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=PySilentSubstitution&repo=silentsub&type=watch&count=true&size=large&v=2"
+<iframe src="https://ghbtns.com/github-btn.html?user=PySilentSubstitution&repo=pysilsub&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
 
