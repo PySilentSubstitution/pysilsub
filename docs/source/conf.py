@@ -51,7 +51,7 @@ html_theme = 'alabaster'
 html_logo = '../../logo/photoreceptor_characters.png'
 html_theme_options = {
     'github_user': 'PySilentSubstitution',
-    'github_repo': 'silentsub',
+    'github_repo': 'pysilsub',
     'description': 'A Python software for performing the method of silent substitution.'
 }
 #    ,

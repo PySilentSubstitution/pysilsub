@@ -13,13 +13,13 @@ The latest development version can also be installed from GitHub with *pip*:
 
 .. code-block:: bash
 
-    $ pip install git+https://github.com/PySilentSubstitution/silentsub.git
+    $ pip install git+https://github.com/PySilentSubstitution/pysilsub.git
 
 Alternatively, you can clone from from git and install with `setuptools <https://setuptools.readthedocs.io/en/latest/index.html>`_:
 
 .. code-block:: bash
 
-    $ git clone https://github.com/PySilentSubstitution/silentsub.git pysilsub
+    $ git clone https://github.com/PySilentSubstitution/pysilsub.git pysilsub
     $ cd pysilsub
     $ python setup.py install
 

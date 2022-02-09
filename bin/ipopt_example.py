@@ -15,9 +15,9 @@ import pandas as pd
 from cyipopt import minimize_ipopt
 
 
-from silentsub.problem import SilentSubstitutionProblem
-from silentsub.colorfunc import LMS_to_xyY, xyY_to_LMS
-from silentsub.plotting import stim_plot
+from pysilsub.problem import SilentSubstitutionProblem
+from pysilsub.colorfunc import LMS_to_xyY, xyY_to_LMS
+from pysilsub.plotting import stim_plot
 
 sns.set_context('notebook')
 sns.set_style('whitegrid')
@@ -39,9 +39,9 @@ ss = SilentSubstitutionProblem(
     colors=colors,
     spds=spds,
     spd_binwidth=1,
-    isolate=['L', 'M'],
-    silence=['S', 'I'],
-    target_contrast=.35
+    isolate=['I'],
+    silence=['S', 'L','M'],
+    target_contrast=.5
     )
 
 target_xy=[0.31271, 0.32902]  # D65
@@ -92,51 +92,51 @@ result = minimize_ipopt(
     hessp=None,
     bounds=ss.bounds,
     constraints=constraints,
-    tol=1e-6,
+    tol=1e-5,
     callback=None,
-    options={b'print_level': 5, b'constr_viol_tol': 1e-6},
+    options={b'print_level': 5, b'constr_viol_tol': 1e-5},
 )
 
 # Plot solution
 bg, mod = ss.smlri_calculator(result.x)
 ss.plot_solution(bg, mod)
-ss.debug_callback_plot(result.x)
+fig = ss.debug_callback_plot(result.x)
 
 #%% Make modulation
 
-target_contrasts = np.linspace(.35, 0, 20)
-new_bounds = [(min(val), max(val)) for val in zip(ss.background, result.x)]
+# target_contrasts = np.linspace(.35, 0, 20)
+# new_bounds = [(min(val), max(val)) for val in zip(ss.background, result.x)]
 
-results = []
-for tc in target_contrasts[1:-1]:
-    print(f'target contrast: {tc}\n')
-    ss.target_contrast = tc
-    r = minimize_ipopt(
-        fun=ss.objective_function,
-        x0=ss.initial_guess_x0(),
-        args=(),
-        kwargs=None,
-        method=None,
-        jac=None,
-        hess=None,
-        hessp=None,
-        bounds=new_bounds,
-        constraints=constraints,
-        tol=1e-6,
-        callback=None,
-        options={b'print_level': 5, b'constr_viol_tol': 1e-6},
-    )
-    results.append(r)
+# results = []
+# for tc in target_contrasts[1:-1]:
+#     print(f'target contrast: {tc}\n')
+#     ss.target_contrast = tc
+#     r = minimize_ipopt(
+#         fun=ss.objective_function,
+#         x0=ss.initial_guess_x0(),
+#         args=(),
+#         kwargs=None,
+#         method=None,
+#         jac=None,
+#         hess=None,
+#         hessp=None,
+#         bounds=new_bounds,
+#         constraints=constraints,
+#         tol=1e-6,
+#         callback=None,
+#         options={b'print_level': 5, b'constr_viol_tol': 1e-6},
+#     )
+#     results.append(r)
     
-#%% plot
+# #%% plot
 
-new = []
-for i in results:
-    ss.debug_callback_plot(i.x)
-    c = ss.get_photoreceptor_contrasts(i.x)[2][0]
-    new.append(c)
+# new = []
+# for i in results:
+#     ss.debug_callback_plot(i.x)
+#     c = ss.get_photoreceptor_contrasts(i.x)[2][0]
+#     new.append(c)
     
-#%%
-bg = np.array([.5] *10)
-mod = np.array([-0.3568, -0.2557, 0.1752, 0.4446, 0.3304, -0.1898, -0.1393, 0.1307, 0.1147, 0.0494])
-mod+bg
+# #%%
+# bg = np.array([.5] *10)
+# mod = np.array([-0.3568, -0.2557, 0.1752, 0.4446, 0.3304, -0.1898, -0.1393, 0.1307, 0.1147, 0.0494])
+# mod+bg

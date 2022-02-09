@@ -21,11 +21,11 @@ import pandas as pd
 import numpy as np
 from colour.plotting import plot_chromaticity_diagram_CIE1931
 
-from silentsub.CIE import (get_CIES026,
+from pysilsub.CIE import (get_CIES026,
                            get_CIE_1924_photopic_vl,
                            get_CIE170_2_chromaticity_coordinates)
-from silentsub import colorfunc
-from silentsub.plotting import stim_plot
+from pysilsub import colorfunc
+from pysilsub.plotting import stim_plot
 
 Settings = Union[List[int], List[float]]
 
@@ -95,9 +95,10 @@ class StimulationDevice:
         
     # Starts properly here
     def _get_gamut(self):
-        #breakpoint()
+        breakpoint()
         max_spds = self.spds.loc[(slice(None), self.resolutions), :]
-        XYZ = max_spds.apply(colorfunc.spd_to_XYZ, args=(self.spd_binwidth,), axis=1)
+        XYZ = max_spds.apply(
+            colorfunc.spd_to_XYZ, args=(self.spd_binwidth,), axis=1)
         xy = (XYZ[['X', 'Y']].div(XYZ.sum(axis=1), axis=0)
               .rename(columns={'X':'x','Y':'y'}))
         xy = xy.append(xy.iloc[0], ignore_index=True)  # Join the dots
@@ -610,3 +611,20 @@ class StimulationDevice:
             seed=None,
         )        
         return res
+
+    def plot_multiprimary_spd(            
+            self,
+            settings: Union[List[int], List[float]],
+            name: Union[int, str] = 0,
+            show_primaries: Optional[bool] = False,
+            **kwargs) -> plt.Figure:
+        
+        spd = self.predict_multiprimary_spd(settings, name)
+        ax = spd.plot(c='k', label='SPD')
+        
+        if show_primaries:
+            primaries = self.predict_multiprimary_spd(settings, nosum=True)
+            primaries.plot(ax=ax, **{'color': self.colors, 'legend': False})
+            ax.legend(title='Primary')
+        
+        return ax

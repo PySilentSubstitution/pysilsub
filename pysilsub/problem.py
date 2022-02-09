@@ -52,14 +52,14 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from cyipopt import minimize_ipopt
 
-from silentsub.device import StimulationDevice
-from silentsub.colorfunc import (xyY_to_LMS,
+from pysilsub.device import StimulationDevice
+from pysilsub.colorfunc import (xyY_to_LMS,
                                  spd_to_lux,
                                  LMS_to_xyY,
                                  spd_to_xyY,
                                  LUX_FACTOR)
-from silentsub.plotting import stim_plot
-from silentsub.CIE import get_CIES026
+from pysilsub.plotting import stim_plot
+from pysilsub.CIE import get_CIES026
 
 
 class SilentSubstitutionProblem(StimulationDevice):
@@ -75,6 +75,7 @@ class SilentSubstitutionProblem(StimulationDevice):
                  colors: List[str],
                  spds: pd.DataFrame,
                  spd_binwidth: int = 1,
+                 name: Optional[str] = None,
                  ignore: List[str] = ['R'],
                  silence: List[str] = ['S', 'M', 'L'],
                  isolate: List[str] = ['I'],
@@ -122,26 +123,39 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         """
         # Instance attributes
-        super().__init__(resolutions, colors, spds, spd_binwidth)
+        super().__init__(resolutions, colors, spds, spd_binwidth, name)
         self.ignore = ignore
         self.silence = silence
         self.isolate = isolate
         self.target_contrast = target_contrast
         self.target_xy = np.array(target_xy)
         self.target_luminance = target_luminance
-        self.bounds = bounds
-        if self.bounds is None:  # Default bounds if not specified
-            self.bounds = [(0., 1.,) for primary in self.resolutions]
-        self.background = background            
-        
+        self._bounds = bounds
+        if self._bounds is None:  # Default bounds if not specified
+            self._bounds = [(0., 1.,) for primary in self.resolutions]
+        self.background = background   
+        if self.background is None:  # We will optimise the background
+            self._bounds = self._bounds * 2
+         
+    @property
+    def bounds(self):
+        return self._bounds
+    
+    @bounds.setter
+    def bounds(self, new_bounds):
+        self._bounds = new_bounds
+
     def print_state(self):
         print('Silent Substitution')
         print(f'Ignoring: {self.ignore}')
         print(f'Silencing: {self.silence}')
         print(f'Isolating: {self.isolate}')
-    
+        
+    def print_photoreceptor_contrasts(self):
+        pass
+        
     def initial_guess_x0(self) -> np.array:
-        """Return an initial guess for the optimization problem.
+        """Return an initial guess for the optimization variables.
         
         Returns
         -------
@@ -149,13 +163,9 @@ class SilentSubstitutionProblem(StimulationDevice):
             Initial guess for optimization. 
 
         """
-        if self.background is not None:
-            return np.array(
-                [np.random.uniform(lb, ub) for lb, ub in self.bounds])
-        else:
-            return np.array(
-                [np.random.uniform(lb, ub) for lb, ub in self.bounds * 2])
-
+        return np.array(
+                 [np.random.uniform(lb, ub) for lb, ub in self.bounds])
+    
     def smlri_calculator(
             self,
             x0: Sequence[float]) -> Tuple[pd.Series]:
@@ -272,7 +282,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             x0 = np.array(
                 [np.random.uniform(lb, ub) for lb, ub in self.bounds * 2])
             #x0 = np.array([.5 for val in self.bounds * 2])
-            bnds = self.bounds * 2
+            bnds = self.bounds
 
         # Define constraints and local minimizer
         constraints = [{
@@ -328,7 +338,7 @@ class SilentSubstitutionProblem(StimulationDevice):
                     y='aopic', hue='Spectrum', ax=ax)
         plt.show()
 
-    def debug_callback_plot(self, x0):
+    def plot_ss_result(self, x0):
         # get aopic
         bg_ao, mod_ao = self.smlri_calculator(x0)
         df_ao = pd.concat([bg_ao, mod_ao], axis=1).T.melt(
@@ -349,7 +359,7 @@ class SilentSubstitutionProblem(StimulationDevice):
                 x0[self.nprimaries:self.nprimaries * 2], name='Modulation')
 
         # Print contrasts
-        print(f'\t{self.get_photoreceptor_contrasts(x0)}')
+        #print(f'\t{self.get_photoreceptor_contrasts(x0)}')
         
         # Print luminance
         print(f'\tBackground luminance: {spd_to_lux(bg_spd)}')
@@ -389,8 +399,9 @@ class SilentSubstitutionProblem(StimulationDevice):
         # Aopic
         sns.barplot(data=df_ao, x='Photoreceptor',
                     y='aopic', hue='Spectrum', ax=axs[2])
-        plt.show()
-
+        return fig
+    
+    # Linear algebra
     def pseudo_inverse_contrast(
             self, 
             background: Union[List[int], List[float]], 
@@ -422,3 +433,5 @@ class SilentSubstitutionProblem(StimulationDevice):
         pinv_mat = np.linalg.pinv(p2s_mat)
         #r = np.linalg.lstsq(p2s_mat, contrasts)
         return pinv_mat.dot(contrasts)
+    
+

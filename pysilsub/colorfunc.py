@@ -16,7 +16,7 @@ from typing import Union, Sequence
 import numpy as np
 import pandas as pd
 
-from silentsub.CIE import (get_matrix_LMStoXYZ,
+from pysilsub.CIE import (get_matrix_LMStoXYZ,
                            get_CIE_2006_10_deg_CMF)
 
 # Type alias

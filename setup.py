@@ -6,7 +6,7 @@ import setuptools
 #    long_description = fh.read()
 
 setuptools.setup(
-    name='silsub', # Replace with your own username
+    name='pysilsub', # Replace with your own username
     version='0.0.1',
     author='Joel T. Martin',
     author_email='joel.t.martin36@gmail.com',
@@ -15,7 +15,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/PySilentSubstitution/silentsub',
     project_urls={'Documentation': '', 'bioRxiv preprint':''},
-    install_requires=['numpy'],
+    install_requires=['numpy','scipy','matplotlib','seaborn','pandas'],
     packages=setuptools.find_packages(),
       classifiers=[
           'Development Status :: 2 - Pre-Alpha',

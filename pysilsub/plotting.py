@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from colour.plotting import plot_chromaticity_diagram_CIE1931
 
-from silentsub.CIE import get_CIE170_2_chromaticity_coordinates
+from pysilsub.CIE import get_CIE170_2_chromaticity_coordinates
 
 
 def stim_plot():

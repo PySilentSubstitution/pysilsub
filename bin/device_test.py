@@ -17,10 +17,10 @@ import pandas as pd
 from scipy.optimize import basinhopping, Bounds
 from scipy.interpolate import interp1d
 
-from silentsub.device import StimulationDevice
-from silentsub.plotting import stim_plot
-from silentsub.CIE import get_CIES026
-from silentsub.colorfunc import LMS_to_xyY, xyY_to_LMS, LUX_FACTOR, xy_luminance_to_xyY
+from pysilsub.device import StimulationDevice
+from pysilsub.plotting import stim_plot
+from pysilsub.CIE import get_CIES026
+from pysilsub.colorfunc import LMS_to_xyY, xyY_to_LMS, LUX_FACTOR, xy_luminance_to_xyY
 
 sns.set_style('darkgrid')
 

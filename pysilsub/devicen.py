@@ -21,11 +21,11 @@ import pandas as pd
 import numpy as np
 from colour.plotting import plot_chromaticity_diagram_CIE1931
 
-from silentsub.CIE import (get_CIES026,
+from pysilsub.CIE import (get_CIES026,
                            get_CIE_1924_photopic_vl,
                            get_CIE170_2_chromaticity_coordinates)
-from silentsub import colorfunc
-from silentsub.plotting import stim_plot
+from pysilsub import colorfunc
+from pysilsub.plotting import stim_plot
 
 Settings = Union[List[int], List[float]]
 
