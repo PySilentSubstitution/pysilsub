@@ -1,0 +1,934 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Making stimuli &#8212; PySilSub 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<section id="Making-stimuli">
+<h1>Making stimuli<a class="headerlink" href="#Making-stimuli" title="Permalink to this headline">¶</a></h1>
+<p>Silent substitution stimuli typically take the form of pulses or temporal modulations of photoreceptor-specific contrast presented against a background spectrum to which an observer has adapted. The background spectrum serves to maintain a set pattern of photoreceptor activations and the modulation spectrum increases activation of the targeted photoreceptor(s) without altering activation of the others.</p>
+<img alt="_images/ss_example.png" src="_images/ss_example.png" />
+<p>The example above describes for a 10-primary stimulation device a pair of silent substitution spectra where melanopsin receives 50% modulation and tcones are silent. From left to right are shown the spectral power distributions, chromaticity coordinates, and <em>a</em>-opic irradiances of the background and modulation spectra. Rods appear to be modulated, too, but in this example both spectra are ~600 lux, so we expect rods to be saturated and reason that it is safe to ignore them. We can see also that
+both spectra are the same chromaticity.</p>
+<p>Arriving at a solution such as this requires groundwork. First, we need a <a class="reference external" href="03a_stimulation_devices.ipynb">forward model of our stimulation device</a> that will predict the spectral output for any combination of settings. With that in place, we review the research goals: What photoreceptor(s) are we trying to stimulate? How much contrast do we want to achieve? Do we wish to enforce any particular constraints on our stimuli? When we know the answer to these questions, we can look for a solution.
+Two ways to do this are with linear algebra and numerical optimization.</p>
+<section id="Linear-algebra">
+<h2>Linear algebra<a class="headerlink" href="#Linear-algebra" title="Permalink to this headline">¶</a></h2>
+<p>To calculate photoreceptor activation for a spectrum we can weight</p>
+<p>For a given spectrum, we can calculate photoreceptor activation by</p>
+<p>We can calculate photoreceptor activation by taking the sum of the</p>
+<p>The choice of background will vary depending on the research goal. The stimulus problem will . The amount of contrast available is determined by the gamut of the stimlation device.</p>
+<p>The background spectrum mai Overview of various stimulus problems, with examples drawn from publications</p>
+<p>Contrast is the difference in photoreceptor activation between the modulation and background spectra</p>
+<p>Weber (unipolar) contrast:</p>
+<p><span class="math notranslate nohighlight">\(C_{W}=\frac{max-min}{max}\)</span></p>
+<p>Michelson (bipolar) contrast:</p>
+<p><span class="math notranslate nohighlight">\(C_{M}=\frac{max-min}{max+min}\)</span></p>
+<p>Contrast can be specified as either fractions or percentages</p>
+<p>Pulses of contrast against a background, or temporal modulations</p>
+<p>negative contrast</p>
+<p>Which spectral sensetivities are assumed?</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.device</span> <span class="kn">import</span> <span class="n">StimulationDevice</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s1">&#39;../../data/RGBA_linear_artificial.csv&#39;</span><span class="p">,</span>
+    <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Primary&#39;</span><span class="p">,</span> <span class="s1">&#39;Setting&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Wavelength&#39;</span>
+<span class="n">data</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="p">(</span>
+    <span class="n">resolutions</span><span class="o">=</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">],</span>
+    <span class="n">spds</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">spd_binwidth</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_spds</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03a_making_stimuli_2_0.png" src="_images/03a_making_stimuli_2_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg_settings</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
+<span class="n">bg_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;background&#39;</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_multiprimary_spd</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Background&#39;</span><span class="p">,</span> <span class="n">show_primaries</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03a_making_stimuli_3_0.png" src="_images/03a_making_stimuli_3_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg_spds</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">,</span> <span class="n">nosum</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">bg_spds</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+    </tr>
+    <tr>
+      <th>Wavelength</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>380</th>
+      <td>0.000852</td>
+      <td>0.001111</td>
+      <td>0.001835</td>
+      <td>0.001729</td>
+    </tr>
+    <tr>
+      <th>381</th>
+      <td>0.000930</td>
+      <td>0.001186</td>
+      <td>0.002059</td>
+      <td>0.002032</td>
+    </tr>
+    <tr>
+      <th>382</th>
+      <td>0.000835</td>
+      <td>0.001194</td>
+      <td>0.001937</td>
+      <td>0.001805</td>
+    </tr>
+    <tr>
+      <th>383</th>
+      <td>0.000825</td>
+      <td>0.001226</td>
+      <td>0.001937</td>
+      <td>0.002036</td>
+    </tr>
+    <tr>
+      <th>384</th>
+      <td>0.000742</td>
+      <td>0.000999</td>
+      <td>0.001666</td>
+      <td>0.001550</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>776</th>
+      <td>0.000531</td>
+      <td>0.000707</td>
+      <td>0.002339</td>
+      <td>0.001349</td>
+    </tr>
+    <tr>
+      <th>777</th>
+      <td>0.000523</td>
+      <td>0.000690</td>
+      <td>0.002296</td>
+      <td>0.001296</td>
+    </tr>
+    <tr>
+      <th>778</th>
+      <td>0.000397</td>
+      <td>0.000560</td>
+      <td>0.002137</td>
+      <td>0.001088</td>
+    </tr>
+    <tr>
+      <th>779</th>
+      <td>0.000537</td>
+      <td>0.000730</td>
+      <td>0.002106</td>
+      <td>0.001235</td>
+    </tr>
+    <tr>
+      <th>780</th>
+      <td>0.000557</td>
+      <td>0.000823</td>
+      <td>0.002340</td>
+      <td>0.001349</td>
+    </tr>
+  </tbody>
+</table>
+<p>401 rows × 4 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">pysilsub.CIE</span> <span class="kn">import</span> <span class="n">get_CIES026</span>
+
+<span class="n">sss</span> <span class="o">=</span> <span class="n">get_CIES026</span><span class="p">()[[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="s1">&#39;L&#39;</span><span class="p">,</span><span class="s1">&#39;I&#39;</span><span class="p">]]</span>
+<span class="n">sss</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>S</th>
+      <th>M</th>
+      <th>L</th>
+      <th>I</th>
+    </tr>
+    <tr>
+      <th>Wavelength</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>380</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>9.181600e-04</td>
+    </tr>
+    <tr>
+      <th>381</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.045600e-03</td>
+    </tr>
+    <tr>
+      <th>382</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.178600e-03</td>
+    </tr>
+    <tr>
+      <th>383</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.322800e-03</td>
+    </tr>
+    <tr>
+      <th>384</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.483800e-03</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>776</th>
+      <td>0.0</td>
+      <td>0.000002</td>
+      <td>0.000024</td>
+      <td>2.550000e-08</td>
+    </tr>
+    <tr>
+      <th>777</th>
+      <td>0.0</td>
+      <td>0.000002</td>
+      <td>0.000023</td>
+      <td>2.420000e-08</td>
+    </tr>
+    <tr>
+      <th>778</th>
+      <td>0.0</td>
+      <td>0.000002</td>
+      <td>0.000021</td>
+      <td>2.290000e-08</td>
+    </tr>
+    <tr>
+      <th>779</th>
+      <td>0.0</td>
+      <td>0.000002</td>
+      <td>0.000020</td>
+      <td>2.170000e-08</td>
+    </tr>
+    <tr>
+      <th>780</th>
+      <td>0.0</td>
+      <td>0.000001</td>
+      <td>0.000019</td>
+      <td>2.050000e-08</td>
+    </tr>
+  </tbody>
+</table>
+<p>401 rows × 4 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p2s_matrix</span> <span class="o">=</span> <span class="n">sss</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">bg_spds</span><span class="p">)</span>
+<span class="n">p2s_matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S</th>
+      <td>2.444142</td>
+      <td>0.210536</td>
+      <td>0.094893</td>
+      <td>0.056845</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>1.350567</td>
+      <td>3.559353</td>
+      <td>4.664806</td>
+      <td>0.156167</td>
+    </tr>
+    <tr>
+      <th>L</th>
+      <td>0.870237</td>
+      <td>2.903799</td>
+      <td>8.652674</td>
+      <td>0.849990</td>
+    </tr>
+    <tr>
+      <th>I</th>
+      <td>3.507016</td>
+      <td>2.830543</td>
+      <td>0.507331</td>
+      <td>0.069095</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">inv_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">p2s_matrix</span><span class="p">)</span>
+<span class="n">inv_mat</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[ 0.51206705,  0.0747923 , -0.0406342 , -0.09045156],
+       [-0.64521585, -0.07136851,  0.01783463,  0.47272853],
+       [ 0.43661246,  0.36646177, -0.06156279, -0.43013765],
+       [-2.76462942, -3.5632431 ,  1.78385127,  2.85632316]])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span> <span class="o">=</span> <span class="n">inv_mat</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mf">0.18</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">mod</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([ 0.09217207, -0.11613885,  0.07859024, -0.4976333 ])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod_settings</span> <span class="o">=</span> <span class="n">bg_settings</span> <span class="o">+</span> <span class="n">mod</span>
+<span class="n">mod_settings</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([ 0.59217207,  0.38386115,  0.57859024,  0.0023667 ])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">mod_settings</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bg_spd</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mod_spd</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x7fdd3015e090&gt;]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03a_making_stimuli_10_1.png" src="_images/03a_making_stimuli_10_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg_settings</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">weights_to_settings</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">)</span>
+<span class="n">bg_settings</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[128, 128, 128, 128]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod_settings</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">weights_to_settings</span><span class="p">(</span><span class="n">mod_settings</span><span class="p">)</span>
+<span class="n">mod_settings</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[151, 98, 148, 0]
+</pre></div></div>
+</div>
+<p>SSProblem that encapsulates the issue and prepares for solutions with linear algebra and numerical optimisation.</p>
+</section>
+<section id="Solving-with-linear-algebra">
+<h2>Solving with linear algebra<a class="headerlink" href="#Solving-with-linear-algebra" title="Permalink to this headline">¶</a></h2>
+<p>Information on how to solve silent substitution problems with linear algebra. For example…</p>
+<p><span class="math notranslate nohighlight">\(A=\begin{bmatrix}1 &amp; 2 &amp; 3\\ a &amp; b &amp; c\end{bmatrix}=\)</span></p>
+<p><span class="math notranslate nohighlight">\(PC_{d}=\begin{bmatrix}L\\ M\\ S\\ R\\ \end{bmatrix}=B\times\begin{bmatrix}RCd\\ GCd\\ BCd\\ ACd\\ \end{bmatrix}PCd=\begin{bmatrix}0\\ 0\\ 0\\ 0.25\\ \end{bmatrix}\)</span></p>
+<p>Maguire, J., Parry, N. R. A., Kremers, J., Kommanapalli, D., Murray, I. J., &amp; McKeefry, D. J. (2016). Rod electroretinograms elicited by silent substitution stimuli from the light-adapted human eye. Translational Vision Science and Technology, 5(4). <a class="reference external" href="https://doi.org/10.1167/tvst.5.4.13">https://doi.org/10.1167/tvst.5.4.13</a></p>
+<p>Advantages of the algebraic approach:</p>
+<ul class="simple">
+<li><p>fast</p></li>
+<li><p>mathematically exact</p></li>
+<li><p>zero error in a linear system</p></li>
+</ul>
+<p>Disadvantages:</p>
+<ul class="simple">
+<li><p>does not give max contrast available</p></li>
+<li><p>background options are limited</p></li>
+<li><p>generally inflexible</p></li>
+</ul>
+<p>More info coming soon.</p>
+</section>
+<section id="Solving-with-numerical-optimization">
+<h2>Solving with numerical optimization<a class="headerlink" href="#Solving-with-numerical-optimization" title="Permalink to this headline">¶</a></h2>
+<p>Silent substitution problems can also be solved with constrained numerical optimization approaches. Given the many optimization algorithms that are availalbe, it is hard to come up with a common calling syntax.</p>
+</section>
+<section id="SilentSubstitutionProblem">
+<h2><code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code><a class="headerlink" href="#SilentSubstitutionProblem" title="Permalink to this headline">¶</a></h2>
+<p>Luckily, <em>PySilSub</em> has a <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code> class that encapsulates the stimulation goals and offers tools for solving the problems.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/photoreceptor_characters.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">PySilSub</a></h1>
+
+
+
+<p class="blurb">A Python software for performing the method of silent substitution.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=PySilentSubstitution&repo=pysilsub&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Joel T. Martin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/03a_making_stimuli.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
