@@ -287,9 +287,9 @@ div.rendered_html tbody tr:hover {
 <section id="Making-stimuli">
 <h1>Making stimuli<a class="headerlink" href="#Making-stimuli" title="Permalink to this headline">¶</a></h1>
 <p>Silent substitution stimuli typically take the form of pulses or temporal modulations of photoreceptor-specific contrast presented against a background spectrum to which an observer has adapted. The background spectrum serves to maintain a set pattern of photoreceptor activations and the modulation spectrum increases activation of the targeted photoreceptor(s) without altering activation of the others.</p>
-<img alt="_images/ss_example.svg" src="_images/ss_example.svg" /><p>The example above describes, for a 5-primary stimulation device, a pair of silent substitution spectra where melanopsin receives 250% modulation and the cones are silent. From left to right are shown the spectral power distributions, chromaticity coordinates, and photoreceptor-specific irradiances for the background and modulation spectra. Rods appear to be modulated, too, but in this example both spectra are ~1500 lux, so we expect rods to be saturated and reason that it is safe to ignore them.
+<img alt="_images/ss_example.svg" src="_images/ss_example.svg" /><p>The example above describes, for a 5-primary stimulation device, a pair of silent substitution spectra where melanopsin receives 250% modulation and the cones are silent. From left to right are shown the spectral power distributions, chromaticity coordinates, and photoreceptor-specific irradiances for the background and modulation spectra. Rods appear to be modulated, too, but in this example both spectra are ~2000 lux, so we expect rods to be saturated and reason that it is safe to ignore them.
 We can see also that both spectra have the same chromaticity.</p>
-<p>Arriving at a solution such as this requires groundwork. First, we need a <a class="reference internal" href="03a_stimulation_devices.html"><span class="doc">forward model of our stimulation device</span></a> that will predict the spectral output for any combination of settings. With that in place, we review the research goals: What photoreceptor(s) are we trying to stimulate? How much contrast do we want to achieve? Do we wish to enforce any particular constraints on our stimuli? When we know the answer to these questions, we can formalise the problem
+<p>Arriving at a solution such as this requires groundwork. First, we need a <a class="reference internal" href="03a_stimulation_devices.html"><span class="doc">forward model of our stimulation device</span></a> that will predict the spectral output for any combination of settings. With that in place, we review the research goals: What photoreceptor(s) are we trying to isolate? How much contrast do we want to achieve? Do we wish to enforce any particular constraints on our stimuli? When we know the answer to these questions, we can formalise the problem
 and look for a solution. Two ways of doing this, each of which has unique advantages, are with numerical optimization and linear algebra.</p>
 <section id="Numerical-optimization">
 <h2>Numerical optimization<a class="headerlink" href="#Numerical-optimization" title="Permalink to this headline">¶</a></h2>
@@ -303,9 +303,9 @@ and look for a solution. Two ways of doing this, each of which has unique advant
 & & x^{L} \le x \le x^{U} ,
 \end{array}
 \end{equation}</span></p>
-<p>where <span class="math notranslate nohighlight">\(x \in \mathbb{R}^{n}\)</span> are the optimization variables (the device settings) whose lower and upper bounds, <span class="math notranslate nohighlight">\(x^{L}\)</span> and <span class="math notranslate nohighlight">\(x^{U}\)</span>, are between 0 and 1 to ensure that the solution is within the gamut of the device, <span class="math notranslate nohighlight">\(f(x)\)</span> is the objective function that aims to maximise contrast of the target photoreceptor(s), and <span class="math notranslate nohighlight">\(g(x)\)</span> is a function that calculates contrast for the silenced photoreceptor(s), where <span class="math notranslate nohighlight">\(g^{L}\)</span> and <span class="math notranslate nohighlight">\(g^{U}\)</span> should be zero. <span class="math notranslate nohighlight">\(x\)</span> is a
-vector containing the weights for the LED settings.</p>
-<p>Conveniently, <em>PySilSub</em> encapsulates this optimisation problem in a <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code> class that inherits everything from <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code>, so we instantiate it in the same way, but this we include some additional information to condition the problem. As a basic demonstration, suppose we have calibration data for a linear, 8-bit, 5-primary stimulation system and that we want to find the settings for two spectra that will yield the maximum available contrast for melanopsin.</p>
+<p>where <span class="math notranslate nohighlight">\(x \in \mathbb{R}^{n}\)</span> are the optimization variables (the device settings) whose lower and upper bounds, <span class="math notranslate nohighlight">\(x^{L}\)</span> and <span class="math notranslate nohighlight">\(x^{U}\)</span>, are between 0 and 1 to ensure that the solution is within the gamut of the device, <span class="math notranslate nohighlight">\(f(x)\)</span> is the objective function that aims to maximise contrast of the target photoreceptor(s), and <span class="math notranslate nohighlight">\(g(x)\)</span> is a function that calculates contrast for the silenced photoreceptor(s), where <span class="math notranslate nohighlight">\(g^{L}\)</span> and <span class="math notranslate nohighlight">\(g^{U}\)</span> should be zero. In all cases,
+<span class="math notranslate nohighlight">\(x\)</span> is a vector containing the weights for the LED settings.</p>
+<p>Conveniently, <em>PySilSub</em> encapsulates this optimisation problem in a <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code> class that inherits everything from <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code>. We can instantiate it in the same way, but this time including further information to condition the problem. As a basic demonstration, suppose we have calibration data for a linear, 8-bit, 5-primary stimulation system and that we want to find the settings for two spectra that will yield 250% contrast for melanopsin.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -673,7 +673,7 @@ vector containing the weights for the LED settings.</p>
 <p>165 rows × 401 columns</p>
 </div></div>
 </div>
-<p>We can use these data to create a <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code>, just like we did with <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code>, only this time we specify which receptors to ignore, which receptors to silence, and which receptors to isolate.</p>
+<p>We can pass these data to <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code>—just like we did with <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code>—only this time we specify which photoreceptors to ignore, which of them to silence, and which to isolate.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -688,33 +688,38 @@ vector containing the weights for the LED settings.</p>
     <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span>  <span class="c1"># Ignore rods</span>
     <span class="n">silence</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">],</span>  <span class="c1"># Silence S-, M-, and L-cones</span>
     <span class="n">isolate</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span>  <span class="c1"># Isolate melanopsin</span>
-    <span class="n">target_contrast</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>  <span class="c1"># Aim for 200% contrast</span>
+    <span class="n">target_contrast</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>  <span class="c1"># Aim for 250% contrast</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;BCGAR (8-bit, linear)&#39;</span>  <span class="c1"># Description of device</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>Because <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> is the base class we can do all the cool things described <a class="reference internal" href="03a_stimulation_devices.html"><span class="doc">here</span></a>, like plotting the spds and the gamut of the device. But lets get straight on to the optimisation…</p>
-<p>As a general note, numerical optimisation is a big old topic and there are many algorithms to choose from, each with their own idiosynchrasies. At present, <em>PySilSub</em> does not know the best algorithm for your stimulation device and research goals, nor does it unite different algorithms under a common calling syntax. It simply encapsulates your problem in the form of ready made functions that you can pass to an optimiser. So, If you are new to optimisation in Python, its worth investing a bit of
-time of time to learn the basics. <a class="reference external" href="https://realpython.com/python-scipy-cluster-optimize/">This article</a> is a good place to start.</p>
-<p>Though it’s not the only option, Scipy’s <code class="docutils literal notranslate"><span class="pre">optimize</span></code> module is comprehensive and contains a range of methods for local and global optisation with linear or nonlinear constraints. For this example, we will use the <code class="docutils literal notranslate"><span class="pre">optimize.minimize</span></code> function with the <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.8.0/html-scipyorg/reference/optimize.minimize-slsqp.html">SLSQP</a> solver. See the worked examples for further inspiration.</p>
+<p>Because <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> is the base class we can do all the cool things described <a class="reference internal" href="03a_stimulation_devices.html"><span class="doc">here</span></a>, like plotting the spds and the gamut of the device. But lets get straight on to the optimisation.</p>
+<p>As a general note, numerical optimisation is a big old topic and there are many algorithms available, each with their own idiosynchrasies. At present, <em>PySilSub</em> does not know the best algorithm for your stimulation device and research goals, nor does it unite different algorithms under a common calling syntax. It simply encapsulates your problem in the form of ready made functions that you can pass to an optimiser. So, If you are new to optimisation in Python, it’s worth investing a bit of time
+to learn the basics. <a class="reference external" href="https://realpython.com/python-scipy-cluster-optimize/">This article</a> is a good place to start.</p>
+<p>Though not the only option, Scipy’s <code class="docutils literal notranslate"><span class="pre">optimize</span></code> module is comprehensive and contains a range of methods for local and global optisation with linear or nonlinear constraints. In this case we will use the <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.8.0/html-scipyorg/reference/optimize.minimize-slsqp.html">SLSQP</a> solver with Scipy’s <code class="docutils literal notranslate"><span class="pre">optimize.minimize</span></code> function.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
 
-<span class="c1"># Define constraints in the standard scipy format</span>
-<span class="n">constraints</span> <span class="o">=</span> <span class="p">({</span>
+<span class="c1"># Initial guess for optimisation variables</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">initial_guess_x0</span><span class="p">()</span>
+
+<span class="c1"># The silencing constraint is an equality</span>
+<span class="c1"># constraint defined in the standard scipy</span>
+<span class="c1"># format.</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;eq&#39;</span><span class="p">,</span>
     <span class="s1">&#39;fun&#39;</span><span class="p">:</span> <span class="n">ssp</span><span class="o">.</span><span class="n">silencing_constraint</span><span class="p">,</span>
     <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">1e-07</span>
-    <span class="p">})</span>
+    <span class="p">}</span>
 
 <span class="c1"># Perform the optimisation</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
     <span class="n">fun</span><span class="o">=</span><span class="n">ssp</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span>
-    <span class="n">x0</span><span class="o">=</span><span class="n">ssp</span><span class="o">.</span><span class="n">initial_guess_x0</span><span class="p">(),</span>
+    <span class="n">x0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span>
     <span class="n">method</span><span class="o">=</span><span class="s1">&#39;SLSQP&#39;</span><span class="p">,</span>
     <span class="n">bounds</span><span class="o">=</span><span class="n">ssp</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span>
     <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>
@@ -726,34 +731,35 @@ time of time to learn the basics. <a class="reference external" href="https://re
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-     fun: 1.2796721117492244e-09
-     jac: array([  4.83906830e-03,   9.33995462e-03,   7.52382248e-03,
-         1.17191902e-03,   1.82212749e-04,  -1.56916899e-03,
-        -2.30584906e-03,  -1.86197938e-03,  -3.82025788e-04,
-        -4.55471479e-05])
+     fun: 2.279907827621543e-09
+     jac: array([ -1.28309478e-03,  -2.10522508e-03,  -1.71888112e-03,
+        -2.80492131e-04,  -4.39255649e-05,   3.83081597e-04,
+         6.48058128e-04,   4.55524698e-04,   8.08864456e-05,
+         1.09967345e-05])
  message: &#39;Optimization terminated successfully&#39;
-    nfev: 593
-     nit: 51
-    njev: 51
+    nfev: 576
+     nit: 49
+    njev: 49
   status: 0
  success: True
-       x: array([  4.48991203e-02,   3.80317793e-19,   1.41115689e-18,
-         1.44533939e-01,   0.00000000e+00,   0.00000000e+00,
-         3.73683328e-02,   1.39506427e-01,   5.53536031e-18,
-         1.00000000e+00])
+       x: array([  1.68469625e-02,   1.98733879e-03,   0.00000000e+00,
+         1.98765116e-01,   1.23914887e-02,   1.93123512e-19,
+         0.00000000e+00,   1.49632233e-01,   5.19820961e-02,
+         9.92091592e-01])
 </pre></div></div>
 </div>
-<p>Printed above is the result of the optimisation in Scipy’s standard <code class="docutils literal notranslate"><span class="pre">OptimizationResult</span></code> format. The low value of <code class="docutils literal notranslate"><span class="pre">fun</span></code> indicates that we are very close to the target contrast of 250%. Unsurprisingly, what we actually need is <code class="docutils literal notranslate"><span class="pre">result.x</span></code>. Visualising it is straight forward.</p>
+<p>Printed above is the result of the optimisation in Scipy’s standard <code class="docutils literal notranslate"><span class="pre">OptimizationResult</span></code> format. The low value of <code class="docutils literal notranslate"><span class="pre">fun</span></code> indicates that we are very close to the target contrast of 250%. Unsurprisingly, what we actually need is <code class="docutils literal notranslate"><span class="pre">result.x</span></code>. Visualising the result is straight forward.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_ss_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="n">result_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;../../img/ss_example.svg&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -762,10 +768,10 @@ time of time to learn the basics. <a class="reference external" href="https://re
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-        Background luminance: 1574.9694146136112
-        Modulation luminance: 1574.931215982132
-        Background xy: [ 0.51227803  0.36152737]
-        Modulation xy: [ 0.51220947  0.36157177]
+        Background luminance: 2132.538596245848
+        Modulation luminance: 2132.5691877683666
+        Background xy: [ 0.55300995  0.39587685]
+        Modulation xy: [ 0.55296001  0.39592361]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -775,9 +781,9 @@ time of time to learn the basics. <a class="reference external" href="https://re
 <img alt="_images/03b_making_stimuli_9_1.png" src="_images/03b_making_stimuli_9_1.png" />
 </div>
 </div>
-<p>Woohoo, a pair of silent substitution spectra. All we need to do now is convert the optimisation result to 8-bit settings required by the stimulation device.</p>
+<p>Voila—a pair of silent substitution spectra. Converting the optimisation result to 8-bit settings for the stimulation device is easy.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg_settings</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">weights_to_settings</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
@@ -786,16 +792,16 @@ time of time to learn the basics. <a class="reference external" href="https://re
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[11, 0, 0, 36, 0]
+[4, 0, 0, 50, 3]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod_settings</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">weights_to_settings</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">:])</span>
@@ -804,24 +810,580 @@ time of time to learn the basics. <a class="reference external" href="https://re
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[0, 9, 35, 0, 255]
+[0, 0, 38, 13, 252]
 </pre></div></div>
 </div>
-<p>All being well, if we pass these settings to the stimulation device it will produce these two spectra.</p>
+<p>All being well, if we pass these settings to the stimulation device it will produce these two spectra. But see here for various challanges and caveats.</p>
 </section>
 <section id="Linear-algebra">
 <h2>Linear algebra<a class="headerlink" href="#Linear-algebra" title="Permalink to this headline">¶</a></h2>
+<p>Silent substitution problems can also be solved with linear algebra. As a worked example, suppose that we now want to isolate S-cones.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">isolate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">]</span>
 </pre></div>
+</div>
+</div>
+<p>For a background spectrum we will take the mixture of all primaries at half-max power. As we’ll be doing some matrix algebra involving the individual primaries, in this case we don’t want to sum the predicted spectra.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg_settings</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
+<span class="n">bg_spds</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">,</span> <span class="n">nosum</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">bg_spds</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Primary</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+    <tr>
+      <th>Wavelength</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>380</th>
+      <td>0.001098</td>
+      <td>0.000856</td>
+      <td>0.001115</td>
+      <td>0.001842</td>
+      <td>0.001736</td>
+    </tr>
+    <tr>
+      <th>381</th>
+      <td>0.001134</td>
+      <td>0.000933</td>
+      <td>0.001191</td>
+      <td>0.002067</td>
+      <td>0.002040</td>
+    </tr>
+    <tr>
+      <th>382</th>
+      <td>0.000991</td>
+      <td>0.000838</td>
+      <td>0.001198</td>
+      <td>0.001945</td>
+      <td>0.001812</td>
+    </tr>
+    <tr>
+      <th>383</th>
+      <td>0.001091</td>
+      <td>0.000828</td>
+      <td>0.001231</td>
+      <td>0.001945</td>
+      <td>0.002044</td>
+    </tr>
+    <tr>
+      <th>384</th>
+      <td>0.000879</td>
+      <td>0.000745</td>
+      <td>0.001003</td>
+      <td>0.001673</td>
+      <td>0.001556</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>776</th>
+      <td>0.000625</td>
+      <td>0.000533</td>
+      <td>0.000710</td>
+      <td>0.002349</td>
+      <td>0.001355</td>
+    </tr>
+    <tr>
+      <th>777</th>
+      <td>0.000577</td>
+      <td>0.000525</td>
+      <td>0.000693</td>
+      <td>0.002305</td>
+      <td>0.001301</td>
+    </tr>
+    <tr>
+      <th>778</th>
+      <td>0.000516</td>
+      <td>0.000398</td>
+      <td>0.000562</td>
+      <td>0.002146</td>
+      <td>0.001093</td>
+    </tr>
+    <tr>
+      <th>779</th>
+      <td>0.000605</td>
+      <td>0.000539</td>
+      <td>0.000733</td>
+      <td>0.002114</td>
+      <td>0.001240</td>
+    </tr>
+    <tr>
+      <th>780</th>
+      <td>0.000600</td>
+      <td>0.000559</td>
+      <td>0.000826</td>
+      <td>0.002350</td>
+      <td>0.001354</td>
+    </tr>
+  </tbody>
+</table>
+<p>401 rows × 5 columns</p>
+</div></div>
+</div>
+<p>Next, we’ll be needing the spectral sensitivities for the photoreceptors.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.CIE</span> <span class="kn">import</span> <span class="n">get_CIES026</span>
+
+<span class="n">sss</span> <span class="o">=</span> <span class="n">get_CIES026</span><span class="p">()</span>
+<span class="n">sss</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Photoreceptor</th>
+      <th>S</th>
+      <th>M</th>
+      <th>L</th>
+      <th>R</th>
+      <th>I</th>
+    </tr>
+    <tr>
+      <th>Wavelength</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>380</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>5.890000e-04</td>
+      <td>9.181600e-04</td>
+    </tr>
+    <tr>
+      <th>381</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>6.650000e-04</td>
+      <td>1.045600e-03</td>
+    </tr>
+    <tr>
+      <th>382</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>7.520000e-04</td>
+      <td>1.178600e-03</td>
+    </tr>
+    <tr>
+      <th>383</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>8.540000e-04</td>
+      <td>1.322800e-03</td>
+    </tr>
+    <tr>
+      <th>384</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>9.720000e-04</td>
+      <td>1.483800e-03</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>776</th>
+      <td>0.0</td>
+      <td>0.000002</td>
+      <td>0.000024</td>
+      <td>1.730000e-07</td>
+      <td>2.550000e-08</td>
+    </tr>
+    <tr>
+      <th>777</th>
+      <td>0.0</td>
+      <td>0.000002</td>
+      <td>0.000023</td>
+      <td>1.640000e-07</td>
+      <td>2.420000e-08</td>
+    </tr>
+    <tr>
+      <th>778</th>
+      <td>0.0</td>
+      <td>0.000002</td>
+      <td>0.000021</td>
+      <td>1.550000e-07</td>
+      <td>2.290000e-08</td>
+    </tr>
+    <tr>
+      <th>779</th>
+      <td>0.0</td>
+      <td>0.000002</td>
+      <td>0.000020</td>
+      <td>1.470000e-07</td>
+      <td>2.170000e-08</td>
+    </tr>
+    <tr>
+      <th>780</th>
+      <td>0.0</td>
+      <td>0.000001</td>
+      <td>0.000019</td>
+      <td>1.390000e-07</td>
+      <td>2.050000e-08</td>
+    </tr>
+  </tbody>
+</table>
+<p>401 rows × 5 columns</p>
+</div></div>
+</div>
+<p>The dot product of these matrices, which we will call the primary-to-receptor matrix, contains the <em>a</em>-opic irradiances for each primary component of the background spectrum.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p2r_matrix</span> <span class="o">=</span> <span class="n">sss</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">bg_spds</span><span class="p">)</span>
+<span class="n">p2r_matrix</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Primary</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+    <tr>
+      <th>Photoreceptor</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S</th>
+      <td>3.580009</td>
+      <td>2.453689</td>
+      <td>0.211358</td>
+      <td>0.095264</td>
+      <td>0.057067</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>0.627573</td>
+      <td>1.355843</td>
+      <td>3.573256</td>
+      <td>4.683028</td>
+      <td>0.156777</td>
+    </tr>
+    <tr>
+      <th>L</th>
+      <td>0.435727</td>
+      <td>0.873636</td>
+      <td>2.915142</td>
+      <td>8.686473</td>
+      <td>0.853310</td>
+    </tr>
+    <tr>
+      <th>R</th>
+      <td>1.730730</td>
+      <td>2.965132</td>
+      <td>3.638927</td>
+      <td>1.288265</td>
+      <td>0.076642</td>
+    </tr>
+    <tr>
+      <th>I</th>
+      <td>2.094721</td>
+      <td>3.520715</td>
+      <td>2.841600</td>
+      <td>0.509312</td>
+      <td>0.069365</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The inverse of the primary-to-receptor matrix is ultimately what will help us find a solution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">inv_p2r_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">p2r_matrix</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+    <span class="n">p2r_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+    <span class="n">p2r_matrix</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">inv_p2r_matrix</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Primary</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+    <tr>
+      <th>Photoreceptor</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>S</th>
+      <td>0.473797</td>
+      <td>-0.279487</td>
+      <td>-0.002424</td>
+      <td>0.026572</td>
+      <td>-0.218010</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>-0.159332</td>
+      <td>0.340021</td>
+      <td>-0.286409</td>
+      <td>0.502356</td>
+      <td>-4.402157</td>
+    </tr>
+    <tr>
+      <th>L</th>
+      <td>-0.001803</td>
+      <td>-0.037472</td>
+      <td>0.015329</td>
+      <td>-0.059770</td>
+      <td>1.767262</td>
+    </tr>
+    <tr>
+      <th>R</th>
+      <td>0.993080</td>
+      <td>-1.654925</td>
+      <td>1.342032</td>
+      <td>-0.855885</td>
+      <td>5.315177</td>
+    </tr>
+    <tr>
+      <th>I</th>
+      <td>-1.104764</td>
+      <td>1.750941</td>
+      <td>-1.022070</td>
+      <td>0.523675</td>
+      <td>-3.067724</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Now, the dot product of the inverse primary-to-receptor matrix and a vector of requested photoreceptor contrasts will give the weights for each primary that must be added to the background spectrum to achieve the specified contrast.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">requested_contrasts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>  <span class="c1"># S-cones, 50%</span>
+<span class="n">modulation_weights</span> <span class="o">=</span> <span class="n">inv_p2r_matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">requested_contrasts</span><span class="p">)</span>
+<span class="n">modulation_weights</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Primary
+0    0.236898
+1   -0.139744
+2   -0.001212
+3    0.013286
+4   -0.109005
+dtype: float64
+</pre></div></div>
+</div>
+<p>Finally, we add the modulation weights to the background in order to obtain the settings for a modulation spectrum.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod_settings</span> <span class="o">=</span> <span class="p">(</span><span class="n">bg_settings</span> <span class="o">+</span> <span class="n">modulation_weights</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+<span class="n">mod_settings</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[0.7368983602866317,
+ 0.360256442034834,
+ 0.4987878800748165,
+ 0.5132862470449632,
+ 0.39099496157526487]
+</pre></div></div>
+</div>
+<p>Obviously, these values must all be between zero and one for the solution to be valid, which in this case they are. As before, we can visualise the solution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_ss_result</span><span class="p">(</span><span class="n">bg_settings</span> <span class="o">+</span> <span class="n">mod_settings</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+        Background luminance: 8996.204095646926
+        Modulation luminance: 8996.237621854996
+        Background xy: [ 0.36478141  0.31094694]
+        Modulation xy: [ 0.3535229   0.29324481]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03b_making_stimuli_29_1.png" src="_images/03b_making_stimuli_29_1.png" />
 </div>
 </div>
 </section>

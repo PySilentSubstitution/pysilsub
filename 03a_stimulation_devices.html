@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Making stimuli" href="03b_making_stimuli.html" />
-    <link rel="prev" title="Preliminaries" href="03z_preliminaries.html" />
+    <link rel="prev" title="Overview" href="03_overview.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -287,18 +287,18 @@ div.rendered_html tbody tr:hover {
 <section id="Stimulation-devices">
 <h1>Stimulation devices<a class="headerlink" href="#Stimulation-devices" title="Permalink to this headline">¶</a></h1>
 <p>To stimulate one class of retinal photoreceptor without changing the activation in others—which is to perform the method of silent substitution—requires a multiprimary stimulation device with at least as many primaries as there are photoreceptors in the retina. This generally means that <a class="reference internal" href="01_background.html"><span class="doc">5 primaries are needed</span></a>, although 4 primaries may suffice when working in the photopic range as rod photoreceptors become saturated and incapable of signalling above 300 cd/m<span class="math notranslate nohighlight">\(^2\)</span>
-(<a class="reference external" href="https://doi.org/10.1080/713818657">Aguiller and Stiles, 1954</a>; <a class="reference external" href="https://doi.org/10.1016/0042-6989(82)90143-2">Adelson, 1982</a>; but see <a class="reference external" href="https://iovs.arvojournals.org/article.aspx?articleid=2200107">Shapiro, 2002</a>; <a class="reference external" href="https://doi.org/10.1007/s10633-008-9159-0">Kremers et al., 2009</a>). The primaries should be independantly addressable, additive, and ideally stable over time with a linear gamma function. Peak wavelength and bandwidth of the primaries are key considerations that will
-ultimately define the gamut and available contrast (<a class="reference external" href="https://doi.org/10.1364/josaa.420373">Evéquoz et al., 2021</a>), and the light source will also need to be integrated into an optical setup for stimulus delivery—usually either a Ganzfeld (e.g., <a class="reference external" href="https://doi.org/10.3758/s13428-021-01759-3">Martin et al., 2021</a>) or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167/15.1.27">Cao et al., 2015</a>).</p>
-<p><a class="reference external" href="https://doi.org/10.3390/photonics7040121">Conus and Geiser (2020)</a> reviewed stimulation devices from a range of silent substitution studies and found that in most cases the device had 4 or 5 primaries and was built from scratch using LEDs, optical bench components, and microprocessors, such as Arduino, for pulse width modulation control of intensity. Only a few devices were commercially bought. Whatever the device and setup, it will be necessary to create a forward calibration model that is
+(<a class="reference external" href="https://doi.org/10.1080/713818657">Aguiller and Stiles, 1954</a>; <a class="reference external" href="https://doi.org/10.1016/0042-6989(82)90143-2">Adelson, 1982</a>; but see <a class="reference external" href="https://iovs.arvojournals.org/article.aspx?articleid=2200107">Shapiro, 2002</a>; <a class="reference external" href="https://doi.org/10.1007/s10633-008-9159-0">Kremers et al., 2009</a>). The primaries should be independantly addressable, additive, and ideally stable over time with a linear gamma function. Peak wavelength and bandwidth are key considerations that will ultimately define the
+gamut and available contrast (<a class="reference external" href="https://doi.org/10.1364/josaa.420373">Evéquoz et al., 2021</a>), and the light source will also need to be integrated into an optical setup for stimulus delivery—usually either a Ganzfeld (e.g., <a class="reference external" href="https://doi.org/10.3758/s13428-021-01759-3">Martin et al., 2021</a>) or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167/15.1.27">Cao et al., 2015</a>).</p>
+<p><a class="reference external" href="https://doi.org/10.3390/photonics7040121">Conus and Geiser (2020)</a> reviewed stimulation devices from a range of silent substitution studies and found that in most cases the device had 4 or 5 primaries and was built from scratch using LEDs, optical bench components, and microprocessors, such as Arduino, for pulse width modulation control of intensity. Only a few devices were commercially bought. Whatever the device and setup, it will be necessary to have a forward calibration model that is
 representative of what an observer sees, and which can be used to predict spectral output for any combination of settings. Typically this involves sampling each of the primaries at a range of itentsities with an external spectrometer and using interpolation methods.</p>
 <section id="pysilsub.device.StimulationDevice">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.device.StimulationDevice</span></code><a class="headerlink" href="#pysilsub.device.StimulationDevice" title="Permalink to this headline">¶</a></h2>
-<p><em>PySilSub</em> has a generic <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> class that will handle spectral calibration data for any mulitprimary system. To get started, you will need a calibration file containing spectral measurements. Each row should be a spectral measurement for a device primary at a given setting, and there should be column labels ‘Primary’ and ‘Setting’ to indicate this. If you have a <a class="reference external" href="https://www.jeti.com/">JETI</a> or <a class="reference external" href="https://www.oceaninsight.com/">OceanOptics</a> spectrometer,
-<a class="reference external" href="https://github.com/PyPlr/cvd_pupillometry">PyPlr</a> has some Python interfaces that may help you obtain the spectral measurements.</p>
-<p>The following example is for a linear 5-primary device with 8-bit resolution depth, which is to say that the intensity of each LED is set with a number between 0 and 255. The full range of intensities was sampled in steps of 8, so there are 33 measurements for each LED. Note that it is important to include a dark measurement where LEDs are turned off (i.e., Setting = 0) to account for ambient light in an experimental setup.</p>
-<p>The first row of the calibration file contains the wavelengths of the spectral measurements as well as columns to identify the primary and setting. We can load the CSV file with pandas.</p>
+<p><em>PySilSub</em> has a generic <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> class that will turn spectral calibration data for any multiprimary system into a predictive model. To get started, you will need a calibration file containing spectral measurements. Each row should be a spectral measurement for a device primary at a given setting, and there should be column labels ‘Primary’ and ‘Setting’ to indicate this. Note that it will be important to include a dark measurement where LEDs are turned off (i.e., Setting = 0) to
+account for ambient light in an experimental setup. If you have a <a class="reference external" href="https://www.jeti.com/">JETI</a> or <a class="reference external" href="https://www.oceaninsight.com/">OceanOptics</a> spectrometer, <a class="reference external" href="https://github.com/PyPlr/cvd_pupillometry">PyPlr</a> has some Python interfaces that may help you obtain the spectral measurements.</p>
+<p>The following demonstration uses calibration data from a linear 5-primary device with 8-bit resolution depth, which is to say that the intensity of each LED is set with a number between 0 and 255. The full range of intensities was sampled in steps of 8, so there are 33 measurements for each LED.</p>
+<p>The first row of the calibration file contains the wavelengths of the spectral measurements as well as columns to identify the primary and setting.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -314,7 +314,7 @@ representative of what an observer sees, and which can be used to predict spectr
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -658,9 +658,9 @@ representative of what an observer sees, and which can be used to predict spectr
 <p>165 rows × 401 columns</p>
 </div></div>
 </div>
-<p>Now we just need to pass the data to <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> along with some further information to gain access to many useful features.</p>
+<p>After reading the CSV file into a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> using pandas, we can pass the data to <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> along with some further information to gain access to many useful features.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.device</span> <span class="kn">import</span> <span class="n">StimulationDevice</span>
@@ -675,9 +675,9 @@ representative of what an observer sees, and which can be used to predict spectr
 </pre></div>
 </div>
 </div>
-<p>For example, to plot the spectral power distributions of all measurements:</p>
+<p>For example, plot the spectral power distributions of all measurements.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spd_fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_spds</span><span class="p">()</span>
@@ -707,18 +707,18 @@ representative of what an observer sees, and which can be used to predict spectr
 <img alt="_images/03a_stimulation_devices_8_0.png" src="_images/03a_stimulation_devices_8_0.png" />
 </div>
 </div>
-<p>More useful, we can use <code class="docutils literal notranslate"><span class="pre">device.predict_primary_spd(...)</span></code> to predict the spectral output of the stimulation device for a chosen primary at a given setting. This method simply interpolates between the measured spectra that were provided in the calibration data.</p>
+<p>More useful, we can use <code class="docutils literal notranslate"><span class="pre">device.predict_primary_spd(...)</span></code> to predict the spectral output of the stimulation device for a chosen primary at a given setting. This method simply interpolates between the measured spectra that were provided in the calibration data. It is a workhorse method that gets called repeatedly.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">primary_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_primary_spd</span><span class="p">(</span>
-    <span class="n">primary</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">setting</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Primary 3 (half power)&#39;</span>
+    <span class="n">primary</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">setting</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span>  <span class="c1"># Could also say 128</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Primary 2 (half power)&#39;</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">primary_spd</span><span class="p">)</span>
-<span class="n">primary_spd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$/nm&#39;</span><span class="p">);</span>
+<span class="n">primary_spd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$/nm&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
 </pre></div>
 </div>
 </div>
@@ -728,18 +728,18 @@ representative of what an observer sees, and which can be used to predict spectr
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Wavelength
-380    0.001849
-381    0.002075
-382    0.001952
-383    0.001952
-384    0.001679
+380    0.001115
+381    0.001191
+382    0.001198
+383    0.001231
+384    0.001003
          ...
-776    0.002358
-777    0.002314
-778    0.002154
-779    0.002123
-780    0.002359
-Name: Primary 3 (half power), Length: 401, dtype: float64
+776    0.000710
+777    0.000693
+778    0.000562
+779    0.000733
+780    0.000826
+Name: Primary 2 (half power), Length: 401, dtype: float64
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -751,10 +751,10 @@ Name: Primary 3 (half power), Length: 401, dtype: float64
 </div>
 <p>We can also use <code class="docutils literal notranslate"><span class="pre">device.predict_multiprimary_spd(...)</span></code> to predict the spectral output for a combination of primaries and settings. This method calls the previous method for each primary/setting pair and sums the spectral power distributions.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">half_max</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>  <span class="c1"># We could also say [128, 128, 128, 128]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">half_max</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>  <span class="c1"># Same as [128, 128, 128, 128, 128]</span>
 <span class="n">device_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">half_max</span><span class="p">,</span> <span class="s1">&#39;Half max&#39;</span><span class="p">)</span>
 <span class="n">device_spd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$/nm&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Predicted output for device settings: </span><span class="si">{</span><span class="n">half_max</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -776,9 +776,9 @@ Predicted output for device settings: [0.5, 0.5, 0.5, 0.5, 0.5]
 <img alt="_images/03a_stimulation_devices_12_1.png" src="_images/03a_stimulation_devices_12_1.png" />
 </div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">device.predict_multiprimary_aopic(...)</span></code> will return the photoreceptor-specific irradiances for a spectrum produced by any combination of settings. This method calls the previous method and then weights the spectrum by the spectral sensitivity of each photoreceptor, before summing up the values.</p>
+<p><code class="docutils literal notranslate"><span class="pre">device.predict_multiprimary_aopic(...)</span></code> will return the photoreceptor-specific irradiances for a spectrum produced by any combination of settings. This method calls the previous method and then weights the spectrum by the photoreceptor spectral sensitivities, before summing up the values for each photoreceptor.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device_ao</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_aopic</span><span class="p">(</span><span class="n">half_max</span><span class="p">,</span> <span class="s1">&#39;Half max&#39;</span><span class="p">)</span>
@@ -789,7 +789,7 @@ Predicted output for device settings: [0.5, 0.5, 0.5, 0.5, 0.5]
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -809,9 +809,9 @@ Name: Half max, dtype: float64
 <img alt="_images/03a_stimulation_devices_14_1.png" src="_images/03a_stimulation_devices_14_1.png" />
 </div>
 </div>
-<p>We can also search for a spectrum based on xy chromaticity and luminance.</p>
+<p>We can also search for a spectrum based on <em>xy</em> chromaticity and luminance.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">target_xy</span><span class="o">=</span><span class="p">[</span><span class="mf">0.31271</span><span class="p">,</span> <span class="mf">0.32902</span><span class="p">]</span>
@@ -825,10 +825,10 @@ Name: Half max, dtype: float64
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-basinhopping step 0: f 2.13983e-09
-basinhopping step 1: f 4.20333e-07 trial_f 4.20333e-07 accepted 1  lowest_f 2.13983e-09
+basinhopping step 0: f 3.44433e-08
+basinhopping step 1: f 2.62122e-07 trial_f 2.62122e-07 accepted 1  lowest_f 3.44433e-08
 Requested LMS: [ 0.87374046  0.78105394  0.44556496]
-Solution LMS: [ 0.87374644  0.78102593  0.44552864]
+Solution LMS: [ 0.87383788  0.78092192  0.4456517 ]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -838,7 +838,7 @@ Solution LMS: [ 0.87374644  0.78102593  0.44552864]
 <img alt="_images/03a_stimulation_devices_16_1.png" src="_images/03a_stimulation_devices_16_1.png" />
 </div>
 </div>
-<p>In sum, <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> will take the calibration data for your stimulation system and act as a predicitve model, which is a big step forwards towards silent substitution. This class actually serves as the base class for <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code>, which is described <a class="reference internal" href="03b_making_stimuli.html"><span class="doc">here</span></a>.</p>
+<p>To summarise, <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> will turn the calibration data for your stimulation system into a predicitve model, which is a big step towards silent substitution. Incidentally, <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> is the base class for <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code> (described <a class="reference internal" href="03b_making_stimuli.html"><span class="doc">here</span></a>), which uses numerical optimisation and linear algebra procedures to find solutions to stimulus problems.</p>
 </section>
 </section>
 
@@ -876,10 +876,8 @@ Solution LMS: [ 0.87374644  0.78102593  0.44552864]
 <li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="03_overview.html">Overview</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="03z_preliminaries.html">Preliminaries</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Stimulation devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03b_making_stimuli.html">Making stimuli</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03c_challanges.html">Challanges</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
@@ -892,7 +890,7 @@ Solution LMS: [ 0.87374644  0.78102593  0.44552864]
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="03_overview.html">Overview</a><ul>
-      <li>Previous: <a href="03z_preliminaries.html" title="previous chapter">Preliminaries</a></li>
+      <li>Previous: <a href="03_overview.html" title="previous chapter">Overview</a></li>
       <li>Next: <a href="03b_making_stimuli.html" title="next chapter">Making stimuli</a></li>
   </ul></li>
   </ul></li>
