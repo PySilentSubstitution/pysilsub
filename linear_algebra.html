@@ -305,84 +305,69 @@ div.rendered_html tbody tr:hover {
 <p>Pulses of contrast against a background, or temporal modulations</p>
 <p>negative contrast</p>
 <p>Which spectral sensetivities are assumed?</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">pysilsub.device</span> <span class="kn">import</span> <span class="n">StimulationDevice</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
-    <span class="s1">&#39;../../data/RGBA_linear_artificial.csv&#39;</span><span class="p">,</span>
-    <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Primary&#39;</span><span class="p">,</span> <span class="s1">&#39;Setting&#39;</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Wavelength&#39;</span>
-<span class="n">data</span>
+<span class="kn">from</span> <span class="nn">pysilsub.problem</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
 
-<span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="p">(</span>
-    <span class="n">resolutions</span><span class="o">=</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">],</span>
-    <span class="n">spds</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-    <span class="n">spd_binwidth</span><span class="o">=</span><span class="mi">1</span>
+<span class="c1"># Load the calibration data</span>
+<span class="n">spds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s1">&#39;../../data/BCGAR_5_Primary_8_bit_linear.csv&#39;</span><span class="p">,</span>
+    <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Primary&#39;</span><span class="p">,</span><span class="s1">&#39;Setting&#39;</span><span class="p">])</span>
+<span class="n">spds</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Int64Index</span><span class="p">(</span><span class="n">spds</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+<span class="n">spds</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Wavelength&#39;</span>
+
+<span class="c1"># List of colors for the primaries</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">]</span>
+
+<span class="n">ssp</span> <span class="o">=</span> <span class="n">SSP</span><span class="p">(</span>
+    <span class="n">resolutions</span><span class="o">=</span><span class="p">[</span><span class="mi">255</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span>  <span class="c1"># Five 8-bit primaries</span>
+    <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span>  <span class="c1"># Colors of the LEDs</span>
+    <span class="n">spds</span><span class="o">=</span><span class="n">spds</span><span class="p">,</span>  <span class="c1"># The calibration data</span>
+    <span class="n">spd_binwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># SPD wavelength binwidth</span>
+    <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">],</span>  <span class="c1"># Ignore rods</span>
+    <span class="n">silence</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">],</span>  <span class="c1"># Silence S-, M-, and L-cones</span>
+    <span class="n">isolate</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span>  <span class="c1"># Isolate melanopsin</span>
+    <span class="n">target_contrast</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>  <span class="c1"># Aim for 250% contrast</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;BCGAR (8-bit, linear)&#39;</span>  <span class="c1"># Description of device</span>
 <span class="p">)</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_spds</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<p>SSProblem that encapsulates the issue and prepares for solutions with linear algebra and numerical optimisation.</p>
+</section>
+<section id="Solving-with-linear-algebra">
+<h1>Solving with linear algebra<a class="headerlink" href="#Solving-with-linear-algebra" title="Permalink to this headline">¶</a></h1>
+<p>Silent substitution problems can also be solved with linear algebra. Continuing with our 5-primary device, suppose that we now want to isolate S-cones. Borrowing the notation from <a class="reference external" href="https://jov.arvojournals.org/article.aspx?articleid=2213232">Cao et al. (2015)</a>, let’s say that the spectral power distributions of the five primaries at maximum are <span class="math notranslate nohighlight">\(\tilde{P_{0}}(\lambda), \tilde{P_{1}}(\lambda), \tilde{P_{2}}(\lambda), \tilde{P_{3}}(\lambda), \tilde{P_{4}}(\lambda)\)</span>, with
+<span class="math notranslate nohighlight">\(\alpha = [p_{0}, p_{1}, p_{2}, p_{3}, p_{4}]\)</span> representing the proportion of the maximum for each LED, the photoreceptor excitations <span class="math notranslate nohighlight">\(\beta = [S M L R I]\)</span> can be calculated algebraicly with <span class="math notranslate nohighlight">\(\alpha = \beta A\)</span>, where <span class="math notranslate nohighlight">\(A\)</span> is a matrix representing the <em>a</em>-opic irradiances for each primary at its maximum setting:</p>
+<p><span class="math notranslate nohighlight">\(A=\begin{bmatrix} S_{0} &amp; S_{1} &amp; S_{2} &amp; S_{3} &amp; S_{4}\\ M_{0} &amp; M_{1} &amp; M_{2} &amp; M_{3} &amp; M_{4}\\ L_{0} &amp; L_{1} &amp; L_{2} &amp; L_{3} &amp; L_{4}\\ R_{0} &amp; R_{1} &amp; R_{2} &amp; R_{3} &amp; R_{4}\\ I_{0} &amp; I_{1} &amp; I_{2} &amp; I_{3} &amp; I_{4}\end{bmatrix}\)</span></p>
+<p>Now, scaling coefficient is <span class="math notranslate nohighlight">\(\alpha = \beta A^{-1}\)</span></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
 </div>
-<div class="output_area docutils container">
-<img alt="_images/linear_algebra_1_0.png" src="_images/linear_algebra_1_0.png" />
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
+<span class="n">mod</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.6</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
+</pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg_settings</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
-<span class="n">bg_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;background&#39;</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_multiprimary_spd</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Background&#39;</span><span class="p">,</span> <span class="n">show_primaries</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/linear_algebra_2_0.png" src="_images/linear_algebra_2_0.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Pmax</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+<span class="n">Pmax_spds</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">Pmax</span><span class="p">,</span> <span class="n">nosum</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Pmax_spds</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;AxesSubplot:xlabel=&#39;Wavelength&#39;&gt;
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg_spds</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">,</span> <span class="n">nosum</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">bg_spds</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -403,14 +388,16 @@ div.rendered_html tbody tr:hover {
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
+      <th>Primary</th>
       <th>0</th>
       <th>1</th>
       <th>2</th>
       <th>3</th>
+      <th>4</th>
     </tr>
     <tr>
       <th>Wavelength</th>
+      <th></th>
       <th></th>
       <th></th>
       <th></th>
@@ -420,38 +407,43 @@ div.rendered_html tbody tr:hover {
   <tbody>
     <tr>
       <th>380</th>
-      <td>0.000852</td>
-      <td>0.001111</td>
-      <td>0.001835</td>
-      <td>0.001729</td>
+      <td>0.002188</td>
+      <td>0.001705</td>
+      <td>0.002222</td>
+      <td>0.003669</td>
+      <td>0.003459</td>
     </tr>
     <tr>
       <th>381</th>
-      <td>0.000930</td>
-      <td>0.001186</td>
-      <td>0.002059</td>
-      <td>0.002032</td>
+      <td>0.002260</td>
+      <td>0.001859</td>
+      <td>0.002372</td>
+      <td>0.004118</td>
+      <td>0.004063</td>
     </tr>
     <tr>
       <th>382</th>
-      <td>0.000835</td>
-      <td>0.001194</td>
-      <td>0.001937</td>
-      <td>0.001805</td>
+      <td>0.001974</td>
+      <td>0.001670</td>
+      <td>0.002387</td>
+      <td>0.003874</td>
+      <td>0.003610</td>
     </tr>
     <tr>
       <th>383</th>
-      <td>0.000825</td>
-      <td>0.001226</td>
-      <td>0.001937</td>
-      <td>0.002036</td>
+      <td>0.002174</td>
+      <td>0.001650</td>
+      <td>0.002452</td>
+      <td>0.003874</td>
+      <td>0.004071</td>
     </tr>
     <tr>
       <th>384</th>
-      <td>0.000742</td>
-      <td>0.000999</td>
-      <td>0.001666</td>
-      <td>0.001550</td>
+      <td>0.001751</td>
+      <td>0.001484</td>
+      <td>0.001999</td>
+      <td>0.003333</td>
+      <td>0.003099</td>
     </tr>
     <tr>
       <th>...</th>
@@ -459,62 +451,67 @@ div.rendered_html tbody tr:hover {
       <td>...</td>
       <td>...</td>
       <td>...</td>
+      <td>...</td>
     </tr>
     <tr>
       <th>776</th>
-      <td>0.000531</td>
-      <td>0.000707</td>
-      <td>0.002339</td>
-      <td>0.001349</td>
+      <td>0.001244</td>
+      <td>0.001062</td>
+      <td>0.001414</td>
+      <td>0.004679</td>
+      <td>0.002699</td>
     </tr>
     <tr>
       <th>777</th>
-      <td>0.000523</td>
-      <td>0.000690</td>
-      <td>0.002296</td>
-      <td>0.001296</td>
+      <td>0.001150</td>
+      <td>0.001045</td>
+      <td>0.001381</td>
+      <td>0.004592</td>
+      <td>0.002592</td>
     </tr>
     <tr>
       <th>778</th>
-      <td>0.000397</td>
-      <td>0.000560</td>
-      <td>0.002137</td>
-      <td>0.001088</td>
+      <td>0.001028</td>
+      <td>0.000793</td>
+      <td>0.001120</td>
+      <td>0.004275</td>
+      <td>0.002177</td>
     </tr>
     <tr>
       <th>779</th>
-      <td>0.000537</td>
-      <td>0.000730</td>
-      <td>0.002106</td>
-      <td>0.001235</td>
+      <td>0.001205</td>
+      <td>0.001074</td>
+      <td>0.001461</td>
+      <td>0.004212</td>
+      <td>0.002471</td>
     </tr>
     <tr>
       <th>780</th>
-      <td>0.000557</td>
-      <td>0.000823</td>
-      <td>0.002340</td>
-      <td>0.001349</td>
+      <td>0.001195</td>
+      <td>0.001114</td>
+      <td>0.001645</td>
+      <td>0.004681</td>
+      <td>0.002698</td>
     </tr>
   </tbody>
 </table>
-<p>401 rows × 4 columns</p>
+<p>401 rows × 5 columns</p>
 </div></div>
 </div>
+<p>Next, we’ll be needing the spectral sensitivities for the photoreceptors.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">pysilsub.CIE</span> <span class="kn">import</span> <span class="n">get_CIES026</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.CIE</span> <span class="kn">import</span> <span class="n">get_CIES026</span>
 
-<span class="n">sss</span> <span class="o">=</span> <span class="n">get_CIES026</span><span class="p">()[[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="s1">&#39;L&#39;</span><span class="p">,</span><span class="s1">&#39;I&#39;</span><span class="p">]]</span>
+<span class="n">sss</span> <span class="o">=</span> <span class="n">get_CIES026</span><span class="p">()</span>
 <span class="n">sss</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -535,10 +532,11 @@ div.rendered_html tbody tr:hover {
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
+      <th>Photoreceptor</th>
       <th>S</th>
       <th>M</th>
       <th>L</th>
+      <th>R</th>
       <th>I</th>
     </tr>
     <tr>
@@ -547,6 +545,7 @@ div.rendered_html tbody tr:hover {
       <th></th>
       <th></th>
       <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -555,6 +554,7 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000000</td>
       <td>0.000000</td>
+      <td>5.890000e-04</td>
       <td>9.181600e-04</td>
     </tr>
     <tr>
@@ -562,6 +562,7 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000000</td>
       <td>0.000000</td>
+      <td>6.650000e-04</td>
       <td>1.045600e-03</td>
     </tr>
     <tr>
@@ -569,6 +570,7 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000000</td>
       <td>0.000000</td>
+      <td>7.520000e-04</td>
       <td>1.178600e-03</td>
     </tr>
     <tr>
@@ -576,6 +578,7 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000000</td>
       <td>0.000000</td>
+      <td>8.540000e-04</td>
       <td>1.322800e-03</td>
     </tr>
     <tr>
@@ -583,10 +586,12 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000000</td>
       <td>0.000000</td>
+      <td>9.720000e-04</td>
       <td>1.483800e-03</td>
     </tr>
     <tr>
       <th>...</th>
+      <td>...</td>
       <td>...</td>
       <td>...</td>
       <td>...</td>
@@ -597,6 +602,7 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000002</td>
       <td>0.000024</td>
+      <td>1.730000e-07</td>
       <td>2.550000e-08</td>
     </tr>
     <tr>
@@ -604,6 +610,7 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000002</td>
       <td>0.000023</td>
+      <td>1.640000e-07</td>
       <td>2.420000e-08</td>
     </tr>
     <tr>
@@ -611,6 +618,7 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000002</td>
       <td>0.000021</td>
+      <td>1.550000e-07</td>
       <td>2.290000e-08</td>
     </tr>
     <tr>
@@ -618,6 +626,7 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000002</td>
       <td>0.000020</td>
+      <td>1.470000e-07</td>
       <td>2.170000e-08</td>
     </tr>
     <tr>
@@ -625,24 +634,26 @@ div.rendered_html tbody tr:hover {
       <td>0.0</td>
       <td>0.000001</td>
       <td>0.000019</td>
+      <td>1.390000e-07</td>
       <td>2.050000e-08</td>
     </tr>
   </tbody>
 </table>
-<p>401 rows × 4 columns</p>
+<p>401 rows × 5 columns</p>
 </div></div>
 </div>
+<p>The dot product of these matrices, which we will call the primary-to-receptor matrix, contains the <em>a</em>-opic irradiances for the primary components of the background spectrum.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p2s_matrix</span> <span class="o">=</span> <span class="n">sss</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">bg_spds</span><span class="p">)</span>
-<span class="n">p2s_matrix</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">sss</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Pmax_spds</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">A</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -663,173 +674,316 @@ div.rendered_html tbody tr:hover {
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
+      <th>Photoreceptor</th>
+      <th>S</th>
+      <th>M</th>
+      <th>L</th>
+      <th>R</th>
+      <th>I</th>
+    </tr>
+    <tr>
+      <th>Primary</th>
       <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
+      <th>0</th>
+      <td>7.132159</td>
+      <td>1.250263</td>
+      <td>0.868063</td>
+      <td>3.447991</td>
+      <td>4.173141</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4.888283</td>
+      <td>2.701134</td>
+      <td>1.740474</td>
+      <td>5.907189</td>
+      <td>7.014032</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.421072</td>
+      <td>7.118705</td>
+      <td>5.807598</td>
+      <td>7.249536</td>
+      <td>5.661086</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.189787</td>
+      <td>9.329613</td>
+      <td>17.305348</td>
+      <td>2.566504</td>
+      <td>1.014661</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.113690</td>
+      <td>0.312333</td>
+      <td>1.699980</td>
+      <td>0.152688</td>
+      <td>0.138191</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The inverse of the primary-to-receptor matrix is ultimately what will help us find a solution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">A1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">A1</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Photoreceptor</th>
       <th>S</th>
-      <td>2.444142</td>
-      <td>0.210536</td>
-      <td>0.094893</td>
-      <td>0.056845</td>
-    </tr>
-    <tr>
       <th>M</th>
-      <td>1.350567</td>
-      <td>3.559353</td>
-      <td>4.664806</td>
-      <td>0.156167</td>
-    </tr>
-    <tr>
       <th>L</th>
-      <td>0.870237</td>
-      <td>2.903799</td>
-      <td>8.652674</td>
-      <td>0.849990</td>
+      <th>R</th>
+      <th>I</th>
     </tr>
     <tr>
-      <th>I</th>
-      <td>3.507016</td>
-      <td>2.830543</td>
-      <td>0.507331</td>
-      <td>0.069095</td>
+      <th>Primary</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.237824</td>
+      <td>-0.079977</td>
+      <td>-0.000905</td>
+      <td>0.498480</td>
+      <td>-0.554540</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.140289</td>
+      <td>0.170675</td>
+      <td>-0.018809</td>
+      <td>-0.830695</td>
+      <td>0.878890</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.001217</td>
+      <td>-0.143764</td>
+      <td>0.007694</td>
+      <td>0.673637</td>
+      <td>-0.513031</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.013338</td>
+      <td>0.252159</td>
+      <td>-0.030002</td>
+      <td>-0.429614</td>
+      <td>0.262860</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.109431</td>
+      <td>-2.209677</td>
+      <td>0.887082</td>
+      <td>2.667970</td>
+      <td>-1.539854</td>
     </tr>
   </tbody>
 </table>
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">inv_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">p2s_matrix</span><span class="p">)</span>
-<span class="n">inv_mat</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bp</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mf">.5</span><span class="p">,</span><span class="mf">.5</span><span class="p">,</span><span class="mf">.5</span><span class="p">,</span><span class="mf">.5</span><span class="p">,</span><span class="mf">.5</span><span class="p">])</span>
+<span class="n">bp</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-array([[ 0.51206705,  0.0747923 , -0.0406342 , -0.09045156],
-       [-0.64521585, -0.07136851,  0.01783463,  0.47272853],
-       [ 0.43661246,  0.36646177, -0.06156279, -0.43013765],
-       [-2.76462942, -3.5632431 ,  1.78385127,  2.85632316]])
+Photoreceptor
+S     6.372495
+M    10.356024
+L    13.710732
+R     9.661954
+I     9.000556
+dtype: float64
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span> <span class="o">=</span> <span class="n">inv_mat</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mf">0.18</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mf">.5</span><span class="p">,</span><span class="mf">.5</span><span class="p">,</span><span class="mf">.5</span><span class="p">,</span><span class="mf">.5</span><span class="p">,</span><span class="mf">.6</span><span class="p">])</span>
 <span class="n">mod</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-array([ 0.09217207, -0.11613885,  0.07859024, -0.4976333 ])
+Photoreceptor
+S     6.383864
+M    10.387257
+L    13.880730
+R     9.677223
+I     9.014375
+dtype: float64
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod_settings</span> <span class="o">=</span> <span class="n">bg_settings</span> <span class="o">+</span> <span class="n">mod</span>
-<span class="n">mod_settings</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">A1</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+<span class="n">a</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-array([ 0.59217207,  0.38386115,  0.57859024,  0.0023667 ])
+Primary
+0    0.5
+1    0.5
+2    0.5
+3    0.5
+4    0.6
+dtype: float64
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_spd</span><span class="p">(</span><span class="n">mod_settings</span><span class="p">)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bg_spd</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mod_spd</span><span class="p">)</span>
-<br/></pre></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A1</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[&lt;matplotlib.lines.Line2D at 0x7ffcc989b610&gt;]
+Primary
+0    0.050441
+1    0.029886
+2    0.011660
+3    0.034371
+4   -0.151955
+dtype: float64
 </pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">plot_ss_result</span><span class="p">((</span><span class="n">bg</span><span class="o">+</span><span class="n">A1</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="n">bg</span><span class="o">+</span><span class="n">A1</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">.5</span><span class="p">]))</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+</pre></div>
+</div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/linear_algebra_10_1.png" src="_images/linear_algebra_10_1.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bg_settings</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">weights_to_settings</span><span class="p">(</span><span class="n">bg_settings</span><span class="p">)</span>
-<span class="n">bg_settings</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
 <div class="highlight"><pre>
-[128, 128, 128, 128]
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
+<span class="ansi-green-fg">/var/folders/c9/7yddvl1n2ss863cgfngj0wpm0000gp/T/ipykernel_25189/2625813723.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>ssp<span class="ansi-blue-fg">.</span>plot_ss_result<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">(</span>bg<span class="ansi-blue-fg">+</span>A1<span class="ansi-blue-fg">.</span>dot<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>to_list<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">+</span> <span class="ansi-blue-fg">(</span>bg<span class="ansi-blue-fg">+</span>A1<span class="ansi-blue-fg">.</span>dot<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">.5</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>to_list<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/Projects/PySilSub/pysilsub/problem.py</span> in <span class="ansi-cyan-fg">plot_ss_result</span><span class="ansi-blue-fg">(self, x0)</span>
+<span class="ansi-green-intense-fg ansi-bold">    370</span>     <span class="ansi-green-fg">def</span> plot_ss_result<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> x0<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    371</span>         <span class="ansi-red-fg"># get aopic</span>
+<span class="ansi-green-fg">--&gt; 372</span><span class="ansi-red-fg">         </span>bg_ao<span class="ansi-blue-fg">,</span> mod_ao <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>smlri_calculator<span class="ansi-blue-fg">(</span>x0<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    373</span>         df_ao = pd.concat([bg_ao, mod_ao], axis=1).T.melt(
+<span class="ansi-green-intense-fg ansi-bold">    374</span>             value_name<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;aopic&#39;</span><span class="ansi-blue-fg">,</span>
+
+<span class="ansi-green-fg">~/Projects/PySilSub/pysilsub/problem.py</span> in <span class="ansi-cyan-fg">smlri_calculator</span><span class="ansi-blue-fg">(self, x0)</span>
+<span class="ansi-green-intense-fg ansi-bold">    223</span>             bg_weights, name=&#39;Background&#39;)
+<span class="ansi-green-intense-fg ansi-bold">    224</span>         mod_smlri = self.predict_multiprimary_aopic(
+<span class="ansi-green-fg">--&gt; 225</span><span class="ansi-red-fg">             mod_weights, name=&#39;Modulation&#39;)
+</span><span class="ansi-green-intense-fg ansi-bold">    226</span>         <span class="ansi-green-fg">return</span> <span class="ansi-blue-fg">(</span>bg_smlri<span class="ansi-blue-fg">,</span> mod_smlri<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    227</span>
+
+<span class="ansi-green-fg">~/Projects/PySilSub/pysilsub/device.py</span> in <span class="ansi-cyan-fg">predict_multiprimary_aopic</span><span class="ansi-blue-fg">(self, settings, name)</span>
+<span class="ansi-green-intense-fg ansi-bold">    337</span>         &#34;&#34;&#34;
+<span class="ansi-green-intense-fg ansi-bold">    338</span>         <span class="ansi-red-fg">#breakpoint()</span>
+<span class="ansi-green-fg">--&gt; 339</span><span class="ansi-red-fg">         </span>spd <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>predict_multiprimary_spd<span class="ansi-blue-fg">(</span>settings<span class="ansi-blue-fg">,</span> name<span class="ansi-blue-fg">=</span>name<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    340</span>         sss <span class="ansi-blue-fg">=</span> get_CIES026<span class="ansi-blue-fg">(</span>binwidth<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>spd_binwidth<span class="ansi-blue-fg">,</span> fillna<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    341</span>         <span class="ansi-green-fg">return</span> spd<span class="ansi-blue-fg">.</span>dot<span class="ansi-blue-fg">(</span>sss<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/Projects/PySilSub/pysilsub/device.py</span> in <span class="ansi-cyan-fg">predict_multiprimary_spd</span><span class="ansi-blue-fg">(self, settings, name, nosum)</span>
+<span class="ansi-green-intense-fg ansi-bold">    305</span>         spd <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    306</span>         <span class="ansi-green-fg">for</span> primary<span class="ansi-blue-fg">,</span> setting <span class="ansi-green-fg">in</span> enumerate<span class="ansi-blue-fg">(</span>settings<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 307</span><span class="ansi-red-fg">             </span>spd<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>predict_primary_spd<span class="ansi-blue-fg">(</span>primary<span class="ansi-blue-fg">,</span> setting<span class="ansi-blue-fg">,</span> primary<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    308</span>         spd <span class="ansi-blue-fg">=</span> pd<span class="ansi-blue-fg">.</span>concat<span class="ansi-blue-fg">(</span>spd<span class="ansi-blue-fg">,</span> axis<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    309</span>         <span class="ansi-green-fg">if</span> nosum<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/Projects/PySilSub/pysilsub/device.py</span> in <span class="ansi-cyan-fg">predict_primary_spd</span><span class="ansi-blue-fg">(self, primary, setting, name)</span>
+<span class="ansi-green-intense-fg ansi-bold">    250</span>             setting <span class="ansi-blue-fg">*=</span> self<span class="ansi-blue-fg">.</span>resolutions<span class="ansi-blue-fg">[</span>primary<span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    251</span>         <span class="ansi-green-fg">if</span> setting <span class="ansi-blue-fg">&gt;</span> self<span class="ansi-blue-fg">.</span>resolutions<span class="ansi-blue-fg">[</span>primary<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 252</span><span class="ansi-red-fg">             raise ValueError(f&#39;Requested setting {int(setting)} exceeds &#39;
+</span><span class="ansi-green-intense-fg ansi-bold">    253</span>                              f&#39;resolution of device primary {primary}&#39;)
+<span class="ansi-green-intense-fg ansi-bold">    254</span>
+
+<span class="ansi-red-fg">ValueError</span>: Requested setting 467 exceeds resolution of device primary 3
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod_settings</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">weights_to_settings</span><span class="p">(</span><span class="n">mod_settings</span><span class="p">)</span>
-<span class="n">mod_settings</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-[151, 98, 148, 0]
-</pre></div></div>
-</div>
-<p>SSProblem that encapsulates the issue and prepares for solutions with linear algebra and numerical optimisation.</p>
-</section>
-<section id="Solving-with-linear-algebra">
-<h1>Solving with linear algebra<a class="headerlink" href="#Solving-with-linear-algebra" title="Permalink to this headline">¶</a></h1>
-<p>Information on how to solve silent substitution problems with linear algebra. For example…</p>
-<p><span class="math notranslate nohighlight">\(A=\begin{bmatrix}1 &amp; 2 &amp; 3\\ a &amp; b &amp; c\end{bmatrix}=\)</span></p>
-<p><span class="math notranslate nohighlight">\(PC_{d}=\begin{bmatrix}L\\ M\\ S\\ R\\ \end{bmatrix}=B\times\begin{bmatrix}RCd\\ GCd\\ BCd\\ ACd\\ \end{bmatrix}PCd=\begin{bmatrix}0\\ 0\\ 0\\ 0.25\\ \end{bmatrix}\)</span></p>
 <p>Maguire, J., Parry, N. R. A., Kremers, J., Kommanapalli, D., Murray, I. J., &amp; McKeefry, D. J. (2016). Rod electroretinograms elicited by silent substitution stimuli from the light-adapted human eye. Translational Vision Science and Technology, 5(4). <a class="reference external" href="https://doi.org/10.1167/tvst.5.4.13">https://doi.org/10.1167/tvst.5.4.13</a></p>
 <p>Advantages of the algebraic approach:</p>
 <ul class="simple">
@@ -844,10 +998,6 @@ array([ 0.59217207,  0.38386115,  0.57859024,  0.0023667 ])
 <li><p>generally inflexible</p></li>
 </ul>
 <p>More info coming soon.</p>
-</section>
-<section id="SilentSubstitutionProblem">
-<h1><code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code><a class="headerlink" href="#SilentSubstitutionProblem" title="Permalink to this headline">¶</a></h1>
-<p>Luckily, <em>PySilSub</em> has a <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code> class that encapsulates the stimulation goals and offers tools for solving the problems.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
