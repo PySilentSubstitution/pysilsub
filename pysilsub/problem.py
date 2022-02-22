@@ -448,7 +448,7 @@ class SilentSubstitutionProblem(StimulationDevice):
     
     # Linear algebra    
     def linalg_solve(self, r):
-        breakpoint()
+        #breakpoint()
         if self.background is None:
             raise TypeError('Background spectrum not specified.')
         receptors = self.receptors.copy()
