@@ -16,6 +16,7 @@ from scipy.optimize import curve_fit, minimize, basinhopping, OptimizeResult
 from scipy.stats import beta
 import matplotlib.pyplot as plt
 import matplotlib.path as mplpath
+from matplotlib.colors import cnames
 import seaborn as sns
 import pandas as pd
 import numpy as np
@@ -81,6 +82,7 @@ class StimulationDevice:
         """
         self.resolutions = resolutions
         self.colors = colors
+        self._check_color_names_valid()
         self.spds = spds
         self.spd_binwidth = spd_binwidth
         self.name = name
@@ -89,13 +91,17 @@ class StimulationDevice:
 
         # create important data
         self.nprimaries = len(self.resolutions)
-        self.wls = self.spds.columns
-        self.bounds = [(0., 1.,) for primary in self.resolutions]
-        
+        self.wls = self.spds.columns        
         
     # Starts properly here
+    def _check_color_names_valid(self):
+        request = f'Please choose from the following:\n {list(cnames.keys())}'
+        msg = f'At least one color name was not valid. {request}'
+        if not all([c in cnames.keys() for c in self.colors]):
+            raise ValueError(msg)
+        
     def _get_gamut(self):
-        breakpoint()
+        #breakpoint()
         max_spds = self.spds.loc[(slice(None), self.resolutions), :]
         XYZ = max_spds.apply(
             colorfunc.spd_to_XYZ, args=(self.spd_binwidth,), axis=1)
@@ -147,7 +153,8 @@ class StimulationDevice:
                 lw=2, marker='x', markersize=8, label='Gamut')
         ax.set(xlim=(-.15, .9),
                ylim=(-.1, 1),
-               title=f'{self.name} gamut')
+               title=f'{self.name}')
+        ax.legend()
         if ax is None:
             return fig
         else:
@@ -298,6 +305,7 @@ class StimulationDevice:
             spd.append(self.predict_primary_spd(primary, setting, primary))        
         spd = pd.concat(spd, axis=1)
         if nosum:
+            spd.columns.name = 'Primary'
             return spd
         else:
             spd = spd.sum(axis=1)
@@ -376,11 +384,13 @@ class StimulationDevice:
             return sum(
                 pow(requested_LMS - aopic[['L', 'M', 'S']].to_numpy(), 2)
             )
- 
+        
+        # Bounds
+        bounds = [(0., 1.,) for primary in self.resolutions]
         # Arguments for local solver
         minimizer_kwargs = {
             'method': 'SLSQP',
-            'bounds': self.bounds,
+            'bounds': bounds,
             'options': {'maxiter': 500}
         }
         

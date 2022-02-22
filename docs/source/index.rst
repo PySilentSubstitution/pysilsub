@@ -22,6 +22,7 @@ Please be aware that these documentation pages and the associated software are c
    02_installation
    03_overview
    05_examples
+   06_api
    09_funding
    10_citation
  

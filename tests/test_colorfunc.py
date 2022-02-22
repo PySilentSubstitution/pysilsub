@@ -15,7 +15,7 @@ sys.path.insert(
 import pandas as pd
 import numpy as np
 
-from silentsub import colorfunc
+from pysilsub import colorfunc
 
 
 class TestColorFunc(unittest.TestCase):

@@ -1366,6 +1366,7 @@ def get_CIES026(binwidth: Optional[int] = 1,
     sss = sss[:, ::binwidth]
     sss = pd.DataFrame(data=sss.T, columns=colnames)
     sss.set_index('Wavelength', inplace=True)
+    sss.columns.name = 'Photoreceptor'
     sss.index = pd.Int64Index(sss.index)
     if fillna:
         sss = sss.fillna(0)

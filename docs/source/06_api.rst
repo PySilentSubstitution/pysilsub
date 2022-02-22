@@ -1,7 +1,9 @@
 API
 ===
 
-This page is under construction...
+.. automodule:: pysilsub.device
+   :members:
+   :special-members:
 
 .. rubric:: Tables and indices
 ------------------------------
