@@ -1,47 +1,45 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-silentsub.silentsub
-===================
+pysilsub.problem
+================
 
-http://www.cvrl.org/ciexyzpr.htm
-
-Module to assist with performing silent substitution.
+Help solving silent substitution problems with linear algebra and optimisation.
 
 @author: jtm, ms
 
-Here are the cases that we want to have in the silent substitution module:
-Single-direction modulations
-Max. contrast within a device’s limit <- this is what you have been working on
--> Option with a specific contrast (e.g. 200%) contrast
-Max. contrast around a background with specific illuminance
--> Option with a specific contrast (e.g. 200%) contrast
-Max. contrast around a background with specific illuminance and colour (chromaticity)
--> Option with a specific contrast (e.g. 200%) contrast
-Max. contrast around a background with specific colour (chromaticity)
--> Option with a specific contrast (e.g. 200%) contrast
-Multiple-direction modulations
-Max. contrast for multiple modulation directions simulanteously
--> Option with a specific contrast (e.g. 200%) contrast
-+ all the cases above with fixed illuminance or chromaticity
-So I think it boils down to various decisions that need to be reflected in the case:
-Max. or specific contrast?
-Variable (uncontrolled) or specific illuminance?
-Variable (uncontrolled) or specific chromaticity?
-One or multiple modulation directions?
-
-function taht takes XYZ coordinates into l,m,s coordinates
-- cie1931 are legacy functions / not cone based
-- another function to specify an xyY (e.g., .33, .44, 300 lx) ! not CIE1931 xyy! Cone based colour space!
-- function to work out lms coordinates (same as irradiances) for specified values
-- enforce the background to be those lms values
-- add constraint to say coordinates of background are as specified
-- function that turns XYZ coordinate in lms coordinate
-
-- look into numba - accelerate functions
-- pseudo inverse
-
 """
+
+# Here are the cases that we want to have in the silent substitution module:
+# Single-direction modulations
+# Max. contrast within a device’s limit <- this is what you have been working on
+# -> Option with a specific contrast (e.g. 200%) contrast
+# Max. contrast around a background with specific illuminance
+# -> Option with a specific contrast (e.g. 200%) contrast
+# Max. contrast around a background with specific illuminance and colour (chromaticity)
+# -> Option with a specific contrast (e.g. 200%) contrast
+# Max. contrast around a background with specific colour (chromaticity)
+# -> Option with a specific contrast (e.g. 200%) contrast
+# Multiple-direction modulations
+# Max. contrast for multiple modulation directions simulanteously
+# -> Option with a specific contrast (e.g. 200%) contrast
+# + all the cases above with fixed illuminance or chromaticity
+# So I think it boils down to various decisions that need to be reflected in the case:
+# Max. or specific contrast?
+# Variable (uncontrolled) or specific illuminance?
+# Variable (uncontrolled) or specific chromaticity?
+# One or multiple modulation directions?
+
+# function taht takes XYZ coordinates into l,m,s coordinates
+# - cie1931 are legacy functions / not cone based
+# - another function to specify an xyY (e.g., .33, .44, 300 lx) ! not CIE1931 xyy! Cone based colour space!
+# - function to work out lms coordinates (same as irradiances) for specified values
+# - enforce the background to be those lms values
+# - add constraint to say coordinates of background are as specified
+# - function that turns XYZ coordinate in lms coordinate
+
+# - look into numba - accelerate functions
+# - pseudo inverse
 
 from typing import List, Union, Optional, Tuple, Any, Sequence
 import numpy as np
@@ -190,8 +188,9 @@ class SilentSubstitutionProblem(StimulationDevice):
         print(f'Target contrast: {self.target_contrast}')
         print(f'Bounds: {self.bounds}')
         
-    def print_photoreceptor_contrasts(self):
-        pass
+    def print_photoreceptor_contrasts(self, solution, contrast_statistic):
+        c = self.get_photoreceptor_contrasts(solution, contrast_statistic)
+        print(c.round(6))
         
     def initial_guess_x0(self) -> np.array:
         """Return an initial guess for the optimization variables.
@@ -260,7 +259,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         if contrast_statistic == 'simple':
             return (mod_smlri
                     .sub(bg_smlri)
-                    .div(bg_smlri)).round(6)
+                    .div(bg_smlri))
         else:
             max_smlri = pd.concat([bg_smlri, mod_smlri], axis=1).max(axis=1)
             min_smlri = pd.concat([bg_smlri, mod_smlri], axis=1).min(axis=1)
@@ -448,7 +447,7 @@ class SilentSubstitutionProblem(StimulationDevice):
     
     # Linear algebra    
     def linalg_solve(self, r):
-        #breakpoint()
+        breakpoint()
         if self.background is None:
             raise TypeError('Background spectrum not specified.')
         receptors = self.receptors.copy()

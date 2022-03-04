@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-silentsub.device
-================
+pysilsub.device
+===============
 
 A generic device class for multiprimary light stimulators.
 

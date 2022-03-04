@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-silentsub.precep
-================
+pysilsub.precep
+===============
 
 Convenience functions for accessing prereceptoral filter functions.
 

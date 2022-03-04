@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''
-silentsub.CIE
-=============
+pysilsub.CIE
+============
 
 Convenience functions for accessing CIE standards.
 

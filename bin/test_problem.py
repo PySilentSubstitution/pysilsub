@@ -34,7 +34,7 @@ ssp = SSP(
 ) 
 
 ssp.background = [.5]*5
-solution = ssp.linalg_solve([1., 0., 0., 0.])
+solution = ssp.linalg_solve([1., 0, 0, 0.])
 ssp.plot_ss_result(solution)
 
-print(ssp.get_photoreceptor_contrasts(solution, 'michelson'))
+ssp.print_photoreceptor_contrasts(solution, 'simple')

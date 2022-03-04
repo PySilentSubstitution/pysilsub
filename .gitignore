@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Folders to ignore
+matlab/
+paper/
+lit/
+
