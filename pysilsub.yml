@@ -1,4 +1,4 @@
-name: silsub
+name: pysilsub
 channels:
   - esrf-bcu
   - conda-forge
@@ -204,4 +204,4 @@ dependencies:
     - threadpoolctl==3.0.0
     - tqdm==4.62.3
     - winning==0.2.0
-prefix: /Users/jtm545/opt/anaconda3/envs/silsub
+prefix: /Users/jtm545/opt/anaconda3/envs/pysilsub
