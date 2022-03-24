@@ -181,7 +181,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         print('{}\n{:*^60s}\n{}'.format(
             '*'*60, ' ' + 'Silent Substitution Problem' + ' ', '*'*60))
         print(f'Device: {self.name}')
-        print(f'Backgorund: {self.background}')
+        print(f'Background: {self.background}')
         print(f'Ignoring: {self.ignore}')
         print(f'Silencing: {self.silence}')
         print(f'Isolating: {self.isolate}')
@@ -447,7 +447,7 @@ class SilentSubstitutionProblem(StimulationDevice):
     
     # Linear algebra    
     def linalg_solve(self, r):
-        breakpoint()
+        #breakpoint()
         if self.background is None:
             raise TypeError('Background spectrum not specified.')
         receptors = self.receptors.copy()

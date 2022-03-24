@@ -1,5 +1,5 @@
-API
-===
+API Documentation
+=================
 
 .. automodule:: pysilsub.device
    :members:
