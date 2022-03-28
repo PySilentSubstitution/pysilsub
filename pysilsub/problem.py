@@ -175,7 +175,10 @@ class SilentSubstitutionProblem(StimulationDevice):
     @background.setter
     def background(self, background):
         self._background = background
-        self.bounds = [(0., 1.,) for primary in self.resolutions]
+        if self._background == None:
+            self.bounds = [(0., 1.,) for primary in self.resolutions] * 2
+        else:
+            self.bounds = [(0., 1.,) for primary in self.resolutions]
         
     def print_problem(self):
         print('{}\n{:*^60s}\n{}'.format(
@@ -275,7 +278,8 @@ class SilentSubstitutionProblem(StimulationDevice):
         #breakpoint()
         contrast = self.get_photoreceptor_contrasts(x0)
         if self.target_contrast is None:  # In this case we aim to maximise contrast
-            return -sum(pow(contrast[self.isolate], 2))
+            #return -sum(pow(contrast[self.isolate], 2))
+            return -contrast[self.isolate][0]
         else:
             return sum(pow(self.target_contrast - contrast[self.isolate], 2))
 

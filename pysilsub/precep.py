@@ -1003,3 +1003,4 @@ def get_macula_pigment_density_spectra(
         density = pd.Series(density[1], index=density[0], name=colnames[1])
         density.index.name = colnames[0]
     return density
+

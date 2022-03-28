@@ -20,10 +20,10 @@ import pandas as pd
 
 def get_CIE_2006_10_deg_CMF(
         binwidth: Optional[int] = 1,
-        asdf: Optional[bool] = True,        
+        asdf: Optional[bool] = True,
         trim_visible: Optional[bool] = True
-        ) -> Union[np.ndarray, pd.DataFrame]:
-    """Get the CIE 2006 XYZ 10-deg physiologically relevant color matching 
+) -> Union[np.ndarray, pd.DataFrame]:
+    """Get the CIE 2006 XYZ 10-deg physiologically relevant color matching
     functions.
 
     Parameters
@@ -35,7 +35,7 @@ def get_CIE_2006_10_deg_CMF(
         Width of the wavelength bins in nanometers (must be `1` or `5`). The
         default is `1`.
     trim_visible : bool, optional
-        Whether to trim the CMFs to 380-780 nm. The default is True. 
+        Whether to trim the CMFs to 380-780 nm. The default is True.
 
     Returns
     -------
@@ -43,9 +43,9 @@ def get_CIE_2006_10_deg_CMF(
         The CIE 2006 XYZ 10-deg physiologically relevant CMFs.
 
     """
-    #breakpoint()
+    # breakpoint()
     colnames = ['Wavelength', 'X', 'Y', 'Z']
-    
+
     cmf = np.array([
         390, 2.95E-03, 4.08E-04, 1.32E-02,
         391, 3.58E-03, 4.98E-04, 1.60E-02,
@@ -488,11 +488,11 @@ def get_CIE_2006_10_deg_CMF(
         828, 1.77E-06, 7.12E-07, 0.00E+00,
         829, 1.67E-06, 6.72E-07, 0.00E+00,
         830, 1.58E-06, 6.35E-07, 0.00E+00,
-        ])
+    ])
     cmf = cmf.reshape(441, 4).astype(np.float64).T
     if trim_visible:
         prepend = np.array(
-            [[wl, 0.00E+00, 0.00E+00, 0.00E+00] for wl in range(380,390)])
+            [[wl, 0.00E+00, 0.00E+00, 0.00E+00] for wl in range(380, 390)])
         cmf = np.vstack((prepend, cmf.T))
         cmf = cmf[cmf[:, 0] < 781]
     cmf = cmf.T[:, ::binwidth].T
@@ -501,7 +501,8 @@ def get_CIE_2006_10_deg_CMF(
         cmf.set_index('Wavelength', inplace=True)
         cmf.index = pd.Int64Index(cmf.index)
     return cmf
-    
+
+
 def get_CIE_CMF(asdf: Optional[bool] = True, binwidth: Optional[int] = 1):
     '''Get the CIE 1931 XYZ 2-deg color matching functions.
 
