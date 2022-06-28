@@ -72,17 +72,10 @@ class SilentSubstitutionProblem(StimulationDevice):
                  resolutions: List[int],
                  colors: List[str],
                  spds: pd.DataFrame,
-                 spd_binwidth: int = 1,
+                 wavelengths: List[int],
+                 action_spectra='CIES026',
                  name: Optional[str] = None,
-                 ignore: List[str] = ['R'],
-                 silence: List[str] = ['S', 'M', 'L'],
-                 isolate: List[str] = ['I'],
-                 target_contrast: float = None,
-                 target_xy: List[float] = None,
-                 target_luminance: float = None,
-                 bounds: Optional[List[Tuple[float, float]]] = None,
-                 background: Optional[List[float]] = None,
-                 ) -> None:
+                 config: Optional[dict] = None) -> None:
         """Class to perform silent substitution.
 
         Parameters
@@ -98,22 +91,8 @@ class SilentSubstitutionProblem(StimulationDevice):
             Column headers must be wavelengths and each row a spectrum.
             Additional columns are needed to identify the primary/setting. For
             example, 380, ..., 780, primary, setting.
-        ignore : list of str
-            List of photoreceptors to ignore. Usually ['R'], because rods are
-            difficult to work with and are often saturated anyway.
-        silence : list of str
-            List of photoreceptors to silence.
-        isolate : list of str
-            List of photoreceptors isolate.
-        target_contrast : float
-            Desired contrast for isolated photoreceptor(s).
-        bounds : list of tuples, optional
-            Min/max pairs to act as boundaries for each channel. Must be same 
-            length as `self.resolutions`. The default is None.
-        background : list of int
-            List of weights to define a specific background spectrum. If this
-            option is passed, the background will be 'pinned' and will not be 
-            subject to the optimisation. 
+        config : dict
+            Config file dict
             
         Returns
         -------
@@ -121,21 +100,41 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         """
         # Instance attributes
-        super().__init__(resolutions, colors, spds, spd_binwidth, name)
-        self._ignore = ignore
-        self._silence = silence
-        self._isolate = isolate
-        self.target_contrast = target_contrast
-        self.target_xy = np.array(target_xy)
-        self.target_luminance = target_luminance
-        self._bounds = bounds
-        if self._bounds is None:  # Default bounds if not specified
-            self._bounds = [(0., 1.,) for primary in self.resolutions]
-        self._background = background   
-        if self._background is None:  # We will optimise the background
-            self._bounds = self._bounds * 2
-        self.print_problem()
+        super().__init__(resolutions, colors, spds, wavelengths, 
+                         action_spectra, name)
         
+        # Problem parameters
+        self._background = None
+        self._bounds = None
+        self._target_luminance = None
+        self._target_xy = None
+        self._ignore = None
+        self._silence = None
+        self._isolate = None
+        self._target_contrast = None
+
+        # Default bounds
+        self.bounds = [(0., 1.,) for primary in range(self.nprimaries)]
+                         
+    def __str__(self):
+        return f"""SilentSubstitutionProblem:
+        Resolutions: {self.resolutions},
+        Colors: {self.colors},
+        SPDs: {self.spds.shape},
+        Wavelengths: {self.wavelengths},
+        Action Spectra: {self.action_spectra.shape},
+        Name: {self.name},
+        Config: {self.config}
+    """
+    
+    @property
+    def background(self):
+        return self._background
+     
+    @background.setter
+    def background(self, background):
+        self._background = background
+            
     @property
     def bounds(self):
         return self._bounds
@@ -146,41 +145,67 @@ class SilentSubstitutionProblem(StimulationDevice):
                     
     @property
     def ignore(self):
+        if self._ignore is None:
+            raise Exception('There is nothing to ignore...')
         return self._ignore
     
     @ignore.setter
     def ignore(self, ignore):
+        self._check_receptor_input(ignore)            
         self._ignore = ignore
     
     @property
     def silence(self):
+        if self._silence is None:
+            raise Exception('There is nothing to silence...')        
         return self._silence
     
     @silence.setter
     def silence(self, silence):
+        self._check_receptor_input(silence)            
         self._silence = silence
         
     @property
     def isolate(self):
+        if self._isolate is None:
+            raise Exception('There is nothin to isolate...')
         return self._isolate
      
     @isolate.setter
     def isolate(self, isolate):
+        self._check_receptor_input(isolate)            
         self._isolate = isolate   
         
     @property
-    def background(self):
-        return self._background
+    def target_contrast(self):
+        if self._target_contrast is None:
+            raise Exception('Target contrast not specified...')
+        return self._target_contrast
      
-    @background.setter
-    def background(self, background):
-        self._background = background
-        if self._background == None:
-            self.bounds = [(0., 1.,) for primary in self.resolutions] * 2
-        else:
-            self.bounds = [(0., 1.,) for primary in self.resolutions]
+    @target_contrast.setter
+    def target_contrast(self, target_contrast):
+        self._target_contrast = target_contrast   
         
+    # Error checking
+    def _check_receptor_input(self, receptors):
+        """Throw an error if user tries to invent new photoreceptors"""
+        assert isinstance(receptors, list), 'Put photoreceptors in a list.'
+        if not all([pr in self.photoreceptors for pr in receptors]):
+            raise ValueError(
+                f'Photoreceptor(s) must be in {self.photoreceptors}')
+        
+    def _check_problem(self):
+        try:
+            assert self.ignore is not None
+            assert self.silence is not None
+            assert self.isolate is not None
+        except:
+            raise Exception('Minimum conditions for problem not met. '
+                + 'Must at least specify which receptors to ignore, which '
+                + 'to silence, and which to isolate')
+    
     def print_problem(self):
+        self._check_problem()
         print('{}\n{:*^60s}\n{}'.format(
             '*'*60, ' ' + 'Silent Substitution Problem' + ' ', '*'*60))
         print(f'Device: {self.name}')
@@ -188,8 +213,10 @@ class SilentSubstitutionProblem(StimulationDevice):
         print(f'Ignoring: {self.ignore}')
         print(f'Silencing: {self.silence}')
         print(f'Isolating: {self.isolate}')
-        print(f'Target contrast: {self.target_contrast}')
-        print(f'Bounds: {self.bounds}')
+        try:
+            print(f'Target contrast: {self.target_contrast}')
+        except:
+            pass
         
     def print_photoreceptor_contrasts(self, solution, contrast_statistic):
         c = self.get_photoreceptor_contrasts(solution, contrast_statistic)
@@ -410,12 +437,12 @@ class SilentSubstitutionProblem(StimulationDevice):
         #print(f'\t{self.get_photoreceptor_contrasts(x0)}')
         
         # Print luminance
-        print(f'\tBackground luminance: {spd_to_lux(bg_spd)}')
-        print(f'\tModulation luminance: {spd_to_lux(mod_spd)}')
+        print(f'\tBackground luminance: {spd_to_lux(bg_spd, binwidth=self.wavelengths[2])}')
+        print(f'\tModulation luminance: {spd_to_lux(mod_spd, binwidth=self.wavelengths[2])}')
 
         # get xy
-        bg_xy = spd_to_xyY(bg_spd)[:2]
-        mod_xy = spd_to_xyY(mod_spd)[:2]
+        bg_xy = spd_to_xyY(bg_spd, binwidth=self.wavelengths[2])[:2]
+        mod_xy = spd_to_xyY(mod_spd, binwidth=self.wavelengths[2])[:2]
         print(f'\tBackground xy: {bg_xy}')
         print(f'\tModulation xy: {mod_xy}')
 
@@ -449,18 +476,34 @@ class SilentSubstitutionProblem(StimulationDevice):
                     y='aopic', hue='Spectrum', ax=axs[2])
         return fig
     
+    # TODO: CHECK ORDER OF RECEPTORS
     # Linear algebra    
-    def linalg_solve(self, r):
+    def linalg_solve(self):
         #breakpoint()
         if self.background is None:
-            raise TypeError('Background spectrum not specified.')
+            raise AttributeError('Background spectrum not specified.')
+        if self.target_contrast is None:
+            raise AttributeError('Target contrast not specified.')
+        
+        # Get a copy of the list of photoreceptors
         receptors = self.receptors.copy()
-        receptors.remove(self.ignore[0])
-        sss = get_CIES026(binwidth=self.spd_binwidth)[receptors]
+        try:
+            receptors.remove(self.ignore[0])
+        except:
+            pass
+        
+        # A list of requested contrasts
+        requested  = [0.] * len(receptors)
+        requested[receptors.index(self.isolate[0])] = self.target_contrast
+        
+        # Get only the action spectra we need
+        sss = self.action_spectra[receptors]
         bg_spds = self.predict_multiprimary_spd(self.background, nosum=True)
+        
         # Primary to sensor matrix
         A = sss.T.dot(bg_spds)
-
+        
+        # Get inverse function
         if A.shape[0] == A.shape[1]:  # Square matrix, use inverse
             inverse_function = np.linalg.inv
         else:  # Use pseudo inverse
@@ -470,12 +513,14 @@ class SilentSubstitutionProblem(StimulationDevice):
         A1 = pd.DataFrame(
                     inverse_function(A.values),
                     A.columns,
-                    A.index)
-        #TODO: map requested to contrast
+                    A.index
+                    )
+        
         # The solution
-        solution = A1.dot(r) + self.background
+        solution = A1.dot(requested) + self.background
         #beta = A.sum(axis=0).mul(solution) + self.background
-        if all(solution < 1.) and all(solution > 0.):
+        
+        if all([s > b[0] and s < b[1] for s in solution for b in self.bounds]):
             return solution
         else: 
             raise ValueError('Solution is not valid, lower target contrast.')
