@@ -181,7 +181,7 @@ def spd_to_lux(spd: SPD, binwidth: int = 1) -> float:
     return spd.dot(Y) * LUX_FACTOR
 
 
-def spd_to_xyY(spd: SPD) -> np.array:
+def spd_to_xyY(spd: SPD, binwidth: int = 1) -> np.array:
     """Compute xyY coordinates from spectral power distribution.
 
 
@@ -196,7 +196,7 @@ def spd_to_xyY(spd: SPD) -> np.array:
         xyY.
 
     """
-    XYZ = spd_to_XYZ(spd)
+    XYZ = spd_to_XYZ(spd, binwidth)
     return XYZ_to_xyY(XYZ)
 
 

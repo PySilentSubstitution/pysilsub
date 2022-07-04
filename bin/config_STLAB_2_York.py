@@ -22,8 +22,8 @@ COLORS = [
     'orange',
     'red', 
     'darkred']
-SPDS = '/Users/jtm545/Projects/BakerWadeBBSRC/data/STLAB_2_spectra/STLAB_2_jaz_visible.csv'
-SPDS_UNITS = 'Counts/s/nm'
+CALIBRATION_FPATH = '/Users/jtm545/Projects/BakerWadeBBSRC/data/STLAB_2_spectra/STLAB_2_jaz_visible.csv'
+CALIBRATION_UNITS = 'Counts/s/nm'
 NAME = 'STLAB_2 (binocular, right eye)'
 JSON_NAME = 'STLAB_2_York'
 WAVELENGTHS = [380, 781, 1]
@@ -39,8 +39,8 @@ NOTES = ('STLAB_2 is used in the psychology department at the University of '
 def device_config():
     
     config = {
-        'spds': SPDS,
-        'spds_units': SPDS_UNITS,
+        'calibration_fpath': CALIBRATION_FPATH,
+        'calibration_units': CALIBRATION_UNITS,
         'name': NAME,
         'json_name': JSON_NAME, 
         'wavelengths': WAVELENGTHS,

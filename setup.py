@@ -2,19 +2,20 @@
 
 import setuptools
 
-#with open('README.md', 'r') as fh:
-#    long_description = fh.read()
+with open('./README.md', 'r') as fh:
+    long_description = fh.read()
 
 setuptools.setup(
     name='pysilsub', # Replace with your own username
-    version='0.0.1',
+    version='0.0.2',
     author='Joel T. Martin',
     author_email='joel.t.martin36@gmail.com',
     description='Software for performing silent substitution in Python',
-   # long_description=long_description,
+    long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/PySilentSubstitution/silentsub',
-    project_urls={'Documentation': '', 'bioRxiv preprint':''},
+    url='https://github.com/PySilentSubstitution/pysilsub',
+    project_urls={
+        'Documentation': 'https://pysilentsubstitution.github.io/pysilsub/index.html'},
     install_requires=['numpy','scipy','matplotlib','seaborn','pandas'],
     packages=setuptools.find_packages(),
       classifiers=[
@@ -24,4 +25,7 @@ setuptools.setup(
           'Intended Audience :: Science/Research',
           'Programming Language :: Python :: 3.7'
       ],
+      package_data={
+          'pysilsub': ['data/*.csv', 'data/*.json']
+          }
       )

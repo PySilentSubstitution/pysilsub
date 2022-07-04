@@ -18,7 +18,8 @@ import seaborn as sns
 RESOLUTIONS = [256] * 56
 COLORS = list(sns.color_palette('Spectral', n_colors=56))[::-1]
 # Absolute file path to permenant location of calibration file
-SPDS = '/Users/jtm545/Projects/PySilSub/data/oneLight_artifical.csv'
+CALIBRATION_FPATH = '/Users/jtm545/Projects/PySilSub/data/oneLight_artifical.csv'
+CALIBRATION_UNITS = 'W/$m^2$/s/nm'
 NAME = 'OneLight'
 JSON_NAME = 'OneLight'
 WAVELENGTHS = [380, 781, 2]
@@ -37,7 +38,8 @@ def device_config():
     """
     
     config = {
-        'spds': SPDS,
+        'calibration_fpath': CALIBRATION_FPATH,
+        'calibration_units':CALIBRATION_UNITS,
         'name': NAME,
         'json_name': JSON_NAME,
         'wavelengths': WAVELENGTHS,

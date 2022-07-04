@@ -4,15 +4,20 @@
 pysilsub.device
 ===============
 
-A generic device class for multiprimary light stimulators.
+A generic object oriented interface for multiprimary light stimulators.
 
 @author: jtm
 """
 
-from typing import List, Union, Optional, Tuple, Any
+import os
+import os.path as op
+from typing import List, Union, Optional, Tuple
+import json
+from pprint import pprint
 
+import importlib_resources
 from scipy.interpolate import interp1d
-from scipy.optimize import curve_fit, minimize, basinhopping, OptimizeResult
+from scipy.optimize import curve_fit, basinhopping, OptimizeResult
 from scipy.stats import beta
 import matplotlib.pyplot as plt
 import matplotlib.path as mplpath
@@ -23,8 +28,8 @@ import numpy as np
 from colour.plotting import plot_chromaticity_diagram_CIE1931
 
 from pysilsub.CIE import (get_CIES026,
-                           get_CIE_1924_photopic_vl,
-                           get_CIE170_2_chromaticity_coordinates)
+                          get_CIE_1924_photopic_vl,
+                          get_CIE170_2_chromaticity_coordinates)
 from pysilsub import colorfunc
 from pysilsub.plotting import stim_plot
 
@@ -36,7 +41,7 @@ class StimulationDevice:
 
     # Class attribute colors for photoreceptors
     photoreceptors = ['S', 'M', 'L', 'R', 'I']
-    
+
     aopic_colors = {
         'S': 'tab:blue',
         'M': 'tab:green',
@@ -51,9 +56,11 @@ class StimulationDevice:
     def __init__(self,
                  resolutions: List[int],
                  colors: List[str],
-                 spds: pd.DataFrame,
-                 spd_binwidth: Optional[int] = 1,
-                 name: Optional[str] = None) -> None:
+                 calibration: pd.DataFrame,
+                 wavelengths: List[int],
+                 action_spectra='CIES026',
+                 name: Optional[str] = None,
+                 config: Optional[dict] = None) -> None:
         """Instantiate class for multiprimary light stimulation devices.
 
         Parameters
@@ -67,13 +74,25 @@ class StimulationDevice:
         colors : list of str
             List of valid color names for the primaries. Must be in
             `matplotlib.colors.cnames <https://matplotlib.org/stable/gallery/color/named_colors.html>`_.
-        spds : pd.DataFrame
+        calibration : pd.DataFrame
             Spectral measurements to characterise the output of the device.
             Column headers must be wavelengths and each row a spectrum.
-            Additional columns are needed to identify the primary/setting. For
-            example, 380, ..., 780, primary, setting.
-        spd_binwidth : int, optional
-            Binwidth of spectral measurements. The default is 1.
+            Additional columns are needed to identify the Primary/Setting. For
+            example, 380, ..., 780, Primary, Setting. See
+            `here <https://pysilentsubstitution.github.io/pysilsub/03a_stimulation_devices.html#pysilsub.device.StimulationDevice>`_
+            for further info.
+        wavelengths : list, optional
+            [start, stop, step] of wavelength range, e.g., [380, 781, 1] for
+            380 to 780 in 1 nm bins. The default is None, in which case the
+            wavelength range is determined from the calibration spds.
+        action_spectra : str or pd.DataFrame
+            Photoreceptor spectral sensetivities of the observer. By default,
+            uses the CIES026 standard. Alternatively, pass a dataframe
+            with user-defined values. See `CIE.get_CIES026()` and
+            `pysilsub.asano` for inspiration.
+        name : str
+            Name of the device or stimulation system, e.g., `8-bit BCGAR
+            photostimulator`. Defaults to `Stimulation Device`.
 
         Returns
         -------
@@ -82,31 +101,168 @@ class StimulationDevice:
         """
         self.resolutions = resolutions
         self.colors = colors
-        self._check_color_names_valid()
-        self.spds = spds
-        self.spd_binwidth = spd_binwidth
+        # self._check_color_names_valid()
+        self.calibration = calibration
+        self.wavelengths = wavelengths
+        self._check_wavelengths()
+        if action_spectra == 'CIES026':
+            self.action_spectra = get_CIES026(
+                self.wavelengths[-1], fillna=True)
+        else:
+            self.action_spectra = action_spectra  # TODO: check valid
         self.name = name
         if self.name is None:
             self.name = 'Stimulation Device'
+        self.config = config
 
-        # create important data
+        # Create important data
         self.nprimaries = len(self.resolutions)
-        self.wls = self.spds.columns        
+        self.wls = self.calibration.columns
+
+    def __str__(self):
+        return f"""
+    StimulationDevice:
+        Resolutions: {self.resolutions},
+        Colors: {self.colors},
+        calibration: {self.calibration.shape},
+        Wavelengths: {self.wavelengths},
+        Action Spectra: {self.action_spectra.shape},
+        Name: {self.name}
+    """
+
+    @classmethod
+    def from_json(cls, config_json):
+        """Constructor that works from preformatted json config file.
+
+        See `pysilsub.config` for further details.
+
+        Parameters
+        ----------
+
+        config_json : str
+            json file with configuration parameters for StimulationDevice.
+
+        Returns
+        -------
+        pysilsub.StimulationDevice
+
+        """
+        config = json.load(open(config_json, 'r'))
+
+        # Get the calibration data
+        calibration = cls.load_calibration_file(config['calibration_fpath'])
+
+        return cls(resolutions=config['resolutions'],
+                   colors=config['colors'],
+                   calibration=calibration,
+                   wavelengths=config['wavelengths'],
+                   name=config['name'],
+                   config=config)
+
+    @classmethod
+    def from_package_data(cls, example):
+        """Constructor that uses example data from the package distribution.
+
+        See ``show_package_data(verbose=True)`` for full details.
         
-    # Starts properly here
+        Parameters
+        ----------
+        
+        example : str
+            Currently the following options are available:
+                
+                * 'STLAB_York'
+                * 'STLAB_Oxford'
+                * 'BCGAR'
+                * 'VirtualSky'
+                
+        Example
+        -------
+        
+        ``device = StimulationDevice.from_package_example('BCGAR')``
+
+        Returns
+        -------
+        pysilsub.StimulationDevice
+
+        """
+        pkg = importlib_resources.files('pysilsub')
+        json_config = example + '.json'
+        config = json.load(open(pkg / 'data' / json_config, 'r'))
+        dir_path = op.dirname(op.realpath(__file__))
+        data_path = op.join(dir_path, 'data', example + '.csv')
+        calibration = cls.load_calibration_file(data_path)
+
+        return cls(resolutions=config['resolutions'],
+                   colors=config['colors'],
+                   calibration=calibration,
+                   wavelengths=config['wavelengths'],
+                   name=config['name'],
+                   config=config)
+
+    @classmethod
+    def show_package_data(cls, verbose=False):
+        """Show details of example data in the package distribution.
+
+        Parameters
+        ----------
+        verbose : bool
+            Print detailed information if True. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
+        pkg = importlib_resources.files('pysilsub')
+        available = [
+            f for f in os.listdir(pkg / 'data') if f.endswith('.json')]
+
+        for f in available:
+            if not verbose:
+                print(f.strip('.json'))
+            else:
+                config = json.load(open(pkg / 'data' / f, 'r'))
+                print(f'{"*"*60}\n{config["name"]:*^60s}\n{"*"*60}')
+                pprint(config)
+                print('\n')
+
+    @classmethod
+    def load_calibration_file(cls, calibration_fpath):
+        calibration = pd.read_csv(calibration_fpath,
+                                  index_col=['Primary', 'Setting'])
+        calibration.columns = calibration.columns.astype('int64')
+        calibration.columns.name = 'Wavelength'
+        return calibration
+
+    # Utils
+
+    def _melt_spds(self, spds) -> pd.DataFrame:
+        return (spds.reset_index()
+                .melt(id_vars=['Primary', 'Setting'],
+                      value_name='Flux',
+                      var_name='Wavelength (nm)'))
+
+    # Error checking
+    def _check_wavelengths(self):
+        msg = "Wavelengths do not match spds"
+        if not all(
+                [wl in self.calibration.columns
+                 for wl in range(*self.wavelengths)]):
+            raise ValueError(msg)
+
     def _check_color_names_valid(self):
         request = f'Please choose from the following:\n {list(cnames.keys())}'
         msg = f'At least one color name was not valid. {request}'
         if not all([c in cnames.keys() for c in self.colors]):
             raise ValueError(msg)
-        
+
     def _get_gamut(self):
-        #breakpoint()
-        max_spds = self.spds.loc[(slice(None), self.resolutions), :]
+        max_spds = self.calibration.loc[(slice(None), self.resolutions), :]
         XYZ = max_spds.apply(
-            colorfunc.spd_to_XYZ, args=(self.spd_binwidth,), axis=1)
+            colorfunc.spd_to_XYZ, args=(self.wavelengths[-1],), axis=1)
         xy = (XYZ[['X', 'Y']].div(XYZ.sum(axis=1), axis=0)
-              .rename(columns={'X':'x','Y':'y'}))
+              .rename(columns={'X': 'x', 'Y': 'y'}))
         xy = xy.append(xy.iloc[0], ignore_index=True)  # Join the dots
         return xy
 
@@ -115,33 +271,57 @@ class StimulationDevice:
         poly_path = mplpath.Path(self._get_gamut().to_numpy())
         return poly_path.contains_point(xy_coord)
 
-    def plot_gamut(self, 
-                   ax: plt.Axes = None, 
-                   show_1931_horseshoe: bool = True, 
-                   show_CIE170_2_horseshoe: bool = True
-                   ) -> Union[plt.Figure, None]:
+    # Plotting functions
+    def plot_action_spectra(self,
+                            ax: plt.Axes = None,
+                            **plt_kwargs) -> plt.Axes:
+        """Plot photoreceptor action spectra.
+
+        Parameters
+        ----------
+        ax : plt.Axes, optional
+            Axes on which to plot. The default is None.
+        **plt_kwargs
+            Options to pass to matplotlib plotting method..
+
+        Returns
+        -------
+        ax : matplotlib.axes.Axes
+
+        """
+        if ax is None:
+            ax = plt.gca()
+        self.action_spectra.plot(color=self.aopic_colors, ax=ax, **plt_kwargs)
+        ax.set_xlabel('Wavelength (nm)')
+        ax.set_ylabel('Spectral sensetivity')
+        return ax
+
+    def plot_gamut(self,
+                   ax: plt.Axes = None,
+                   show_1931_horseshoe: bool = True,
+                   show_CIE170_2_horseshoe: bool = True,
+                   **plt_kwargs) -> Union[plt.Figure, None]:
         """Plot the gamut of the stimulation device.
-        
+
         Parameters
         ----------
         ax : plt.Axes, optional
             Axes on which to plot. The default is None.
         show_1931_horseshoe : bool, optional
-            Whether to show the CIE1931 chromaticity horseshoe. The default is 
+            Whether to show the CIE1931 chromaticity horseshoe. The default is
             True.
         show_CIE170_2_horseshoe : bool, optional
-            Whether to show the CIE170_2 chromaticity horseshoe. The default is 
+            Whether to show the CIE170_2 chromaticity horseshoe. The default is
             True.
-            
+
         Returns
         -------
-        fig : plt.Figure or None
-            The plot.
+        ax : matplotlib.axes.Axes
 
         """
         gamut = self._get_gamut()
         if ax is None:
-            fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+            ax = plt.gca()
         if show_1931_horseshoe:
             plot_chromaticity_diagram_CIE1931(
                 axes=ax, title=False, standalone=False)
@@ -150,45 +330,95 @@ class StimulationDevice:
             ax.plot(cie170_2['x'], cie170_2['y'],
                     c='k', ls=':', label='CIE 170-2')
         ax.plot(gamut['x'], gamut['y'], color='k',
-                lw=2, marker='x', markersize=8, label='Gamut')
+                lw=2, marker='x', markersize=8, label='Gamut', **plt_kwargs)
         ax.set(xlim=(-.15, .9),
                ylim=(-.1, 1),
                title=f'{self.name}')
         ax.legend()
-        if ax is None:
-            return fig
-        else:
-            return None
-            
-    def plot_spds(self, *args, **kwargs) -> plt.Figure:
+        return ax
+
+    def plot_calibration_spds(self,
+                              ax: plt.Axes = None,
+                              norm: bool = False,
+                              **plt_kwargs) -> plt.Axes:
         """Plot the spectral power distributions for the stimulation device.
 
         Returns
         -------
-        fig : plt.Figure
-            The plot.
+        ax : matplotlib.axes.Axes
 
         """
-        #breakpoint()
-        data = (self.spds.reset_index()
-                    .melt(id_vars=['Primary', 'Setting'],
-                          value_name='Flux',
-                          var_name='Wavelength (nm)'))
+        if ax is None:
+            ax = plt.gca()
+        if norm == True:
+            data = self.calibration.div(self.calibration.max(axis=1), axis=0)
+            ylabel = 'Power (normalised)'
+        elif norm == False:
+            data = self.calibration
+            try:
+                ylabel = self.config['calibration_units']
+            except:
+                ylabel = 'Power'
 
-        fig, ax = plt.subplots(figsize=(12, 4))
+        data = self._melt_spds(spds=data)
 
         _ = sns.lineplot(
             x='Wavelength (nm)', y='Flux', data=data, hue='Primary',
-            palette=self.colors, units='Setting', ax=ax, lw=.1, estimator=None,
-        **kwargs)
+            palette=self.colors, units='Setting', ax=ax, lw=.1,
+            estimator=None, **plt_kwargs)
         ax.set_title(f'{self.name} SPDs')
-        return fig
+        ax.set_ylabel(ylabel)
+        return ax
 
+    def plot_multiprimary_spd(
+            self,
+            settings: Union[List[int], List[float]],
+            ax: plt.Axes = None,
+            name: Union[int, str] = 0,
+            show_primaries: Optional[bool] = False,
+            **plt_kwargs) -> plt.Figure:
+        """Plot predicted spd for list of device settings.
+
+        Parameters
+        ----------
+        settings : list of int or list of float
+            List of settings for the device primaries. Must be of length
+            `self.nprimaries` and consist entirely of float (0.-1.) or int
+            (0-max resolution).
+        ax : plt.Axes, optional
+            Axes on which to plot. The default is None.
+        name : int or str, optional
+            A name for the spectrum. The default is 0.
+        show_primaries : bool, optional
+            Whether to show the primary components of the spectrum. The default
+            is False.
+        **plt_kwargs
+            Options to pass to matplotlib plotting method.
+
+        Returns
+        -------
+        ax : matplotlib.axes.Axes
+
+        """
+        if ax is None:
+            ax = plt.gca()
+        spd = self.predict_multiprimary_spd(settings, name)
+        ax = spd.plot(c='k', label='SPD', **plt_kwargs)
+
+        if show_primaries:
+            primaries = self.predict_multiprimary_spd(settings, nosum=True)
+            primaries.plot(ax=ax, **{'color': self.colors, 'legend': False})
+            ax.legend(title='Primary')
+        ax.set_xlabel('Wavelength (nm)')
+        ax.set_ylabel('Power')
+        return ax
+
+    # Predict ouput
     def calculate_aopic_irradiances(self) -> pd.DataFrame:
-        """Calculate aopic irradiances from spds.
+        """Calculate aopic irradiances from calibration spds.
 
-        Using the CIE026 spectral sensetivities, calculate alphaopic
-        irradiances (S, M, L, R, I) for every spectrum in `self.spds`.
+        Using the CIE026 spectral sensetivities, calculate alpha-opic
+        irradiances (S, M, L, R, I) for every spectrum in `self.calibration`.
 
         Returns
         -------
@@ -196,12 +426,11 @@ class StimulationDevice:
             Alphaopic irradiances.
 
         """
-        sss = get_CIES026(binwidth=self.spd_binwidth, fillna=True)
-        return self.spds.dot(sss)
+        return self.calibration.dot(self.action_spectra)
 
     def calculate_lux(self):
         """Using the CIE1924 photopic luminosity function, calculate lux for
-        every spectrum in `self.spds`.
+        every spectrum in `self.calibration`.
 
         Returns
         -------
@@ -209,8 +438,8 @@ class StimulationDevice:
             Lux values.
 
         """
-        vl = get_CIE_1924_photopic_vl(binwidth=self.spd_binwidth)
-        lux = self.spds.dot(vl.values) * 683  # lux conversion factor
+        vl = get_CIE_1924_photopic_vl(binwidth=self.spd_binwidth[-1])
+        lux = self.calibration.dot(vl.values) * 683  # lux conversion factor
         lux.columns = ['lux']
         return lux
 
@@ -220,7 +449,7 @@ class StimulationDevice:
             setting: Union[int, float],
             name: Union[int, str] = 0) -> np.ndarray:
         """Predict output for a single device primary at a given setting.
-        
+
         This is the basis for all predictions.
 
         Parameters
@@ -249,13 +478,13 @@ class StimulationDevice:
         if setting > self.resolutions[primary]:
             raise ValueError(f'Requested setting {int(setting)} exceeds '
                              f'resolution of device primary {primary}')
-        
-        #TODO: fix wavelength thing
-        f = interp1d(x=self.spds.loc[primary].index.values,
-                     y=self.spds.loc[primary],
+
+        # TODO: fix wavelength thing
+        f = interp1d(x=self.calibration.loc[primary].index.values,
+                     y=self.calibration.loc[primary],
                      axis=0, fill_value='extrapolate')
         return pd.Series(f(setting), name=name, index=self.wls)
-            
+
     def predict_multiprimary_spd(
             self,
             settings: Union[List[int], List[float]],
@@ -275,7 +504,7 @@ class StimulationDevice:
         name : int or str, optional
             A name for the spectrum, e.g. 'Background'. The default is 0.
         nosum : bool, optional
-            Whether t
+            Whether to sum the primary components of the spectrum.
 
         Raises
         ------
@@ -291,9 +520,9 @@ class StimulationDevice:
             Predicted spectra or spectrum for given device settings.
 
         """
-        if len(settings) > self.nprimaries:
+        if len(settings) != self.nprimaries:
             raise ValueError(
-                'Number of settings exceeds number of device primaries.'
+                'Number of settings does not match number of device primaries.'
             )
         if not (all(isinstance(s, int) for s in settings) or
                 all(isinstance(s, float) for s in settings)):
@@ -302,7 +531,7 @@ class StimulationDevice:
             name = 0
         spd = []
         for primary, setting in enumerate(settings):
-            spd.append(self.predict_primary_spd(primary, setting, primary))        
+            spd.append(self.predict_primary_spd(primary, setting, primary))
         spd = pd.concat(spd, axis=1)
         if nosum:
             spd.columns.name = 'Primary'
@@ -333,14 +562,13 @@ class StimulationDevice:
             Predicted a-opic irradiances for given device settings.
 
         """
-        #breakpoint()
+        # breakpoint()
         spd = self.predict_multiprimary_spd(settings, name=name)
-        sss = get_CIES026(binwidth=self.spd_binwidth, fillna=True)
-        return spd.dot(sss)
+        return spd.dot(self.action_spectra)
 
     def find_settings_xyY(
-            self, 
-            xy: Union[List[float], Tuple[float]], 
+            self,
+            xy: Union[List[float], Tuple[float]],
             luminance: float,
             tolerance: Optional[float] = 1e-6,
             plot_solution: Optional[bool] = False,
@@ -369,7 +597,7 @@ class StimulationDevice:
         """
         if len(xy) != 2:
             raise ValueError('xy must be of length 2.')
-            
+
         if not self._xy_in_gamut(xy):
             print("WARNING: specified xy coordinates are outside of")
             print("the device's gamut. Searching for closest match.")
@@ -384,7 +612,7 @@ class StimulationDevice:
             return sum(
                 pow(requested_LMS - aopic[['L', 'M', 'S']].to_numpy(), 2)
             )
-        
+
         # Bounds
         bounds = [(0., 1.,) for primary in self.resolutions]
         # Arguments for local solver
@@ -393,13 +621,13 @@ class StimulationDevice:
             'bounds': bounds,
             'options': {'maxiter': 500}
         }
-        
+
         # Callback for global search
         def _callback(x, f, accepted):
             if accepted and tolerance is not None:
                 if f < tolerance:
                     return True
-                
+
         # Random starting point
         x0 = np.random.uniform(0, 1, self.nprimaries)
 
@@ -419,56 +647,89 @@ class StimulationDevice:
             niter_success=None,
             seed=None,
         )
-        
+
         # TODO: refactor this
         solution_lms = self.predict_multiprimary_aopic(
-            result.x)[['L','M','S']].values
+            result.x)[['L', 'M', 'S']].values
         solution_xyY = colorfunc.LMS_to_xyY(solution_lms)
         print(f'Requested LMS: {requested_LMS}')
         print(f'Solution LMS: {solution_lms}')
-        
+
         # Reacfactor!
         if plot_solution is not None:
             fig, axs = stim_plot()
             # Plot the spectrum
             self.predict_multiprimary_spd(
-                result.x, 
+                result.x,
                 name=f'solution_xyY:\n{solution_xyY.round(3)}').plot(
                     ax=axs[0],
                     legend=True,
                     c='k')
             self.predict_multiprimary_spd(
-                result.x, 
+                result.x,
                 name=f'solution_xyY:\n{solution_xyY.round(3)}',
                 nosum=True).plot(
                     ax=axs[0],
                     color=self.colors,
                     legend=False)
             axs[1].scatter(
-                x=requested_xyY[0], 
+                x=requested_xyY[0],
                 y=requested_xyY[1],
-                s=100, marker='o', 
-                facecolors='none', 
-                edgecolors='k', 
+                s=100, marker='o',
+                facecolors='none',
+                edgecolors='k',
                 label='Requested'
-                )
+            )
             axs[1].scatter(
-                x=solution_xyY[0], 
+                x=solution_xyY[0],
                 y=solution_xyY[1],
                 s=100, c='k',
-                marker='x', 
+                marker='x',
                 label='Resolved'
-                )
+            )
             self.plot_gamut(ax=axs[1], show_CIE170_2_horseshoe=False)
             axs[1].legend()
             device_ao = self.predict_multiprimary_aopic(
                 result.x, name='Background')
             colors = [val[1] for val in self.aopic_colors.items()]
             device_ao.plot(kind='bar', color=colors, ax=axs[2])
-            
-        return result     
-        
+
+        return result
+
+    def do_gamma(self):
+        """Make a gamma table from cumulative distribution functions.
+
+        """
+
+        # Curve fitting function
+        def func(x, a, b):
+            return beta.cdf(x, a, b)
+
+        gamma_table = []
+        for primary, df in self.calibration.groupby(level=0):
+            xdata = (df.index.get_level_values(1)
+                     / self.resolutions[primary]).to_series()
+            ydata = df.sum(axis=1)
+            ydata = ydata / ydata.max()
+
+            popt, pcov = curve_fit(beta.cdf, xdata, ydata, p0=[2.0, 1.0])
+            self.curveparams[primary] = popt
+            ypred = func(xdata, *popt)
+
+            # interp func for new ydata, inverting the values
+            new_y_func = interp1d(ypred, xdata)
+
+            # Interpolate for full lookup table
+            resolution = self.resolutions[primary]
+            new_y = new_y_func(np.linspace(0, 1, resolution+1)) * resolution
+            gamma_table.append(new_y.astype('int'))
+
+        gamma = pd.DataFrame(gamma_table)
+
+        self.gamma = gamma
+
     # TODO: decide whether to keep these
+
     def fit_curves(self):
         """Fit curves to the unweighted irradiance of spectral measurements
         and save the parameters.
@@ -479,18 +740,17 @@ class StimulationDevice:
             Figure.
 
         """
-
+        # breakpoint()
         # plot
-        ncols = 5
-        nrows = int(self.nprimaries / ncols)
+        ncols = self.nprimaries
         fig, axs = plt.subplots(
-            nrows, ncols, figsize=(16, 6), sharex=True, sharey=True)
-        axs = [item for sublist in axs for item in sublist]
+            nrows=1, ncols=ncols, figsize=(16, 6), sharex=True, sharey=True)
+        #axs = [item for sublist in axs for item in sublist]
 
         for primary in range(self.nprimaries):
-            xdata = (self.spds.loc[primary].index
-                     / self.resolutions[primary]).to_numpy()
-            ydata = self.irradiance.loc[primary].T.to_numpy()[0]
+            xdata = (self.calibration.loc[primary].index
+                     / self.resolutions[primary]).to_series()
+            ydata = self.calibration.loc[primary].sum(axis=1)
             ydata = ydata / np.max(ydata)
 
             # Curve fitting function
@@ -522,7 +782,7 @@ class StimulationDevice:
             self,
             primary: int,
             settings: Union[List[int], List[float]]
-            ) -> Union[List[int], List[float]]:
+    ) -> Union[List[int], List[float]]:
         """Optimise a stimulus profile by applying the curve parameters.
 
         Parameters
@@ -544,6 +804,12 @@ class StimulationDevice:
         settings = self.settings_to_weights(settings)
         optisettings = beta.ppf(settings, params[0], params[1])
         return self.weights_to_settings(optisettings)
+
+    def gamma_lookup(self, led, setting):
+        return int(self.gamma.loc[led, setting])
+
+    def gamma_correct(self, settings):
+        return [self.gamma_lookup(led, setting) for led, setting in enumerate(settings)]
 
     def settings_to_weights(self, settings: List[int]) -> List[float]:
         """Convert a list of settings to a list of weights.
@@ -577,32 +843,30 @@ class StimulationDevice:
 
         """
         return [int(w * r) for w, r in zip(weights, self.resolutions)]
-    
-    
+
     def spd_to_settings(self, target_spd, tolerance=1e-6):
-        #breakpoint()
+        # breakpoint()
         target_xyY = colorfunc.spd_to_xyY(target_spd)
-        
+
         def _objective(x0):
             xyY = colorfunc.spd_to_xyY(self.predict_multiprimary_spd(x0))
             error = target_xyY - xyY
             return sum(pow(error, 2))
-        
+
         # Callback for global search
         def _callback(x, f, accepted):
             if accepted and tolerance is not None:
                 if f < tolerance:
                     return True
-                
+
         x0 = np.array([np.random.uniform(0, 1) for val in self.resolutions])
         bounds = [(0., 1.,) for primary in self.resolutions]
-        
+
         minimizer_kwargs = {
             'method': 'SLSQP',
             'bounds': bounds,
             'options': {'maxiter': 500}
         }
-                
 
         # Do global search
         res = basinhopping(
@@ -619,22 +883,5 @@ class StimulationDevice:
             disp=True,
             niter_success=None,
             seed=None,
-        )        
+        )
         return res
-
-    def plot_multiprimary_spd(            
-            self,
-            settings: Union[List[int], List[float]],
-            name: Union[int, str] = 0,
-            show_primaries: Optional[bool] = False,
-            **kwargs) -> plt.Figure:
-        
-        spd = self.predict_multiprimary_spd(settings, name)
-        ax = spd.plot(c='k', label='SPD')
-        
-        if show_primaries:
-            primaries = self.predict_multiprimary_spd(settings, nosum=True)
-            primaries.plot(ax=ax, **{'color': self.colors, 'legend': False})
-            ax.legend(title='Primary')
-        
-        return ax

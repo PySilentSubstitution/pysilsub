@@ -130,6 +130,5 @@ dmypy.json
 
 # Folders to ignore
 matlab/
-paper/
 lit/
 

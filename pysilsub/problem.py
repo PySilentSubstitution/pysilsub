@@ -10,17 +10,15 @@ Help solving silent substitution problems with linear algebra and optimisation.
 
 """
 
-from typing import List, Optional, Tuple, Any, Sequence
+from typing import List, Optional, Tuple, Sequence
 import numpy as np
-from scipy.optimize import minimize, basinhopping
+from scipy.optimize import minimize
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-#from cyipopt import minimize_ipopt
 
 from pysilsub.device import StimulationDevice
-from pysilsub.colorfunc import (spd_to_lux,
-                                LMS_to_xyY,
+from pysilsub.colorfunc import (LMS_to_xyY,
                                 spd_to_xyY,
                                 LUX_FACTOR)
 from pysilsub.plotting import stim_plot
@@ -41,7 +39,7 @@ class SilentSubstitutionProblem(StimulationDevice):
     def __init__(self,
                  resolutions: List[int],
                  colors: List[str],
-                 spds: pd.DataFrame,
+                 calibration: pd.DataFrame,
                  wavelengths: List[int],
                  action_spectra='CIES026',
                  name: Optional[str] = None,
@@ -56,7 +54,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             systems where primaries may have different resolution depths.
         colors : list[str]
             List of colors for the primaries.
-        spds : pd.DataFrame
+        calibration : pd.DataFrame
             Spectral measurements to characterise the output of the device.
             Column headers must be wavelengths and each row a spectrum.
             Additional columns are needed to identify the primary/setting. For
@@ -70,7 +68,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         """
         # Instance attributes
-        super().__init__(resolutions, colors, spds, wavelengths,
+        super().__init__(resolutions, colors, calibration, wavelengths,
                          action_spectra, name, config)
 
         # Problem parameters, below defined as class properties
@@ -93,14 +91,14 @@ class SilentSubstitutionProblem(StimulationDevice):
         return f"""SilentSubstitutionProblem:
         Resolutions: {self.resolutions},
         Colors: {self.colors},
-        SPDs: {self.spds.shape},
+        Calibration: {self.calibration.shape},
         Wavelengths: {self.wavelengths},
         Action Spectra: {self.action_spectra.shape},
         Name: {self.name},
         Config: {self.config}
     """
 
-    # TODO: Document properties
+    # Properties of a SilentSubstitutionProblem
     @property
     def background(self):
         """Set a background spectrum for the silent substitution stimulus.
@@ -173,11 +171,11 @@ class SilentSubstitutionProblem(StimulationDevice):
         """Specify which photoreceptors to ignore. 
 
         Setting the *ignore* property internally conditions the silent 
-        substitution problem such that the specified photoreceptors will be
+        substitution problem such that the specified photoreceptor(s) will be
         ignored by the solvers (enabling them to find more contrast). In most 
-        cases *ignore* will be set to ['R'], because it is generally safe 
+        cases *ignore* will be set to ['R'], because it is considered safe 
         practice to ignore rods when stimuli are in the photopic range 
-        (>300 cd/m$^2$)::
+        (>300 cd/m2)::
             
             problem.ignore = ['R']
             
@@ -193,15 +191,11 @@ class SilentSubstitutionProblem(StimulationDevice):
         SilSubProblemError if ignore not specified.
 
         """
-        if self._ignore is None:
-            print(self.__class__.ignore.__doc__)
-            raise SilSubProblemError(
-                'The *ignore* property has not been set (see above).')
         return self._ignore
 
     @ignore.setter
     def ignore(self, ignore):
-        self._check_receptor_input(ignore)
+        ignore = self._check_receptor_input(ignore)
         self._ignore = ignore
 
     @property
@@ -222,15 +216,11 @@ class SilentSubstitutionProblem(StimulationDevice):
         SilSubProblemError if requested but not specified.
 
         """
-        if self._silence is None:
-            print(self.__class__.silence.__doc__)
-            raise SilSubProblemError(
-                'The *silence* property has not been set (see above).')
         return self._silence
 
     @silence.setter
     def silence(self, silence):
-        self._check_receptor_input(silence)
+        silence = self._check_receptor_input(silence)
         self._silence = silence
 
     @property
@@ -238,8 +228,8 @@ class SilentSubstitutionProblem(StimulationDevice):
         """Specify which photoreceptors to isolate.
         
         Setting the *isolate* property internally conditions the silent 
-        silent substitution problem so the solvers know which photoreceptor
-        should be targeted with contrast. For example, to isolate melanopsin::
+        substitution problem so the solvers know which photoreceptor(s) should
+        be targeted with contrast. For example, to isolate melanopsin::
             
             problem.isolate = ['I']
             
@@ -255,21 +245,36 @@ class SilentSubstitutionProblem(StimulationDevice):
         SilSubProblemError if requested but not specified.
 
         """
-        if self._isolate is None:
-            print(self.__class__.isolate.__doc__)
-            raise SilSubProblemError(
-                'The *isolate* property has not been set (see above).')
         return self._isolate
 
     @isolate.setter
     def isolate(self, isolate):
-        self._check_receptor_input(isolate)
+        isolate = self._check_receptor_input(isolate)
         self._isolate = isolate
 
     @property
     def target_contrast(self):
+        """Specify target contrast.
+        
+        Setting the *target_contrast* property internally conditions the 
+        silent substitution problem so the solvers know what target contrast to
+        aim for. For example::
+            
+            problem.target_contrast = 1.0
+            
+        Setting *target_contrast* is required for ``linalg_solve()``. When
+        using ``optim_solve()``, if target_contrast is not specified then the
+        optimiser will aim to maximise contrast. 
+            
+        Raises
+        ------
+        SilSubProblemError if requested but not specified.
+
+        """
         if self._target_contrast is None:
-            raise SilSubProblemError('Target contrast not specified...')
+            print(self.__class__.target_contrast.__doc__)
+            raise SilSubProblemError(
+                'The *target_contrast* property has not been set (see above)')
         return self._target_contrast
 
     @target_contrast.setter
@@ -284,21 +289,34 @@ class SilentSubstitutionProblem(StimulationDevice):
     def _check_receptor_input(self, receptors):
         """Throw an error if user tries to invent new photoreceptors"""
         assert isinstance(receptors, list), 'Put photoreceptors in a list.'
+        
         if not all([pr in self.photoreceptors for pr in receptors]):
-            raise ValueError(
-                f'Photoreceptor(s) must be in {self.photoreceptors}')
+            raise SilSubProblemError(
+                "Unknown photoreceptor input. Available photoreceptors are "
+                "S-cones, M-cones, L-cones, Rods, and iPRGC's: "
+                f"{self.photoreceptors}")
+            
+        if len(set(receptors)) < len(receptors): 
+            raise SilSubProblemError('Duplicate entries for photoreceptors')
+            
+        return [r for r in self.receptors if r in receptors]
 
     def _check_problem(self):
-        try:
-            assert self.ignore is not None
-            assert self.silence is not None
-            assert self.isolate is not None
-        except:
+        """Check minimal conditions for problem are met"""
+        if self.ignore is None:
+            print(self.__class__.ignore.__doc__)
             raise SilSubProblemError(
-                'Minimum conditions for problem not met. '
-                + 'Must at least specify which receptors to ignore, which '
-                + 'to silence, and which to isolate.'
-            )
+                'The *ignore* property has not been set (see above).')
+            
+        if self.silence is None:
+            print(self.__class__.silence.__doc__)
+            raise SilSubProblemError(
+                'The *silence* property has not been set (see above).')  
+            
+        if self.isolate is None:
+            print(self.__class__.isolate.__doc__)
+            raise SilSubProblemError(
+                'The *isolate* property has not been set (see above).')
 
     def print_problem(self):
         self._check_problem()
@@ -315,7 +333,8 @@ class SilentSubstitutionProblem(StimulationDevice):
             pass
 
     # Useful stuff now
-    def print_photoreceptor_contrasts(self, solution, contrast_statistic='simple'):
+    def print_photoreceptor_contrasts(
+            self, solution, contrast_statistic='simple'):
         c = self.get_photoreceptor_contrasts(solution, contrast_statistic)
         print(c.round(6))
 
@@ -349,12 +368,13 @@ class SilentSubstitutionProblem(StimulationDevice):
             Alphaopic irradiances for the modulation spectrum.
 
         """
-        try:
-            bg_weights = self.background
-            mod_weights = x0
-        except:
+        if self._background == None:
             bg_weights = x0[0:self.nprimaries]
             mod_weights = x0[self.nprimaries:self.nprimaries * 2]
+        else:
+            bg_weights = self._background
+            mod_weights = x0
+
         bg_smlri = self.predict_multiprimary_aopic(
             bg_weights, name='Background')
         mod_smlri = self.predict_multiprimary_aopic(
@@ -394,27 +414,6 @@ class SilentSubstitutionProblem(StimulationDevice):
                 return (max_smlri - min_smlri) / (max_smlri)
             elif contrast_statistic == 'michelson':
                 return (max_smlri - min_smlri) / (max_smlri + min_smlri)
-
-    # Bundle objectives / constraints in a separate class and inherit?
-    def objective_function(self, x0: Sequence[float]) -> float:
-        """Calculates negative melanopsin contrast for background
-        and modulation spectra. We want to minimise this."""
-        contrast = self.get_photoreceptor_contrasts(x0)
-        try:
-            # Target contrast is specified, aim for target contrast
-            return sum(pow(self.target_contrast - contrast[self.isolate], 2))
-        except:
-            # Target contrast not specified, aim for maximum contrast
-            return -contrast[self.isolate][0]
-
-    # Works fine
-    def silencing_constraint(self, x0: Sequence[float]) -> float:
-        """Calculates irradiance contrast for silenced photoreceptors.
-
-        """
-        bg_smlri, mod_smlri = self.smlri_calculator(x0)
-        contrast = self.get_photoreceptor_contrasts(x0)
-        return sum(pow(contrast[self.silence], 2))
 
     def xy_chromaticity_constraint(self, x0: Sequence[float]) -> float:
         """Constraint for chromaticity of background spectrum.
@@ -461,7 +460,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         # get spds
         try:
             bg_spd = self.predict_multiprimary_spd(
-                self.background, name='Background')
+                self._background, name='Background')
             mod_spd = self.predict_multiprimary_spd(x0, name='Modulation')
         except:
             bg_spd = self.predict_multiprimary_spd(
@@ -471,12 +470,6 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         # Print contrasts
         # print(f'\t{self.get_photoreceptor_contrasts(x0)}')
-
-        # Print luminance
-        print(
-            f'\tBackground luminance: {spd_to_lux(bg_spd, binwidth=self.wavelengths[2])}')
-        print(
-            f'\tModulation luminance: {spd_to_lux(mod_spd, binwidth=self.wavelengths[2])}')
 
         # get xy
         bg_xy = spd_to_xyY(bg_spd, binwidth=self.wavelengths[2])[:2]
@@ -514,6 +507,27 @@ class SilentSubstitutionProblem(StimulationDevice):
                     y='aopic', hue='Spectrum', ax=axs[2])
         return fig
 
+    # Bundle objectives / constraints in a separate class and inherit?
+    def objective_function(self, x0: Sequence[float]) -> float:
+        """Calculates negative melanopsin contrast for background
+        and modulation spectra. We want to minimise this."""
+        contrast = self.get_photoreceptor_contrasts(x0)
+        try:
+            # Target contrast is specified, aim for target contrast
+            return sum(pow(self._target_contrast - contrast[self._isolate], 2))
+        except:
+            # Target contrast not specified, aim for maximum contrast
+            return -contrast[self._isolate][0]
+
+    # Works fine
+    def silencing_constraint(self, x0: Sequence[float]) -> float:
+        """Calculates irradiance contrast for silenced photoreceptors.
+
+        """
+        bg_smlri, mod_smlri = self.smlri_calculator(x0)
+        contrast = self.get_photoreceptor_contrasts(x0)
+        return sum(pow(contrast[self._silence], 2))
+    
     # TODO: add local and global options
     def optim_solve(self):
         """Use Scipy's optimisation algorithms to solve the current silent 
@@ -526,15 +540,12 @@ class SilentSubstitutionProblem(StimulationDevice):
             The result
 
         """
-        try:
-            self.background
-        except:
+        self._check_problem()
+        if self._background == None:
             self.bounds = self.bounds * 2
             print('> No background specified, optimising background.')
-        try:
-            self.target_contrast
-        except:
-            print('> No target contrast specified, looking for maximum.')
+        if self._target_contrast == None:
+             print('> No target contrast specified, will search for maximum.')
 
         constraints = [{
             'type': 'eq',

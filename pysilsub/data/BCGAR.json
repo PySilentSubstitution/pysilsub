@@ -1,0 +1,1 @@
+{"calibration_fpath": "./data/BCGAR.csv", "calibration_units": "W/m$^2$/nm", "name": "BCGAR (8-bit, linear)", "json_name": "BCGAR", "wavelengths": [380, 781, 1], "colors": ["blue", "cyan", "green", "orange", "red"], "resolutions": [255, 255, 255, 255, 255], "notes": "An artificial 8-bit linear calibration based on the maximum output of 5 STLAB channels."}

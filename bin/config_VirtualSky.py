@@ -15,8 +15,8 @@ import json
 # Configure device
 RESOLUTIONS = [260] * 4  # Fictitious
 COLORS = ['blue', 'green', 'red', 'darkgrey']
-SPDS = '/Users/jtm545/Projects/PySilSub/data/VirtualSky.csv'
-SPDS_UNITS = 'Flux'  # ?
+CALIBRATION_FPATH = '/Users/jtm545/Projects/PySilSub/data/VirtualSky.csv'
+CALIBRATION_UNITS = 'W/m2/s/nm'
 NAME = 'VirtualSky (BGRW projector)'
 JSON_NAME = 'VirtualSky'
 WAVELENGTHS = [380, 781, 1]
@@ -38,8 +38,8 @@ def device_config():
     """
     
     config = {
-        'spds': SPDS,
-        'spds_units': SPDS_UNITS,
+        'calibration_fpath': CALIBRATION_FPATH,
+        'calibration_units': CALIBRATION_UNITS,
         'name': NAME,
         'json_name': JSON_NAME,
         'wavelengths': WAVELENGTHS,

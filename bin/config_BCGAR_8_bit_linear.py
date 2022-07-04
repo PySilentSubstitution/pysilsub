@@ -12,20 +12,20 @@ import json
 # Configure device
 RESOLUTIONS = [255] * 5
 COLORS = ['blue', 'cyan', 'green', 'orange', 'red']
-SPDS = '/Users/jtm545/Projects/PySilSub/data/BCGAR_5_Primary_8_bit_linear.csv'
-SPDS_UNITS = 'W/m$^2$/nm'
+CALIBRATION_FPATH= '/Users/jtm545/Projects/PySilSub/data/BCGAR_5_Primary_8_bit_linear.csv'
+CALIBRATION_UNITS = 'W/m$^2$/nm'
 NAME = 'BCGAR (8-bit, linear)'
 JSON_NAME = 'BCGAR'
 WAVELENGTHS = [380, 781, 1]
 NOTES = ('An artificial 8-bit linear calibration based on the maximum output '
-         + 'of 5 STLAB channels')
+         + 'of 5 STLAB channels.')
 
 
 def device_config():
     
     config = {
-        'spds': SPDS,
-        'spds_units': SPDS_UNITS,
+        'calibration_fpath': CALIBRATION_FPATH,
+        'calibration_units': CALIBRATION_UNITS,
         'name': NAME,
         'json_name': JSON_NAME,
         'wavelengths': WAVELENGTHS,
