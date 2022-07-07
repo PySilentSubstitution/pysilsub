@@ -131,4 +131,7 @@ dmypy.json
 # Folders to ignore
 matlab/
 lit/
+data/
+asano/
+img/
 

@@ -7,7 +7,7 @@ with open('./README.md', 'r') as fh:
 
 setuptools.setup(
     name='pysilsub', # Replace with your own username
-    version='0.0.2',
+    version='0.0.5',
     author='Joel T. Martin',
     author_email='joel.t.martin36@gmail.com',
     description='Software for performing silent substitution in Python',
@@ -16,16 +16,15 @@ setuptools.setup(
     url='https://github.com/PySilentSubstitution/pysilsub',
     project_urls={
         'Documentation': 'https://pysilentsubstitution.github.io/pysilsub/index.html'},
-    install_requires=['numpy','scipy','matplotlib','seaborn','pandas'],
+    install_requires=['numpy','scipy','matplotlib','seaborn','pandas',
+                      'importlib_resources','colour-science'],
     packages=setuptools.find_packages(),
-      classifiers=[
+    include_package_data=True,
+    classifiers=[
           'Development Status :: 2 - Pre-Alpha',
           'Topic :: Scientific/Engineering :: Information Analysis',
           'License :: OSI Approved :: MIT License',
           'Intended Audience :: Science/Research',
           'Programming Language :: Python :: 3.7'
-      ],
-      package_data={
-          'pysilsub': ['data/*.csv', 'data/*.json']
-          }
+          ]
       )

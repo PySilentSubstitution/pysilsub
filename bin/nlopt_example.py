@@ -1,5 +1,6 @@
 import sys
-sys.path.insert(0, '../')
+
+sys.path.insert(0, "../")
 
 import seaborn as sns
 import pandas as pd
@@ -11,41 +12,50 @@ from silentsub.problem import SilentSubstitutionProblem
 from silentsub.colorfunc import LMS_to_xyY, xyY_to_LMS
 from silentsub.plotting import stim_plot
 
-sns.set_context('notebook')
-sns.set_style('whitegrid')
+sns.set_context("notebook")
+sns.set_style("whitegrid")
 
 
-spds = pd.read_csv('../data/S2_corrected_oo_spectra.csv', index_col=['led','intensity'])
-spds.index.rename(['Primary', 'Setting'], inplace=True)
+spds = pd.read_csv(
+    "../data/S2_corrected_oo_spectra.csv", index_col=["led", "intensity"]
+)
+spds.index.rename(["Primary", "Setting"], inplace=True)
 spds.columns = pd.Int64Index(spds.columns.astype(int))
-spds.columns.name = 'Wavelength'
+spds.columns.name = "Wavelength"
 
 
 # list of colors for the primaries
-colors = ['blueviolet', 'royalblue', 'darkblue', 'blue', 'cyan', 
-          'green', 'lime', 'orange', 'red', 'darkred']
+colors = [
+    "blueviolet",
+    "royalblue",
+    "darkblue",
+    "blue",
+    "cyan",
+    "green",
+    "lime",
+    "orange",
+    "red",
+    "darkred",
+]
 
 ss = SilentSubstitutionProblem(
-    resolutions=[4095]*10,
+    resolutions=[4095] * 10,
     colors=colors,
     spds=spds,
     spd_binwidth=1,
-    isolate=['I'],
-    silence=['S', 'M', 'L'],
-    target_contrast=1.
-    )
+    isolate=["I"],
+    silence=["S", "M", "L"],
+    target_contrast=1.0,
+)
 
-target_xy=[.33, .33]
-target_luminance=600.
+target_xy = [0.33, 0.33]
+target_luminance = 600.0
 
 bg = ss.find_settings_xyY(target_xy, target_luminance)
 ss.background = bg.x
 
 # Define constraints and local minimizer
-constraints = [{
-    'type': 'eq',
-    'fun': ss.silencing_constraint
-}]
+constraints = [{"type": "eq", "fun": ss.silencing_constraint}]
 
 
 # Set up nlopt

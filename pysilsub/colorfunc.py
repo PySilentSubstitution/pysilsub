@@ -16,15 +16,14 @@ from typing import Union, Sequence
 import numpy as np
 import pandas as pd
 
-from pysilsub.CIE import (get_matrix_LMStoXYZ,
-                           get_CIE_2006_10_deg_CMF)
+from pysilsub.CIE import get_matrix_LMStoXYZ, get_CIE_2006_10_deg_CMF
 
 # Type alias
 Triplet = Sequence[Union[float, int]]
 SPD = Union[pd.Series, np.array]
 
 # Module vars
-LUX_FACTOR = 683.  # .002?
+LUX_FACTOR = 683.0  # .002?
 
 
 def xyY_to_XYZ(xyY: Triplet) -> np.array:
@@ -177,7 +176,7 @@ def spd_to_lux(spd: SPD, binwidth: int = 1) -> float:
         Luminance.
 
     """
-    Y = get_CIE_2006_10_deg_CMF(binwidth=binwidth)['Y']
+    Y = get_CIE_2006_10_deg_CMF(binwidth=binwidth)["Y"]
     return spd.dot(Y) * LUX_FACTOR
 
 

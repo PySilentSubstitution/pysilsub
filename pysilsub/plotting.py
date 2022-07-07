@@ -18,50 +18,35 @@ def stim_plot():
     fig, axs = plt.subplots(1, 3, figsize=(12, 4))
 
     # Plot the spectrum
-    axs[0].set(
-        xlabel='Wavelength (nm)',
-        ylabel='W/m$^2$/nm'
-    )
+    axs[0].set(xlabel="Wavelength (nm)", ylabel="W/m$^2$/nm")
 
     # Plot solution on horseshoe
     plot_chromaticity_diagram_CIE1931(
-        axes=axs[1], title=False, standalone=False)
+        axes=axs[1], title=False, standalone=False
+    )
 
     cie170_2 = get_CIE170_2_chromaticity_coordinates(connect=True)
-    axs[1].plot(cie170_2['x'], cie170_2['y'], c='k', ls=':', label='CIE 170-2')
+    axs[1].plot(cie170_2["x"], cie170_2["y"], c="k", ls=":", label="CIE 170-2")
     axs[1].legend()
-    axs[1].set(
-        title='CIE 1931 horseshoe',
-        xlim=(-.1, .9),
-        ylim=(-.1, .9)
-        )
+    axs[1].set(title="CIE 1931 horseshoe", xlim=(-0.1, 0.9), ylim=(-0.1, 0.9))
 
     # Plot aopic irradiances
-    axs[2].set(
-        xticklabels='',
-        ylabel='W/m$^2$',
-        xlabel='$a$-opic irradiance'
-    )
+    axs[2].set(xticklabels="", ylabel="W/m$^2$", xlabel="$a$-opic irradiance")
 
     return fig, axs
 
 
 def plot_aopic(background, modulation):
-    
-    fig, ax = plt.subplots()   
-    
+
+    fig, ax = plt.subplots()
+
     df = (
         pd.concat([background, modulation], axis=1)
         .T.melt(
-            value_name='aopic',
-            var_name='Photoreceptor',
-            ignore_index=False)
+            value_name="aopic", var_name="Photoreceptor", ignore_index=False
+        )
         .reset_index()
-        .rename(
-            columns={'index': 'Spectrum'})
-         )
-    sns.barplot(data=df, x='Photoreceptor', y='aopic', 
-                hue='Spectrum', ax=ax)
+        .rename(columns={"index": "Spectrum"})
+    )
+    sns.barplot(data=df, x="Photoreceptor", y="aopic", hue="Spectrum", ax=ax)
     plt.show()
-
-    

@@ -7,7 +7,8 @@ Created on Fri Nov 26 09:50:04 2021
 """
 
 import sys
-sys.path.insert(0, '../')
+
+sys.path.insert(0, "../")
 
 import numpy as np
 import seaborn as sns
@@ -19,43 +20,49 @@ from pysilsub.problem import SilentSubstitutionProblem
 from pysilsub.colorfunc import LMS_to_xyY, xyY_to_LMS
 from pysilsub.plotting import stim_plot
 
-sns.set_context('notebook')
-sns.set_style('whitegrid')
+sns.set_context("notebook")
+sns.set_style("whitegrid")
 
 
-spds = pd.read_csv('../data/S2_corrected_oo_spectra.csv', 
-                   index_col=['led','intensity'])
-spds.index.rename(['Primary', 'Setting'], inplace=True)
+spds = pd.read_csv(
+    "../data/S2_corrected_oo_spectra.csv", index_col=["led", "intensity"]
+)
+spds.index.rename(["Primary", "Setting"], inplace=True)
 spds.columns = pd.Int64Index(spds.columns.astype(int))
-spds.columns.name = 'Wavelength'
+spds.columns.name = "Wavelength"
 
 
 # list of colors for the primaries
-colors = ['blueviolet', 'royalblue', 'darkblue', 'blue', 'cyan', 
-          'green', 'lime', 'orange', 'red', 'darkred']
+colors = [
+    "blueviolet",
+    "royalblue",
+    "darkblue",
+    "blue",
+    "cyan",
+    "green",
+    "lime",
+    "orange",
+    "red",
+    "darkred",
+]
 
 ss = SilentSubstitutionProblem(
-    resolutions=[4095]*10,
+    resolutions=[4095] * 10,
     colors=colors,
     spds=spds,
     spd_binwidth=1,
-    isolate=['I'],
-    silence=['S', 'L','M'],
-    target_contrast=.5
-    )
+    isolate=["I"],
+    silence=["S", "L", "M"],
+    target_contrast=0.5,
+)
 
-target_xy=[0.31271, 0.32902]  # D65
-target_luminance=600.
+target_xy = [0.31271, 0.32902]  # D65
+target_luminance = 600.0
 bg = ss.find_settings_xyY(target_xy, target_luminance)
 ss.background = bg.x
 
 # Define constraints and local minimizer
-constraints = (
-    {
-    'type': 'eq',
-    'fun': ss.silencing_constraint
-    }
-    )
+constraints = {"type": "eq", "fun": ss.silencing_constraint}
 
 # if ss.target_xy is not None:
 #     constraints.append({
@@ -71,10 +78,10 @@ constraints = (
 
 # from scipy.optimize import basinhopping
 # minimizer_kwargs = {
-#     'method': 'SLSQP', 
+#     'method': 'SLSQP',
 #     'bounds': ss.bounds,
 #     'constraints': constraints}
-# basinhopping(    
+# basinhopping(
 #     func=ss.objective_function,
 #     x0=ss.initial_guess_x0(),
 #     minimizer_kwargs=minimizer_kwargs,
@@ -94,7 +101,7 @@ result = minimize_ipopt(
     constraints=constraints,
     tol=1e-5,
     callback=None,
-    options={b'print_level': 5, b'constr_viol_tol': 1e-5},
+    options={b"print_level": 5, b"constr_viol_tol": 1e-5},
 )
 
 # Plot solution
@@ -127,7 +134,7 @@ fig = ss.debug_callback_plot(result.x)
 #         options={b'print_level': 5, b'constr_viol_tol': 1e-6},
 #     )
 #     results.append(r)
-    
+
 # #%% plot
 
 # new = []
@@ -135,7 +142,7 @@ fig = ss.debug_callback_plot(result.x)
 #     ss.debug_callback_plot(i.x)
 #     c = ss.get_photoreceptor_contrasts(i.x)[2][0]
 #     new.append(c)
-    
+
 # #%%
 # bg = np.array([.5] *10)
 # mod = np.array([-0.3568, -0.2557, 0.1752, 0.4446, 0.3304, -0.1898, -0.1393, 0.1307, 0.1147, 0.0494])
