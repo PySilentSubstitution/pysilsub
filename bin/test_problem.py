@@ -11,22 +11,27 @@ from scipy.optimize import minimize, basinhopping
 from pysilsub.problem import SilentSubstitutionProblem as SSP
 
 # Which device to use
-# ssp = SSP.from_json('../data/STLAB_1_York.json')
-# ssp = SSP.from_json('../data/STLAB_2_York.json')
-# ssp = SSP.from_json('../data/STLAB_1_Oxford.json')
+#
+#ssp = SSP.from_json('../data/STLAB_1_York.json')
+#ssp = SSP.from_json('../data/STLAB_2_York.json')
+ssp = SSP.from_package_data('STLAB_1_York')
 # ssp = SSP.from_json('../data/STLAB_2_Oxford.json')
 # ssp = SSP.from_json("../data/BCGAR.json")
-ssp = SSP.from_json('../data/OneLight.json')
+# ssp = SSP.from_json('../data/OneLight.json')
 # ssp = SSP.from_json('../data/VirtualSky.json')
-ssp = SSP.from_json('../data/LEDCube.json')
+#ssp = SSP.from_json('../data/LEDCube.json')
 
-ssp.ignore = ["R"]
-ssp.isolate = ["M"]
-ssp.silence = ["S", "I", "L"]
-ssp.target_contrast = -0.05
-ssp.background = [0.5] * ssp.nprimaries
+# Check 3-primary LMS 100% contrast
+ssp.ignore = ['R']
+ssp.modulate = ['S']
+ssp.minimize = ['M', 'L','I']
+
+ssp.target_contrast = .2
+ssp.background = [.5] * ssp.nprimaries 
 result = ssp.linalg_solve()
-ssp.plot_ss_result(result)
+ssp.plot_solution(result)
+
+sol_set = ssp.weights_to_settings(result)
 
 spd_fig = ssp.plot_calibration_spds(**{'legend': False})
 
@@ -36,18 +41,20 @@ spd_fig = ssp.plot_calibration_spds(**{'legend': False})
 solution = ssp.linalg_solve()
 _ = ssp.plot_ss_result(solution)
 
-ssp.print_photoreceptor_contrasts(result, "weber")
+ssp.print_photoreceptor_contrasts(result, "simple")
 
 
 #%% Local optimsation
 
 # ssp.target_contrast = None
-
-# ssp.background = [.5] * ssp.nprimaries
-# ssp.target_contrast = .1
-result = ssp.optim_solve()
-fig = ssp.plot_ss_result(result.x)
-ssp.print_photoreceptor_contrasts(result.x, "simple")
+ssp.ignore = ['R']
+ssp.modulate = ['S']
+ssp.minimize = ['M', 'L','I']
+ssp.background = [.5] * ssp.nprimaries
+ssp.target_contrast = .3
+opt_result = ssp.optim_solve()
+fig = ssp.plot_solution(opt_result.x)
+ssp.print_photoreceptor_contrasts(opt_result.x, "simple")
 
 #%% Global optimsation
 

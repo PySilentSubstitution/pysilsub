@@ -14,11 +14,11 @@ from colour.plotting import plot_chromaticity_diagram_CIE1931
 from pysilsub.CIE import get_CIE170_2_chromaticity_coordinates
 
 
-def stim_plot():
+def ss_solution_plot(**kwargs):
     fig, axs = plt.subplots(1, 3, figsize=(12, 4))
 
     # Plot the spectrum
-    axs[0].set(xlabel="Wavelength (nm)", ylabel="W/m$^2$/nm")
+    axs[0].set(xlabel="Wavelength (nm)")
 
     # Plot solution on horseshoe
     plot_chromaticity_diagram_CIE1931(
@@ -31,7 +31,7 @@ def stim_plot():
     axs[1].set(title="CIE 1931 horseshoe", xlim=(-0.1, 0.9), ylim=(-0.1, 0.9))
 
     # Plot aopic irradiances
-    axs[2].set(xticklabels="", ylabel="W/m$^2$", xlabel="$a$-opic irradiance")
+    axs[2].set(xticklabels="")
 
     return fig, axs
 

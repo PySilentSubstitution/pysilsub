@@ -34,6 +34,9 @@ extensions = [
 "nbsphinx", "sphinxcontrib.napoleon", "sphinx.ext.autodoc", "sphinx_autodoc_typehints"
 ]
 
+# Show docs in order of definition
+autodoc_member_order = 'bysource'
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

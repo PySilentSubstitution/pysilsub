@@ -7,17 +7,27 @@ with open('./README.md', 'r') as fh:
 
 setuptools.setup(
     name='pysilsub', # Replace with your own username
-    version='0.0.5',
+    version='0.0.12',
     author='Joel T. Martin',
     author_email='joel.t.martin36@gmail.com',
-    description='Software for performing silent substitution in Python',
+    description='Software for performing silent substitution in Python.',
+    license='MIT',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/PySilentSubstitution/pysilsub',
+    keywords=['silent substitution', 'vision', 'psychology', 'perception', 'metamer', 'spectra', 'LED'],
     project_urls={
         'Documentation': 'https://pysilentsubstitution.github.io/pysilsub/index.html'},
-    install_requires=['numpy','scipy','matplotlib','seaborn','pandas',
-                      'importlib_resources','colour-science'],
+    python_requires='>=3.8, <3.11',
+    install_requires=[
+        'numpy',
+        'scipy',
+        'matplotlib',
+        'seaborn',  # Potentially not require this
+        'pandas',
+        'importlib-resources',
+        'colour-science'
+        ],
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=[

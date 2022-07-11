@@ -7,7 +7,37 @@ Welcome to PySilentSubstitution!
 
 <img src="https://github.com/PySilentSubstitution/pysilsub/blob/main/logo/photoreceptor_characters.png?raw=True" alt="photoreceptor-characters" width="200"/>
 
-An easy and intuitive way to make silent substitution stimuli for multiprimary stimulation devices. 
+*PySilSub* is a Python software for performing the method of silent substitution with any multiprimary stimulation system for which you have calibration data. Solutions are found with linear algebra and numerical optimisation via a flexible, intuitive interface:
+```Python
+from pysilsub.problem import SilentSubstitutionProblem as SSP
+
+problem = SSP.from_package_data('STLAB_1_York')  # Load example data
+problem.ignore = ['R']  # Ignore rod photoreceptors
+problem.minimize = ['S', 'M', 'L']  # Minimise cone contrast
+problem.modulate = ['I']  # Target melnopsin
+problem.target_contrast = .3  # With 30% contrast 
+solution = problem.optim_solve()  # Solve with optimisation
+fig = problem.plot_solution(solution)  # Plot the solution
+```
+
+Another example: 
+
+```Python
+problem.background = [.5] * problem.nprimaries  # Half-max all channels
+problem.ignore = ['R']  # Ignore rod photoreceptors
+problem.minimize = ['M', 'L', 'I']  # Minimise L-cone, M-cone, and melanopsin
+problem.modulate = ['S']  # Target S-cones
+solution = problem.linalg_solve()  # Solve with linear algebra
+fig = problem.plot_solution(solution)  # Plot the solution
+```
+
+There are many other features and use cases covered. The package also includes 6 example datasets for various multiprimary systems, so you can run the above code after a simple pip install:
+
+```bash
+pip install pysilsub
+```
+
+For further information, take a look at the GitHub repository and documentation pages. 
 
 Important note
 --------------

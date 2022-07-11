@@ -33,9 +33,8 @@ from pysilsub.CIE import (
     get_CIE170_2_chromaticity_coordinates,
 )
 from pysilsub import colorfunc
-from pysilsub.plotting import stim_plot
-
-Settings = Union[List[int], List[float]]
+from pysilsub.plotting import ss_solution_plot
+from pysilsub.exceptions import StimulationDeviceError
 
 
 class StimulationDevice:
@@ -119,6 +118,9 @@ class StimulationDevice:
         self.config = config
 
         # Create important data
+        self.primaries = (
+            self.calibration.index.get_level_values(0).unique().tolist()
+        )
         self.nprimaries = len(self.resolutions)
         self.wls = self.calibration.columns
 
@@ -169,21 +171,21 @@ class StimulationDevice:
         """Constructor that uses example data from the package distribution.
 
         See ``show_package_data(verbose=True)`` for full details.
-        
+
         Parameters
         ----------
-        
+
         example : str
             Currently the following options are available:
-                
+
                 * 'STLAB_York'
                 * 'STLAB_Oxford'
                 * 'BCGAR'
                 * 'VirtualSky'
-                
+
         Example
         -------
-        
+
         ``device = StimulationDevice.from_package_example('BCGAR')``
 
         Returns
@@ -252,6 +254,56 @@ class StimulationDevice:
         )
 
     # Error checking
+    def _primary_input_is_valid(self, primary, primary_input):
+        """Make sure primary input is sensible."""
+        if primary not in self.primaries:
+            raise StimulationDeviceError(
+                f"Requested primary {primary} is unavailable for "
+                f"{self.name}. The following primaries are available: "
+                f"{self.primaries}"
+            )
+
+        if not isinstance(primary_input, (int, float)):
+            raise TypeError("Must specify float or int for primary input.")
+
+        msg = (
+            f"Requested input {primary_input} exceeds "
+            f"resolution of device primary {primary}"
+        )
+
+        if isinstance(primary_input, float):
+            if not (primary_input >= 0.0 and primary_input <= 1.0):
+                raise StimulationDeviceError(msg)
+
+        elif isinstance(primary_input, int):
+            if not (
+                primary_input >= 0
+                and primary_input <= self.resolutions[primary]
+            ):
+                raise StimulationDeviceError(msg)
+
+        return True
+
+    def _device_input_is_valid(self, device_input):
+        """Make sure device input is sensible."""
+        if len(device_input) != self.nprimaries:
+            raise StimulationDeviceError(
+                "Number of settings does not match number of device primaries."
+            )
+        if not (
+            all(isinstance(s, int) for s in device_input)
+            or all(isinstance(s, float) for s in device_input)
+        ):
+            raise StimulationDeviceError(
+                "Can not mix float and int for device input."
+            )
+
+        if all(
+            self._primary_input_is_valid(primary, primary_input)
+            for primary, primary_input in enumerate(device_input)
+        ):
+            return True
+
     def _check_wavelengths(self):
         msg = "Wavelengths do not match spds"
         if not all(
@@ -504,22 +556,20 @@ class StimulationDevice:
             Predicted spd for primary / setting.
 
         """
-        if isinstance(setting, float):
-            setting *= self.resolutions[primary]
-        if setting > self.resolutions[primary]:
-            raise ValueError(
-                f"Requested setting {int(setting)} exceeds "
-                f"resolution of device primary {primary}"
-            )
+        if self._primary_input_is_valid(primary, setting):
+            if isinstance(setting, float):
+                # NOTE: Required for smoothness assumption of SLSQP! i.e.,
+                # don't use an int. 
+                setting = setting * self.resolutions[primary]
 
-        # TODO: fix wavelength thing
-        f = interp1d(
-            x=self.calibration.loc[primary].index.values,
-            y=self.calibration.loc[primary],
-            axis=0,
-            fill_value="extrapolate",
-        )
-        return pd.Series(f(setting), name=name, index=self.wls)
+            # TODO: fix wavelength thing
+            f = interp1d(
+                x=self.calibration.loc[primary].index.values,
+                y=self.calibration.loc[primary],
+                axis=0,
+                fill_value="extrapolate",
+            )
+            return pd.Series(f(setting), name=name, index=self.wls)
 
     def predict_multiprimary_spd(
         self,
@@ -557,28 +607,20 @@ class StimulationDevice:
             Predicted spectra or spectrum for given device settings.
 
         """
-        if len(settings) != self.nprimaries:
-            raise ValueError(
-                "Number of settings does not match number of device primaries."
-            )
-        if not (
-            all(isinstance(s, int) for s in settings)
-            or all(isinstance(s, float) for s in settings)
-        ):
-            raise ValueError("Can not mix float and int in settings.")
-        if name is None:
-            name = 0
-        spd = []
-        for primary, setting in enumerate(settings):
-            spd.append(self.predict_primary_spd(primary, setting, primary))
-        spd = pd.concat(spd, axis=1)
-        if nosum:
-            spd.columns.name = "Primary"
-            return spd
-        else:
-            spd = spd.sum(axis=1)
-            spd.name = name
-            return spd
+        if self._device_input_is_valid(settings):
+            if name is None:
+                name = 0
+            spd = []
+            for primary, setting in enumerate(settings):
+                spd.append(self.predict_primary_spd(primary, setting, primary))
+            spd = pd.concat(spd, axis=1)
+            if nosum:
+                spd.columns.name = "Primary"
+                return spd
+            else:
+                spd = spd.sum(axis=1)
+                spd.name = name
+                return spd
 
     def predict_multiprimary_aopic(
         self, settings: Union[List[int], List[float]], name: Union[int, str] = 0
@@ -600,9 +642,9 @@ class StimulationDevice:
             Predicted a-opic irradiances for given device settings.
 
         """
-        # breakpoint()
-        spd = self.predict_multiprimary_spd(settings, name=name)
-        return spd.dot(self.action_spectra)
+        if self._device_input_is_valid(settings):
+            spd = self.predict_multiprimary_spd(settings, name=name)
+            return spd.dot(self.action_spectra)
 
     def find_settings_xyY(
         self,
@@ -697,7 +739,7 @@ class StimulationDevice:
 
         # Reacfactor!
         if plot_solution is not None:
-            fig, axs = stim_plot()
+            fig, axs = ss_solution_plot()
             # Plot the spectrum
             self.predict_multiprimary_spd(
                 result.x, name=f"solution_xyY:\n{solution_xyY.round(3)}"
@@ -860,72 +902,41 @@ class StimulationDevice:
 
         Parameters
         ----------
-        settings : list of int
-            List of settings for device primaries, ranging from 0-max
-            resolution for respective primary.
+        settings : List[int]
+            List of length ``self.nprimaries`` containing device settings 
+            ranging from 0 to max-resolution for each primary.
 
         Returns
         -------
         list
-            List of weights.
+            List of primary weights.
 
         """
-        return [float(s / r) for s, r in zip(settings, self.resolutions)]
+        if self._device_input_is_valid(settings):
+            if not all(isinstance(s, int) for s in settings):
+                raise StimulationDeviceError(
+                    "settings_to_weights expects int but got float."
+                )
+            return [float(s / r) for s, r in zip(settings, self.resolutions)]
 
     def weights_to_settings(self, weights: List[float]) -> List[int]:
-        """Convert a list of weights to a list of settings.
+        """Convert a list of channel input weights to a list of settings.
 
         Parameters
         ----------
-        weights : list of float
-            List of weights for device primaries, ranging from 0.-1.
+        weights : List[float]
+            List of length ``self.nprimaries`` containing input weights,
+            ranging from 0. to 1., for each primary.
 
         Returns
         -------
         list
-            List of settings.
+            List of primary settings.
 
         """
-        return [int(w * r) for w, r in zip(weights, self.resolutions)]
-
-    def spd_to_settings(self, target_spd, tolerance=1e-6):
-        # breakpoint()
-        target_xyY = colorfunc.spd_to_xyY(target_spd)
-
-        def _objective(x0):
-            xyY = colorfunc.spd_to_xyY(self.predict_multiprimary_spd(x0))
-            error = target_xyY - xyY
-            return sum(pow(error, 2))
-
-        # Callback for global search
-        def _callback(x, f, accepted):
-            if accepted and tolerance is not None:
-                if f < tolerance:
-                    return True
-
-        x0 = np.array([np.random.uniform(0, 1) for val in self.resolutions])
-        bounds = [(0.0, 1.0,) for primary in self.resolutions]
-
-        minimizer_kwargs = {
-            "method": "SLSQP",
-            "bounds": bounds,
-            "options": {"maxiter": 500},
-        }
-
-        # Do global search
-        res = basinhopping(
-            func=_objective,
-            x0=x0,
-            niter=100,
-            T=1.0,
-            stepsize=0.5,
-            minimizer_kwargs=minimizer_kwargs,
-            take_step=None,
-            accept_test=None,
-            callback=_callback,
-            interval=50,
-            disp=True,
-            niter_success=None,
-            seed=None,
-        )
-        return res
+        if self._device_input_is_valid(weights):
+            if not all(isinstance(w, float) for w in weights):
+                raise StimulationDeviceError(
+                    "weights_to_settings expects float but got int."
+                )
+            return [int(w * r) for w, r in zip(weights, self.resolutions)]

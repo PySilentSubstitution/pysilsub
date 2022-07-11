@@ -1,1 +1,2 @@
-graft pysilsub 
+graft pysilsub/data
+global-exclude *.py[cod]
