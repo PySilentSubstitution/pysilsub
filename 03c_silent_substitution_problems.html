@@ -4,9 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Making stimuli &#8212; PySilSub 0.0.1 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Silent substitution problems &#8212; PySilSub 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -19,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Worked examples" href="05_examples.html" />
-    <link rel="prev" title="Stimulation devices" href="03a_stimulation_devices.html" />
+    <link rel="prev" title="Stimulation devices" href="03b_stimulation_devices.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -284,14 +283,14 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<section id="Making-stimuli">
-<h1>Making stimuli<a class="headerlink" href="#Making-stimuli" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Silent-substitution-problems">
+<h1>Silent substitution problems<a class="headerlink" href="#Silent-substitution-problems" title="Permalink to this headline">¶</a></h1>
 <p>Silent substitution stimuli typically take the form of pulses or temporal modulations of photoreceptor-specific contrast presented against a background spectrum to which an observer has adapted. The background spectrum serves to maintain a set pattern of photoreceptor activations and the modulation spectrum increases activation of the targeted photoreceptor(s) without altering activation of the others.</p>
 <img alt="_images/ss_example.svg" src="_images/ss_example.svg" /><p>The example above describes, for a 5-primary stimulation device, a pair of silent substitution spectra where melanopsin receives 250% modulation and the cones are silent. From left to right are shown the spectral power distributions, chromaticity coordinates, and photoreceptor-specific irradiances for the background and modulation spectra. Rods appear to be modulated, too, but in this example both spectra are ~1800 lux, so we expect rods to be saturated and reason that it is safe to ignore them.
 We can see also that both spectra have the same chromaticity.</p>
-<p>Arriving at a solution such as this requires groundwork. First, we need a <a class="reference internal" href="03a_stimulation_devices.html"><span class="doc">forward model of our stimulation device</span></a> that will predict the spectral output for any combination of settings. With that in place, we review the research goals: What photoreceptor(s) are we trying to isolate? How much contrast do we want to achieve? Do we wish to enforce any particular constraints on our stimuli? When we know the answer to these questions, we can formalise the problem
+<p>Arriving at a solution such as this requires groundwork. First, we need a <a class="reference external" href="03a_stimulation_devices.ipynb">forward model of our stimulation device</a> that will predict the spectral output for any combination of settings. With that in place, we review the research goals: What photoreceptor(s) are we trying to isolate? How much contrast do we want to achieve? Do we wish to enforce any particular constraints on our stimuli? When we know the answer to these questions, we can formalise the problem
 and look for a solution. Two ways of doing this, each of which has unique advantages, are with numerical optimization and linear algebra.</p>
-<section id="Numerical-optimization">
+<div class="section" id="Numerical-optimization">
 <h2>Numerical optimization<a class="headerlink" href="#Numerical-optimization" title="Permalink to this headline">¶</a></h2>
 <p>Silent substitution can be approached as a <a class="reference external" href="https://en.wikipedia.org/wiki/Constrained_optimization">constrained numerical optimization</a> problem of the form:</p>
 <p><span class="math">\begin{equation}
@@ -694,7 +693,7 @@ and look for a solution. Two ways of doing this, each of which has unique advant
 </pre></div>
 </div>
 </div>
-<p>Because <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> is the base class we can do all the cool things described <a class="reference internal" href="03a_stimulation_devices.html"><span class="doc">here</span></a>, like plotting the spds and the gamut of the device. But lets get straight on to the optimisation.</p>
+<p>Because <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> is the base class we can do all the cool things described <a class="reference external" href="03a_stimulation_devices.ipynb">here</a>, like plotting the spds and the gamut of the device. But lets get straight on to the optimisation.</p>
 <p>As a general note, numerical optimisation is a big old topic and there are many algorithms available, each with their own idiosynchrasies. At present, <em>PySilSub</em> does not know the best algorithm for your stimulation device and research goals, nor does it unite different algorithms under a common calling syntax. It simply encapsulates your problem in the form of ready made functions that you can pass to an optimiser. So, If you are new to optimisation in Python, it’s worth investing a bit of time
 to learn the basics. <a class="reference external" href="https://realpython.com/python-scipy-cluster-optimize/">This article</a> is a good place to start.</p>
 <p>Though not the only option, Scipy’s <code class="docutils literal notranslate"><span class="pre">optimize</span></code> module is comprehensive and contains a range of methods for local and global optisation with linear or nonlinear constraints. In this case we will use the <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.8.0/html-scipyorg/reference/optimize.minimize-slsqp.html">SLSQP</a> solver with Scipy’s <code class="docutils literal notranslate"><span class="pre">optimize.minimize</span></code> function.</p>
@@ -778,7 +777,7 @@ to learn the basics. <a class="reference external" href="https://realpython.com/
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/03b_making_stimuli_9_1.png" src="_images/03b_making_stimuli_9_1.png" />
+<img alt="_images/03c_silent_substitution_problems_9_1.png" src="_images/03c_silent_substitution_problems_9_1.png" />
 </div>
 </div>
 <p>Voila—a pair of silent substitution spectra. Converting the optimisation result to 8-bit settings for the stimulation device is easy.</p>
@@ -819,8 +818,8 @@ to learn the basics. <a class="reference external" href="https://realpython.com/
 </pre></div></div>
 </div>
 <p>All being well, if we pass these settings to the stimulation device it will produce these two spectra. But see here for various challanges and caveats.</p>
-</section>
-<section id="Linear-algebra">
+</div>
+<div class="section" id="Linear-algebra">
 <h2>Linear algebra<a class="headerlink" href="#Linear-algebra" title="Permalink to this headline">¶</a></h2>
 <p>Silent substitution problems can also be solved with linear algebra. Continuing with our 5-primary example, suppose that we now want to isolate S-cones.</p>
 <div class="nbinput nblast docutils container">
@@ -1387,7 +1386,7 @@ dtype: float64
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/03b_making_stimuli_28_1.png" src="_images/03b_making_stimuli_28_1.png" />
+<img alt="_images/03c_silent_substitution_problems_28_1.png" src="_images/03c_silent_substitution_problems_28_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -1398,8 +1397,8 @@ dtype: float64
 </pre></div>
 </div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
           </div>
@@ -1435,22 +1434,29 @@ dtype: float64
 <li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="03_overview.html">Overview</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="03a_stimulation_devices.html">Stimulation devices</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Making stimuli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03b_stimulation_devices.html">Stimulation devices</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Silent substitution problems</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06_api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
 </ul>
 
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+</ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="03_overview.html">Overview</a><ul>
-      <li>Previous: <a href="03a_stimulation_devices.html" title="previous chapter">Stimulation devices</a></li>
+      <li>Previous: <a href="03b_stimulation_devices.html" title="previous chapter">Stimulation devices</a></li>
       <li>Next: <a href="05_examples.html" title="next chapter">Worked examples</a></li>
   </ul></li>
   </ul></li>
@@ -1486,7 +1492,7 @@ dtype: float64
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/03b_making_stimuli.ipynb.txt"
+      <a href="_sources/03c_silent_substitution_problems.ipynb.txt"
           rel="nofollow">Page source</a>
     </div>
 
