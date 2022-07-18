@@ -5,8 +5,8 @@
    "id": "0b0aead4-7b78-495c-9783-d7ed733e7d27",
    "metadata": {},
    "source": [
-    "Finding maximum contrast\n",
-    "========================\n",
+    "Maximisng contrast\n",
+    "==================\n",
     "\n",
     "If you want to find the maximum contrast available, use `.optim_solve()`. This method uses *scipy's* minimization algorithms to solve the current silent substitution problem. Specifically, it uses the sequential quadratic least squares programming method with the `minimize` function.\n",
     "\n",
@@ -135,7 +135,7 @@
     "\n",
     "But you can probably get even more. *Scipy's* `minimize` function, which is the default of `.optim_solve()`, is a *local* minimizer. It starts with an initial random guess of the primary inputs for the background and modulation spectrum and works from that point to minimize the objective function (which in this case was to maximize contrast). Due to the random starting point on the function landscape, the minimum it finds is unlikely to be the global minimum. \n",
     "\n",
-    "If you have enough time, can tell `.optim_solve()` to search for the global minimum, in which case it will use *Scipy's* `basinhopping` algorithm. This performs a series of local searches, each with a different starting point. "
+    "If you have enough time, you can tell `.optim_solve()` to search for the global minimum, in which case it will use *Scipy's* `basinhopping` algorithm to perform a series of local searches, each with a different starting point. "
    ]
   },
   {
@@ -192,19 +192,11 @@
     "result = ssp.optim_solve(global_search=True)\n",
     "_ = ssp.plot_solution(result.x)"
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "b36d1e16-3e9c-420b-9b61-e61193019470",
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3.7.7 ('silsub')",
+   "display_name": "Python 3 (ipykernel)",
    "language": "python",
    "name": "python3"
   },

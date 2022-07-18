@@ -34,10 +34,11 @@
             
   <div class="section" id="welcome-to-pysilsub-s-documentation">
 <h1>Welcome to PySilSub’s documentation!<a class="headerlink" href="#welcome-to-pysilsub-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://zenodo.org/badge/latestdoi/390693759"><img alt="DOI" src="https://zenodo.org/badge/390693759.svg" /></a> <a class="reference external" href="https://badge.fury.io/py/pysilsub"><img alt="PyPI version" src="https://badge.fury.io/py/pysilsub.svg" /></a> <a class="reference external" href="./CODE_OF_CONDUCT.md"><img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg" /></a> <a class="reference external" href="https://pypi.com/project/pip/"><img alt="PyPi license" src="https://badgen.net/pypi/license/pip/" /></a> <a class="reference external" href="https://pypi.python.org/pypi/ansicolortags/"><img alt="PyPI status" src="https://img.shields.io/pypi/status/ansicolortags.svg" /></a></p>
+<p><a class="reference external" href="https://zenodo.org/badge/latestdoi/390693759"><img alt="DOI" src="https://zenodo.org/badge/390693759.svg" /></a> <a class="reference external" href="https://badge.fury.io/py/pysilsub"><img alt="PyPI version" src="https://badge.fury.io/py/pysilsub.svg" /></a> <a class="reference external" href="https://github.com/PySilentSubstitution/pysilsub/blob/main/CODE_OF_CONDUCT.md"><img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg" /></a> <a class="reference external" href="https://github.com/PySilentSubstitution/pysilsub/blob/main/LICENSE"><img alt="PyPi license" src="https://badgen.net/pypi/license/pip/" /></a> <a class="reference external" href="https://pypi.python.org/pypi/ansicolortags/"><img alt="PyPI status" src="https://img.shields.io/pypi/status/ansicolortags.svg" /></a></p>
 <p><em>PySilSub</em> is a Python software for performing the method of <a class="reference internal" href="01_background.html"><span class="doc">silent
 substitution</span></a> with any multiprimary stimulation system for which accurate
-calibration data are available. See also, <a class="reference external" href="https://pyplr.github.io/cvd_pupillometry/index.html#">PyPlr</a>,
+calibration data are available.</p>
+<p>See also, <a class="reference external" href="https://pyplr.github.io/cvd_pupillometry/index.html#">PyPlr</a>,
 a sister project offering a Python framework for researching the pupillary
 light reflex with the Pupil Core eye tracking platform.</p>
 <p>With <em>PySilSub</em>, solutions to silent substitution problems are found with linear
@@ -48,18 +49,17 @@ algebra and numerical optimisation via a configurable, intuitive interface:</p>
 <span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>  <span class="c1"># Ignore rod photoreceptors</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]</span>  <span class="c1"># Minimise cone contrast</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span>  <span class="c1"># Target melnopsin</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.3</span>  <span class="c1"># With 30% contrast</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.5</span>  <span class="c1"># With 50% contrast</span>
 <span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">()</span>  <span class="c1"># Solve with optimisation</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>  <span class="c1"># Plot the solution</span>
 </pre></div>
 </div>
-<p>There are many other features and use cases covered. The package also
-includes 6 example datasets for various multiprimary systems, so you can
+<img alt="Plot of result" src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/optim_result.svg" /><p>There are many other features and use cases covered, so check out the code and read the docs.</p>
+<p>The package also includes 6 example datasets for various multiprimary systems, so you can
 run the above code after a simple pip install:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pysilsub
 </pre></div>
 </div>
-<p>For further information, take a look at the GitHub repository and explore these documentation pages.</p>
 <div class="section" id="important-note">
 <h2>Important note<a class="headerlink" href="#important-note" title="Permalink to this headline">¶</a></h2>
 <p>This is a test release and should not be used for production.</p>
@@ -78,12 +78,15 @@ run the above code after a simple pip install:</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="calibration_and_configuration.html">Calibration and configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration_and_configuration.html#Configure-device">Configure device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration_and_configuration.html#Optional">Optional</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03b_stimulation_devices.html">Stimulation devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03c_silent_substitution_problems.html">Silent substitution problems</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="05a_maximum_contrast.html">Finding maximum contrast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05a_maximum_contrast.html">Maximisng contrast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05c_contrast_modulations.html">Contrast modulations</a></li>
 </ul>
 </li>

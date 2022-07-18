@@ -41,23 +41,16 @@
 <p>&#64;author: jtm</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pysilsub.device.StimulationDevice">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.device.</span></span><span class="sig-name descname"><span class="pre">StimulationDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_spectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIES026'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.device.</span></span><span class="sig-name descname"><span class="pre">StimulationDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_spectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIES026'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic class for multiprimary stimultion device.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.device.StimulationDevice.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_spectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIES026'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_spectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIES026'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiate class for multiprimary light stimulation devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>resolutions</strong> (<em>list of int</em>) – Resolution depth of primaries, i.e., the number of steps available
-for specifying the intensity of each primary. This is a list of
-integers to allow for systems where primaries may have different
-resolution depths. The number of elements in the list must
-equal the number of device primaries.</p></li>
-<li><p><strong>colors</strong> (<em>list of str</em>) – List of valid color names for the primaries. Must be in
-<a class="reference external" href="https://matplotlib.org/stable/gallery/color/named_colors.html">matplotlib.colors.cnames</a>.</p></li>
-<li><p><strong>calibration</strong> (<em>pd.DataFrame</em>) – Spectral measurements to characterise the output of the device.
+<li><p><strong>calibration</strong> (<em>str</em>) – Path to CSV file with spectral measurements to characterise the output of the device.
 Column headers must be wavelengths and each row a spectrum.
 Additional columns are needed to identify the Primary/Setting. For
 example, 380, …, 780, Primary, Setting. See
@@ -66,6 +59,13 @@ for further info.</p></li>
 <li><p><strong>wavelengths</strong> (<em>list</em><em>, </em><em>optional</em>) – [start, stop, step] of wavelength range, e.g., [380, 781, 1] for
 380 to 780 in 1 nm bins. The default is None, in which case the
 wavelength range is determined from the calibration spds.</p></li>
+<li><p><strong>colors</strong> (<em>list of str</em>) – List of valid color names for the primaries. Must be in
+<a class="reference external" href="https://matplotlib.org/stable/gallery/color/named_colors.html">matplotlib.colors.cnames</a>.</p></li>
+<li><p><strong>resolutions</strong> (<em>list of int</em>) – Resolution depth of primaries, i.e., the number of steps available
+for specifying the intensity of each primary. This is a list of
+integers to allow for systems where primaries may have different
+resolution depths. The number of elements in the list must
+equal the number of device primaries.</p></li>
 <li><p><strong>action_spectra</strong> (<em>str</em><em> or </em><em>pd.DataFrame</em>) – Photoreceptor spectral sensetivities of the observer. By default,
 uses the CIES026 standard. Alternatively, pass a dataframe
 with user-defined values. See <cite>CIE.get_CIES026()</cite> and
@@ -145,6 +145,25 @@ photostimulator</cite>. Defaults to <cite>Stimulation Device</cite>.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.device.StimulationDevice.load_calibration_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_calibration_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration_fpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice.load_calibration_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load calibration file into DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>calibration_fpath</strong> (<em>str</em>) – Path to CSV file with column headers <em>Primary</em> and <em>Setting</em> and
+numbers to describe the waelength sampling (e.g., 380, 381, …,
+780). Each row should contain a spectral measurement.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>calibration</strong> – The CSV file loaded into a DataFrame with Multi-Index..</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,37 +252,6 @@ is False.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.device.StimulationDevice.calculate_aopic_irradiances">
-<span class="sig-name descname"><span class="pre">calculate_aopic_irradiances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice.calculate_aopic_irradiances" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate aopic irradiances from calibration spds.</p>
-<p>Using the CIE026 spectral sensetivities, calculate alpha-opic
-irradiances (S, M, L, R, I) for every spectrum in <cite>self.calibration</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Alphaopic irradiances.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>pd.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.device.StimulationDevice.calculate_lux">
-<span class="sig-name descname"><span class="pre">calculate_lux</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice.calculate_lux" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using the CIE1924 photopic luminosity function, calculate lux for
-every spectrum in <cite>self.calibration</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Lux values.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>pd.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.device.StimulationDevice.predict_primary_spd">
 <span class="sig-name descname"><span class="pre">predict_primary_spd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setting</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice.predict_primary_spd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict output for a single device primary at a given setting.</p>
@@ -316,6 +304,37 @@ primary settings. Assumes linear summation of primaries.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>pd.DataFrame if nosum else pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.device.StimulationDevice.calculate_aopic_irradiances">
+<span class="sig-name descname"><span class="pre">calculate_aopic_irradiances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice.calculate_aopic_irradiances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate aopic irradiances from calibration spds.</p>
+<p>Using the CIE026 spectral sensetivities, calculate alpha-opic
+irradiances (S, M, L, R, I) for every spectrum in <cite>self.calibration</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Alphaopic irradiances.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.device.StimulationDevice.calculate_lux">
+<span class="sig-name descname"><span class="pre">calculate_lux</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.device.StimulationDevice.calculate_lux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using the CIE1924 photopic luminosity function, calculate lux for
+every spectrum in <cite>self.calibration</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Lux values.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -453,7 +472,7 @@ then solve it with linear algebra or numerical optimisation.</p>
 <p>&#64;author: jtm, ms</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pysilsub.problem.SilentSubstitutionProblem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.problem.</span></span><span class="sig-name descname"><span class="pre">SilentSubstitutionProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_spectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIES026'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problem.SilentSubstitutionProblem" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.problem.</span></span><span class="sig-name descname"><span class="pre">SilentSubstitutionProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_spectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIES026'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problem.SilentSubstitutionProblem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pysilsub.device.StimulationDevice" title="pysilsub.device.StimulationDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">pysilsub.device.StimulationDevice</span></code></a></p>
 <p>Class to perform silent substitution with a stimulation device.</p>
 <p>The class inherits from <code class="docutils literal notranslate"><span class="pre">pysilsub.device.StimulationDevice</span></code> and is
@@ -494,20 +513,12 @@ For example:</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problem.SilentSubstitutionProblem.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_spectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIES026'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problem.SilentSubstitutionProblem.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_spectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIES026'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problem.SilentSubstitutionProblem.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to perform silent substitution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>resolutions</strong> (<em>list of int</em>) – Resolution depth of primaries, i.e., the number of steps available
-for specifying the intensity of each primary. This is a list of
-integers to allow for systems where primaries may have different
-resolution depths. The number of elements in the list must
-equal the number of device primaries.</p></li>
-<li><p><strong>colors</strong> (<em>list of str</em>) – <p>List of valid color names for the primaries. Must be in
-<a class="reference external" href="https://matplotlib.org/stable/gallery/color/named_colors.html">matplotlib.colors.cnames</a>.</p>
-</p></li>
-<li><p><strong>calibration</strong> (<em>pd.DataFrame</em>) – <p>Spectral measurements to characterise the output of the device.
+<li><p><strong>calibration</strong> (<em>str</em>) – <p>Path to CSV file with spectral measurements to characterise the output of the device.
 Column headers must be wavelengths and each row a spectrum.
 Additional columns are needed to identify the Primary/Setting. For
 example, 380, …, 780, Primary, Setting. See
@@ -517,20 +528,27 @@ for further info.</p>
 <li><p><strong>wavelengths</strong> (<em>list</em><em>, </em><em>optional</em>) – [start, stop, step] of wavelength range, e.g., [380, 781, 1] for
 380 to 780 in 1 nm bins. The default is None, in which case the
 wavelength range is determined from the calibration spds.</p></li>
+<li><p><strong>colors</strong> (<em>list of str</em>) – <p>List of valid color names for the primaries. Must be in
+<a class="reference external" href="https://matplotlib.org/stable/gallery/color/named_colors.html">matplotlib.colors.cnames</a>.</p>
+</p></li>
+<li><p><strong>resolutions</strong> (<em>list of int</em>) – Resolution depth of primaries, i.e., the number of steps available
+for specifying the intensity of each primary. This is a list of
+integers to allow for systems where primaries may have different
+resolution depths. The number of elements in the list must
+equal the number of device primaries.</p></li>
 <li><p><strong>action_spectra</strong> (<em>str</em><em> or </em><em>pd.DataFrame</em>) – Photoreceptor spectral sensetivities of the observer. By default,
 uses the CIES026 standard. Alternatively, pass a dataframe
 with user-defined values. See <cite>CIE.get_CIES026()</cite> and
 <cite>pysilsub.asano</cite> for inspiration.</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – Name of the device or stimulation system, e.g., <cite>8-bit BCGAR
 photostimulator</cite>. Defaults to <cite>Stimulation Device</cite>.</p></li>
-<li><p><strong>config</strong> (<em>dict</em>) – Config file dict.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None.</p>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
