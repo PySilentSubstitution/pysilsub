@@ -14,7 +14,7 @@ then solve it with linear algebra or numerical optimisation.
 from typing import List, Optional, Tuple, Sequence
 
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import minimize, basinhopping, OptimizeResult
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -73,10 +73,10 @@ class SilentSubstitutionProblem(StimulationDevice):
 
     def __init__(
         self,
-        resolutions: List[int],
-        colors: List[str],
         calibration: pd.DataFrame,
         wavelengths: List[int],
+        colors: List[str],
+        resolutions: List[int],
         action_spectra="CIES026",
         name: Optional[str] = None,
         config: Optional[dict] = None,
@@ -85,17 +85,8 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         Parameters
         ----------
-        resolutions : list of int
-            Resolution depth of primaries, i.e., the number of steps available
-            for specifying the intensity of each primary. This is a list of
-            integers to allow for systems where primaries may have different
-            resolution depths. The number of elements in the list must
-            equal the number of device primaries.
-        colors : list of str
-            List of valid color names for the primaries. Must be in
-            `matplotlib.colors.cnames <https://matplotlib.org/stable/gallery/color/named_colors.html>`_.
-        calibration : pd.DataFrame
-            Spectral measurements to characterise the output of the device.
+        calibration : str
+            Path to CSV file with spectral measurements to characterise the output of the device.
             Column headers must be wavelengths and each row a spectrum.
             Additional columns are needed to identify the Primary/Setting. For
             example, 380, ..., 780, Primary, Setting. See
@@ -105,6 +96,15 @@ class SilentSubstitutionProblem(StimulationDevice):
             [start, stop, step] of wavelength range, e.g., [380, 781, 1] for
             380 to 780 in 1 nm bins. The default is None, in which case the
             wavelength range is determined from the calibration spds.
+        colors : list of str
+            List of valid color names for the primaries. Must be in
+            `matplotlib.colors.cnames <https://matplotlib.org/stable/gallery/color/named_colors.html>`_.
+        resolutions : list of int
+            Resolution depth of primaries, i.e., the number of steps available
+            for specifying the intensity of each primary. This is a list of
+            integers to allow for systems where primaries may have different
+            resolution depths. The number of elements in the list must
+            equal the number of device primaries.
         action_spectra : str or pd.DataFrame
             Photoreceptor spectral sensetivities of the observer. By default,
             uses the CIES026 standard. Alternatively, pass a dataframe
@@ -113,20 +113,18 @@ class SilentSubstitutionProblem(StimulationDevice):
         name : str
             Name of the device or stimulation system, e.g., `8-bit BCGAR
             photostimulator`. Defaults to `Stimulation Device`.
-        config : dict
-            Config file dict.
 
         Returns
         -------
-        None.
+        None
 
         """
         # Instance attributes
         super().__init__(
-            resolutions,
-            colors,
             calibration,
             wavelengths,
+            colors,
+            resolutions,
             action_spectra,
             name,
             config,
@@ -383,11 +381,11 @@ class SilentSubstitutionProblem(StimulationDevice):
                 "The *target_contrast* property has not been set (see above)."
             )
         return self._target_contrast
-    
+
     # TODO: Add 'max+' and 'max-' options
     @target_contrast.setter
     def target_contrast(self, target_contrast):
-        if any((self.ignore is None, self.modulate is None, self.minimize is None)):
+        if any((self._ignore is None, self._modulate is None, self._minimize is None)):
             raise SilentSubstitutionProblem(
                 'Must specify which photoreceptors to *ignore*, *minimize* and '
                 '*isolate* before target_contrast.')
@@ -480,7 +478,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         if self._problem_is_valid():
             print(
                 f"{'*'*60}\n{' Silent Substitution Problem ':*^60s}\n{'*'*60}"
-                )
+            )
             print(f"Device: {self.name}")
             print(f"Background: {self._background}")
             print(f"Ignoring: {self._ignore}")
@@ -529,7 +527,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             Alphaopic irradiances for the modulation spectrum.
 
         """
-        if self._background == None:
+        if self._background is None:
             bg_weights = x0[0: self.nprimaries]
             mod_weights = x0[self.nprimaries: self.nprimaries * 2]
         else:
@@ -583,12 +581,12 @@ class SilentSubstitutionProblem(StimulationDevice):
     def objective_function(self, x0: Sequence[float]) -> float:
         """Calculates negative melanopsin contrast for background
         and modulation spectra. We want to minimise this."""
-        #breakpoint()
+        # breakpoint()
         contrast = self.get_photoreceptor_contrasts(x0)
         if self._target_contrast is not None:
             # Target contrast is specified, aim for target contrast
-            return sum(pow(self._target_contrast - contrast[self.modulate], 2))
-        
+            return sum(pow(self.target_contrast - contrast[self.modulate], 2))
+
         elif self._target_contrast is None:
             # Target contrast not specified, aim for maximum contrast
             return -sum(contrast[self.modulate])
@@ -598,12 +596,12 @@ class SilentSubstitutionProblem(StimulationDevice):
         """Calculates irradiance contrast for minimized photoreceptors.
 
         """
-        #breakpoint()
+        # breakpoint()
         contrast = self.get_photoreceptor_contrasts(x0)
         return sum(pow(contrast[self.minimize].values, 2))
 
     # TODO: add local and global options
-    def optim_solve(self):
+    def optim_solve(self, global_search: bool = False) -> OptimizeResult:
         """Use optimisation to solve the current silent substitution problem. 
 
         This method is good for finding maximum available contrast. It uses
@@ -619,40 +617,59 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         Returns
         -------
-        result : scipy.optimize.OptimizationResult
+        result : scipy.optimize.OptimizeResult
             The result
 
         """
-        #breakpoint()
+        # breakpoint()
         if self._problem_is_valid():
             if self._background is None:
                 bounds = self.bounds * 2
                 print("> No background specified, will optimise background.")
             else:
                 bounds = self.bounds
-    
+
             if self._target_contrast is None:
                 print("> No target contrast specified, will aim to maximise.")
-    
-            print("\n")
-    
+
             constraints = [
                 {"type": "eq", "fun": self.silencing_constraint, "tol": 1e-04}
             ]
-            
-            x0 = self.initial_guess_x0()
-            
-            result = minimize(
-                fun=self.objective_function,
-                x0=x0,
-                method="SLSQP",
-                bounds=bounds,
-                constraints=constraints,
-                tol=1e-05,
-                options={"maxiter": 100, "ftol": 1e-06, "iprint": 2, "disp": True},
-            )
-    
-            return result
+
+            if global_search:
+
+                print('> Performing global optimization with basinhopping and SLSQP')
+
+                minimizer_kwargs = {
+                    'method': 'SLSQP',
+                    'constraints': constraints,
+                    'bounds': bounds
+                }
+
+                result = basinhopping(
+                    func=self.objective_function,
+                    x0=self.initial_guess_x0(),
+                    minimizer_kwargs=minimizer_kwargs,
+                    disp=True,
+                    niter=10
+                )
+
+            if not global_search:
+
+                print('> Performing local optimization with SLSQP.')
+
+                result = minimize(
+                    fun=self.objective_function,
+                    x0=self.initial_guess_x0(),
+                    method="SLSQP",
+                    bounds=bounds,
+                    constraints=constraints,
+                    tol=1e-05,
+                    options={"maxiter": 100, "ftol": 1e-06,
+                             "iprint": 1, "disp": True},
+                )
+
+        return result
 
     # TODO: adjust target_contrasts in case of multiple receptor modulate
     # Linear algebra
@@ -731,15 +748,15 @@ class SilentSubstitutionProblem(StimulationDevice):
         # dividing by two gives roughly double!?
         solution = A1.dot(requested_contrasts) / 2 + self.background
 
-        print(f"receptors: {receptors}")
-        print(f"requested: {requested_contrasts}")
+        #print(f"receptors: {receptors}")
+        #print(f"requested: {requested_contrasts}")
 
         if all([s > b[0] and s < b[1] for s in solution for b in self.bounds]):
             return solution
         else:
             raise ValueError(
                 "Solution is out of gamut, lower target contrast.")
-            
+
     def plot_solution(self, x0):
         """Plot the silent substitution solution."""
         # get aopic
@@ -811,4 +828,21 @@ class SilentSubstitutionProblem(StimulationDevice):
             data=df_ao, x="Photoreceptor", y="aopic", hue="Spectrum", ax=axs[2]
         )
         axs[2].set_ylabel("$a$-opic irradiance")
+        return fig
+    
+    # TODO: Fix
+    def plot_contrast_modulation(self, solutions):
+        fig, ax = plt.subplots(1, 1)
+
+        splatter = [self.get_photoreceptor_contrasts(s) for s in solutions]
+        splatter = pd.concat(splatter, axis=1)    
+        
+        for r, s in splatter.iterrows():
+            ax.plot(s, label=r, color=self.aopic_colors[r])
+                
+            ax.set_ylabel('Simple contrast')
+            ax.set_title(self.name)
+            ax.set_xlabel('Time (s)')
+            
+        plt.legend()
         return fig

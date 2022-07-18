@@ -38,7 +38,7 @@ def device_config():
         "notes": NOTES,
     }
 
-    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"))
+    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"), indent=4)
 
 
 if __name__ == "__main__":

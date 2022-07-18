@@ -7,7 +7,7 @@ with open('./README.md', 'r') as fh:
 
 setuptools.setup(
     name='pysilsub', # Replace with your own username
-    version='0.0.12',
+    version='0.0.13',
     author='Joel T. Martin',
     author_email='joel.t.martin36@gmail.com',
     description='Software for performing silent substitution in Python.',

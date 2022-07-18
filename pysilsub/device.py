@@ -56,10 +56,10 @@ class StimulationDevice:
 
     def __init__(
         self,
-        resolutions: List[int],
-        colors: List[str],
         calibration: pd.DataFrame,
         wavelengths: List[int],
+        colors: List[str],
+        resolutions: List[int],
         action_spectra="CIES026",
         name: Optional[str] = None,
         config: Optional[dict] = None,
@@ -68,17 +68,8 @@ class StimulationDevice:
 
         Parameters
         ----------
-        resolutions : list of int
-            Resolution depth of primaries, i.e., the number of steps available
-            for specifying the intensity of each primary. This is a list of
-            integers to allow for systems where primaries may have different
-            resolution depths. The number of elements in the list must
-            equal the number of device primaries.
-        colors : list of str
-            List of valid color names for the primaries. Must be in
-            `matplotlib.colors.cnames <https://matplotlib.org/stable/gallery/color/named_colors.html>`_.
-        calibration : pd.DataFrame
-            Spectral measurements to characterise the output of the device.
+        calibration : str
+            Path to CSV file with spectral measurements to characterise the output of the device.
             Column headers must be wavelengths and each row a spectrum.
             Additional columns are needed to identify the Primary/Setting. For
             example, 380, ..., 780, Primary, Setting. See
@@ -88,6 +79,15 @@ class StimulationDevice:
             [start, stop, step] of wavelength range, e.g., [380, 781, 1] for
             380 to 780 in 1 nm bins. The default is None, in which case the
             wavelength range is determined from the calibration spds.
+        colors : list of str
+            List of valid color names for the primaries. Must be in
+            `matplotlib.colors.cnames <https://matplotlib.org/stable/gallery/color/named_colors.html>`_.
+        resolutions : list of int
+            Resolution depth of primaries, i.e., the number of steps available
+            for specifying the intensity of each primary. This is a list of
+            integers to allow for systems where primaries may have different
+            resolution depths. The number of elements in the list must
+            equal the number of device primaries.
         action_spectra : str or pd.DataFrame
             Photoreceptor spectral sensetivities of the observer. By default,
             uses the CIES026 standard. Alternatively, pass a dataframe
@@ -102,12 +102,12 @@ class StimulationDevice:
         None
 
         """
-        self.resolutions = resolutions
-        self.colors = colors
-        # self._check_color_names_valid()
         self.calibration = calibration
-        self.wavelengths = wavelengths
-        self._check_wavelengths()
+        if self._wavelengths_are_valid(wavelengths):
+            self.wavelengths = wavelengths
+        self.resolutions = resolutions
+        # if self._color_names_are_valid():
+        self.colors = colors
         if action_spectra == "CIES026":
             self.action_spectra = get_CIES026(self.wavelengths[-1], fillna=True)
         else:
@@ -127,10 +127,10 @@ class StimulationDevice:
     def __str__(self):
         return f"""
     StimulationDevice:
-        Resolutions: {self.resolutions},
-        Colors: {self.colors},
         Calibration: {self.calibration.shape},
         Wavelengths: {self.wavelengths},
+        Colors: {self.colors},
+        Resolutions: {self.resolutions},
         Action Spectra: {self.action_spectra.shape},
         Name: {self.name}
     """
@@ -153,15 +153,14 @@ class StimulationDevice:
 
         """
         config = json.load(open(config_json, "r"))
-
-        # Get the calibration data
+        
         calibration = cls.load_calibration_file(config["calibration_fpath"])
-
+        
         return cls(
-            resolutions=config["resolutions"],
-            colors=config["colors"],
             calibration=calibration,
             wavelengths=config["wavelengths"],
+            colors=config["colors"],
+            resolutions=config["resolutions"],
             name=config["name"],
             config=config,
         )
@@ -201,10 +200,10 @@ class StimulationDevice:
         calibration = cls.load_calibration_file(data_path)
 
         return cls(
-            resolutions=config["resolutions"],
-            colors=config["colors"],
             calibration=calibration,
             wavelengths=config["wavelengths"],
+            colors=config["colors"],
+            resolutions=config["resolutions"],
             name=config["name"],
             config=config,
         )
@@ -236,7 +235,22 @@ class StimulationDevice:
                 print("\n")
 
     @classmethod
-    def load_calibration_file(cls, calibration_fpath):
+    def load_calibration_file(cls, calibration_fpath: str) -> pd.DataFrame:
+        """Load calibration file into DataFrame.
+        
+        Parameters
+        ----------
+        calibration_fpath : str
+            Path to CSV file with column headers *Primary* and *Setting* and
+            numbers to describe the waelength sampling (e.g., 380, 381, ...,
+            780). Each row should contain a spectral measurement. 
+
+        Returns
+        -------
+        calibration : pd.DataFrame
+            The CSV file loaded into a DataFrame with Multi-Index..
+
+        """
         calibration = pd.read_csv(
             calibration_fpath, index_col=["Primary", "Setting"]
         )
@@ -304,18 +318,20 @@ class StimulationDevice:
         ):
             return True
 
-    def _check_wavelengths(self):
-        msg = "Wavelengths do not match spds"
+    def _wavelengths_are_valid(self, wavelengths) -> bool:
         if not all(
-            [wl in self.calibration.columns for wl in range(*self.wavelengths)]
+            [wl in self.calibration.columns for wl in range(*wavelengths)]
         ):
-            raise ValueError(msg)
-
-    def _check_color_names_valid(self):
+            raise StimulationDeviceError(
+                "Specfied wavelengths do not match calibration spds.")
+        return True
+    
+    def _color_names_are_valid(self) -> bool:
         request = f"Please choose from the following:\n {list(cnames.keys())}"
         msg = f"At least one color name was not valid. {request}"
         if not all([c in cnames.keys() for c in self.colors]):
             raise ValueError(msg)
+        return True
 
     def _get_gamut(self):
         max_spds = self.calibration.loc[(slice(None), self.resolutions), :]
@@ -496,35 +512,6 @@ class StimulationDevice:
         return ax
 
     # Predict ouput
-    def calculate_aopic_irradiances(self) -> pd.DataFrame:
-        """Calculate aopic irradiances from calibration spds.
-
-        Using the CIE026 spectral sensetivities, calculate alpha-opic
-        irradiances (S, M, L, R, I) for every spectrum in `self.calibration`.
-
-        Returns
-        -------
-        pd.DataFrame
-            Alphaopic irradiances.
-
-        """
-        return self.calibration.dot(self.action_spectra)
-
-    def calculate_lux(self):
-        """Using the CIE1924 photopic luminosity function, calculate lux for
-        every spectrum in `self.calibration`.
-
-        Returns
-        -------
-        pd.DataFrame
-            Lux values.
-
-        """
-        vl = get_CIE_1924_photopic_vl(binwidth=self.spd_binwidth[-1])
-        lux = self.calibration.dot(vl.values) * 683  # lux conversion factor
-        lux.columns = ["lux"]
-        return lux
-
     def predict_primary_spd(
         self,
         primary: int,
@@ -621,6 +608,35 @@ class StimulationDevice:
                 spd = spd.sum(axis=1)
                 spd.name = name
                 return spd
+            
+    def calculate_aopic_irradiances(self) -> pd.DataFrame:
+        """Calculate aopic irradiances from calibration spds.
+
+        Using the CIE026 spectral sensetivities, calculate alpha-opic
+        irradiances (S, M, L, R, I) for every spectrum in `self.calibration`.
+
+        Returns
+        -------
+        pd.DataFrame
+            Alphaopic irradiances.
+
+        """
+        return self.calibration.dot(self.action_spectra)
+
+    def calculate_lux(self):
+        """Using the CIE1924 photopic luminosity function, calculate lux for
+        every spectrum in `self.calibration`.
+
+        Returns
+        -------
+        pd.DataFrame
+            Lux values.
+
+        """
+        vl = get_CIE_1924_photopic_vl(binwidth=self.spd_binwidth[-1])
+        lux = self.calibration.dot(vl.values) * 683  # lux conversion factor
+        lux.columns = ["lux"]
+        return lux
 
     def predict_multiprimary_aopic(
         self, settings: Union[List[int], List[float]], name: Union[int, str] = 0

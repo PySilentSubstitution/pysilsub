@@ -7,7 +7,13 @@ Welcome to PySilentSubstitution!
 
 <img src="https://github.com/PySilentSubstitution/pysilsub/blob/main/logo/photoreceptor_characters.png?raw=True" alt="photoreceptor-characters" width="200"/>
 
-*PySilSub* is a Python software for performing the method of silent substitution with any multiprimary stimulation system for which you have calibration data. Solutions are found with linear algebra and numerical optimisation via a flexible, intuitive interface:
+*PySilSub* is a Python software for performing the method of silent substitution with any multiprimary stimulation system for which accurate calibration data are available. Solutions are found with linear algebra and numerical optimisation via a flexible, intuitive interface:
+
+```mermaid
+graph TD;
+  A-->B
+```
+
 ```Python
 from pysilsub.problem import SilentSubstitutionProblem as SSP
 
@@ -19,6 +25,8 @@ problem.target_contrast = .3  # With 30% contrast
 solution = problem.optim_solve()  # Solve with optimisation
 fig = problem.plot_solution(solution)  # Plot the solution
 ```
+
+![]()
 
 Another example: 
 

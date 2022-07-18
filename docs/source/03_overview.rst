@@ -5,8 +5,9 @@ Overview
    :maxdepth: 2
    :caption: Contents:
    
-   03a_stimulation_devices
-   03b_making_stimuli
+   calibration_and_configuration
+   03b_stimulation_devices
+   03c_silent_substitution_problems
    
 .. rubric:: Tables and indices
 ------------------------------

@@ -10,11 +10,12 @@ from scipy.optimize import minimize, basinhopping
 
 from pysilsub.problem import SilentSubstitutionProblem as SSP
 
+ssp = SSP.from_json('../data/STLAB_1_York.json')
 # Which device to use
 #
 #ssp = SSP.from_json('../data/STLAB_1_York.json')
 #ssp = SSP.from_json('../data/STLAB_2_York.json')
-ssp = SSP.from_package_data('STLAB_1_York')
+ssp = SSP.from_package_data('STLAB_2_York')
 # ssp = SSP.from_json('../data/STLAB_2_Oxford.json')
 # ssp = SSP.from_json("../data/BCGAR.json")
 # ssp = SSP.from_json('../data/OneLight.json')
@@ -26,7 +27,7 @@ ssp.ignore = ['R']
 ssp.modulate = ['S']
 ssp.minimize = ['M', 'L','I']
 
-ssp.target_contrast = .2
+ssp.target_contrast = .48
 ssp.background = [.5] * ssp.nprimaries 
 result = ssp.linalg_solve()
 ssp.plot_solution(result)

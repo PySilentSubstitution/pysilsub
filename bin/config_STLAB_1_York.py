@@ -23,13 +23,14 @@ COLORS = [
     "red",
     "darkred",
 ]
-CALIBRATION_FPATH = "/Users/jtm545/Projects/BakerWadeBBSRC/data/STLAB_1_spectra/STLAB_1_jaz_visible.csv"
+CALIBRATION_FPATH = "/Users/jtm545/Projects/BakerWadeBBSRC/data/STLAB_1_spectra/Calibration_2/STLAB_1_jaz_visible.csv"
 CALIBRATION_UNITS = "Counts/s/nm"
+CALIBRATION_DATE = "14/07/2022"
 NAME = "STLAB_1 (binocular, left eye)"
 JSON_NAME = "STLAB_1_York"
 WAVELENGTHS = [380, 781, 1]
 NOTES = (
-    "STLAB_1 (binocular, left eye) is used in the psychology department "
+    "STLAB_1 is used in the psychology department "
     + "at the University of York to stimulate the left eye in a "
     + "binocular stimulation setup for the BakerWadeBBSRC project. For "
     + "this setup, light is transported from STLAB via liquid light "
@@ -44,6 +45,7 @@ def device_config():
     config = {
         "calibration_fpath": CALIBRATION_FPATH,
         "calibration_units": CALIBRATION_UNITS,
+        "calibration_date": CALIBRATION_DATE,
         "name": NAME,
         "json_name": JSON_NAME,
         "wavelengths": WAVELENGTHS,
@@ -52,7 +54,7 @@ def device_config():
         "notes": NOTES,
     }
 
-    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"))
+    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"), indent=4)
 
 
 if __name__ == "__main__":
