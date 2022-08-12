@@ -27,22 +27,21 @@ algebra and numerical optimisation via a configurable, intuitive interface:
    problem.ignore = ['R']  # Ignore rod photoreceptors
    problem.minimize = ['S', 'M', 'L']  # Minimise cone contrast
    problem.modulate = ['I']  # Target melnopsin
-   problem.target_contrast = .3  # With 30% contrast 
+   problem.target_contrast = .5  # With 50% contrast 
    solution = problem.optim_solve()  # Solve with optimisation
    fig = problem.plot_solution(solution)  # Plot the solution
 
 .. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/optim_result.svg
    :alt: Plot of result
 
-There are many other features and use cases covered. The package also
-includes 6 example datasets for various multiprimary systems, so you can
+There are many other features and use cases covered, so check out the code and read the docs.
+
+The package also includes 6 example datasets for various multiprimary systems, so you can
 run the above code after a simple pip install:
 
 .. code:: bash
 
    pip install pysilsub
-
-For further information, take a look at the GitHub repository and explore these documentation pages.
 
 Important note
 --------------

@@ -26,7 +26,7 @@ solution = problem.optim_solve()  # Solve with optimisation
 fig = problem.plot_solution(solution)  # Plot the solution
 ```
 
-![]()
+![Plot of result](./img/ss_example.svg)
 
 Another example: 
 
@@ -36,7 +36,7 @@ problem.ignore = ['R']  # Ignore rod photoreceptors
 problem.minimize = ['M', 'L', 'I']  # Minimise L-cone, M-cone, and melanopsin
 problem.modulate = ['S']  # Target S-cones
 solution = problem.linalg_solve()  # Solve with linear algebra
-fig = problem.plot_solution(solution)  # Plot the solution
+fig = problem.plot_solution(solution.x)  # Plot the solution
 ```
 
 There are many other features and use cases covered. The package also includes 6 example datasets for various multiprimary systems, so you can run the above code after a simple pip install:

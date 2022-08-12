@@ -123,6 +123,9 @@ class StimulationDevice:
         )
         self.nprimaries = len(self.resolutions)
         self.wls = self.calibration.columns
+        
+        # TODO
+        # self.exclude_primaries = None
 
     def __str__(self):
         return f"""
@@ -251,9 +254,12 @@ class StimulationDevice:
             The CSV file loaded into a DataFrame with Multi-Index..
 
         """
-        calibration = pd.read_csv(
-            calibration_fpath, index_col=["Primary", "Setting"]
-        )
+        try:
+            calibration = pd.read_csv(
+                calibration_fpath, index_col=["Primary", "Setting"]
+            )
+        except:
+            pass  # TODO helpful error message
         calibration.columns = calibration.columns.astype("int64")
         calibration.columns.name = "Wavelength"
         return calibration
@@ -792,117 +798,94 @@ class StimulationDevice:
 
         return result
 
-    def do_gamma(self):
-        """Make a gamma table from cumulative distribution functions.
-
-        """
-
-        # Curve fitting function
-        def func(x, a, b):
-            return beta.cdf(x, a, b)
-
-        gamma_table = []
-        for primary, df in self.calibration.groupby(level=0):
-            xdata = (
-                df.index.get_level_values(1) / self.resolutions[primary]
-            ).to_series()
-            ydata = df.sum(axis=1)
-            ydata = ydata / ydata.max()
-
-            popt, pcov = curve_fit(beta.cdf, xdata, ydata, p0=[2.0, 1.0])
-            self.curveparams[primary] = popt
-            ypred = func(xdata, *popt)
-
-            # interp func for new ydata, inverting the values
-            new_y_func = interp1d(ypred, xdata)
-
-            # Interpolate for full lookup table
-            resolution = self.resolutions[primary]
-            new_y = new_y_func(np.linspace(0, 1, resolution + 1)) * resolution
-            gamma_table.append(new_y.astype("int"))
-
-        gamma = pd.DataFrame(gamma_table)
-
-        self.gamma = gamma
-
-    # TODO: decide whether to keep these
-
-    def fit_curves(self):
-        """Fit curves to the unweighted irradiance of spectral measurements
-        and save the parameters.
-
-        Returns
-        -------
-        fig
-            Figure.
-
-        """
-        # breakpoint()
-        # plot
-        ncols = self.nprimaries
-        fig, axs = plt.subplots(
-            nrows=1, ncols=ncols, figsize=(16, 6), sharex=True, sharey=True
-        )
-        # axs = [item for sublist in axs for item in sublist]
-
-        for primary in range(self.nprimaries):
-            xdata = (
-                self.calibration.loc[primary].index / self.resolutions[primary]
-            ).to_series()
-            ydata = self.calibration.loc[primary].sum(axis=1)
-            ydata = ydata / np.max(ydata)
-
-            # Curve fitting function
-            def func(x, a, b):
-                return beta.cdf(x, a, b)
-
-            axs[primary].scatter(xdata, ydata, color=self.colors[primary], s=2)
-
-            # Fit
-            popt, pcov = curve_fit(beta.cdf, xdata, ydata, p0=[2.0, 1.0])
-            self.curveparams[primary] = popt
-            ypred = func(xdata, *popt)
-            axs[primary].plot(
-                xdata,
-                ypred,
-                color=self.colors[primary],
-                label="fit: a=%5.3f, b=%5.3f" % tuple(popt),
-            )
-            axs[primary].set_title("Primary {}".format(primary))
-            axs[primary].legend()
-
-        for ax in axs:
-            ax.set_ylabel("Output fraction (irradiance)")
-            ax.set_xlabel("Input fraction")
-
-        plt.tight_layout()
-
-        return fig
-
-    def optimise(
-        self, primary: int, settings: Union[List[int], List[float]]
-    ) -> Union[List[int], List[float]]:
-        """Optimise a stimulus profile by applying the curve parameters.
-
+    # TODO: Fix
+    def do_gamma(self, fit='polynomial', force_origin=False):
+        """Make a gamma table from reverse polynomial or beta cdf curve fits. 
+        
+        For each primary, calculate the unweigthed sum of the spectral 
+        calibration measurements (output) at each setting (input). A reverse
+        curve fit on these data gives the new input values required for
+        linearisation. 
+        
         Parameters
         ----------
-        primary : int
-            Primary being optimised.
-        settings : np.array
-            Array of intensity values to optimise for specified LED.
+        fit : str, optional
+            'polynomial' or 'beta_cdf'. The default is 'polynomial'.
+        save_plots_to : str, optional
+            Folder to save plots in. The default is None.
 
         Returns
         -------
-        np.array
-            Optimised intensity values.
+        None.
 
         """
-        if not self.curveparams:
-            print("No parameters yet. Run .fit_curves(...) first...")
-        params = self.curveparams[primary]
-        settings = self.settings_to_weights(settings)
-        optisettings = beta.ppf(settings, params[0], params[1])
-        return self.weights_to_settings(optisettings)
+        gamma_table = []
+        for primary, df in self.calibration.groupby('Primary'):
+            settings = df.index.get_level_values('Setting').to_numpy()
+            x = settings / settings.max()
+            y = df.sum(axis=1).to_numpy()
+            y = y / y.max()
+            
+            # Reverse fit
+            if fit == 'polynomial':
+                # TODO: can force 0 intercept by passing weights to the fit
+                if force_origin:
+                    w = np.ones(len(x))
+                    w[0] = 1000
+                    poly_coeff = np.polyfit(y, x, deg=7, w=w)
+                else:
+                    poly_coeff = np.polyfit(y, x, deg=7)
+                    
+                new_x = np.polyval(poly_coeff, x)
+                
+            elif fit == 'beta_cdf':
+                popt, pcov = curve_fit(beta.cdf, y, x, p0=[2.0, 1.0])
+                new_x = beta.cdf(x, *popt)
+
+            new_x = (new_x * self.resolutions[primary]).astype('int')
+            
+            # Interpolate for full lookup table
+            gamma_table.append(new_x)   
+            
+        self.gamma = (pd.DataFrame(gamma_table, columns=settings)
+                      .reindex(columns=range(0, max(self.resolutions)+1))
+                      .interpolate('linear', axis=1).astype('int'))
+        
+        return None
+
+    def plot_gamma(self, save_plots_to=None, show_corrected=False):
+        # if not self.gamma:
+        #     print('Do gamma first.')
+        for primary, df in self.calibration.groupby('Primary'):
+            settings = df.index.get_level_values('Setting').to_numpy()
+            y = df.sum(axis=1).to_numpy()
+            g = self.gamma.loc[primary, settings]
+            x = settings / settings.max()
+            g = g / g.max()
+            y = y / y.max()
+            
+            fig, ax = plt.subplots()
+            ax.plot(x, y, c=self.colors[primary], label='Measured')
+            ax.plot(x, x, c='k', ls=':', label='Ideal')
+            ax.plot(x, g, c='k', label='Reverse fit')
+            ax.set_aspect('equal')
+            ax.set_xlabel('Input')
+            ax.set_ylabel('Output')
+            ax.set_title(f'{self.name}')
+            
+            if show_corrected:
+                corrected = [self.predict_primary_spd(
+                    primary, self.gamma_lookup(
+                        primary, s)).sum() for s in settings]
+                corrected = corrected / max(corrected)
+                ax.plot(x, corrected, c='darkgoldenrod', label='Corrected')
+            
+            ax.legend(title=f'Primary {primary}')
+
+            if save_plots_to is not None:
+                fig.savefig(
+                    op.join(save_plots_to, f'gamma_primary_{primary}.pdf'))
+
 
     def gamma_lookup(self, led, setting):
         return int(self.gamma.loc[led, setting])

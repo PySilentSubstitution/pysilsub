@@ -784,9 +784,6 @@ class SilentSubstitutionProblem(StimulationDevice):
                 x0[self.nprimaries: self.nprimaries * 2], name="Modulation"
             )
 
-        # Print contrasts
-        # print(f'\t{self.get_photoreceptor_contrasts(x0)}')
-
         # get xy
         bg_xy = spd_to_xyY(bg_spd, binwidth=self.wavelengths[2])[:2]
         mod_xy = spd_to_xyY(mod_spd, binwidth=self.wavelengths[2])[:2]
@@ -828,6 +825,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             data=df_ao, x="Photoreceptor", y="aopic", hue="Spectrum", ax=axs[2]
         )
         axs[2].set_ylabel("$a$-opic irradiance")
+        
         return fig
     
     # TODO: Fix
