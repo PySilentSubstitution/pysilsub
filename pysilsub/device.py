@@ -798,7 +798,7 @@ class StimulationDevice:
 
         return result
 
-    # TODO: Fix
+    # TODO: Vlidate fit option
     def do_gamma(self, fit='polynomial', force_origin=False):
         """Make a gamma table from reverse polynomial or beta cdf curve fits. 
         
@@ -884,7 +884,9 @@ class StimulationDevice:
 
             if save_plots_to is not None:
                 fig.savefig(
-                    op.join(save_plots_to, f'gamma_primary_{primary}.pdf'))
+                    op.join(
+                        save_plots_to, 
+                        f'{self.config["json_name"]}_gamma_primary_{primary}.svg'))
 
 
     def gamma_lookup(self, led, setting):

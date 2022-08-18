@@ -93,7 +93,9 @@ class BinocularStimulationDevice:
             s2 = np.array(s2)
 
         return sum(pow((s1 - s2), 2))
-
+    
+    # TODO: set ftol / gtol
+    # Defaults: 'ftol': 2.220446049250313e-09, 'gtol': 1e-05, 
     def optimise_to_anchor(self, settings):
 
         x0 = settings
@@ -103,14 +105,16 @@ class BinocularStimulationDevice:
             x0=x0,
             bounds=[(0.0, 1.0,) for primary in range(10)],
             method="L-BFGS-B",
-            options={"disp": False},
+            options={"disp": False,
+                     "ftol": 2.220446049250313e-09,
+                     "gtol": 1e-05},
         )
         print(result.x)
         return result.x
 
     def optimise_settings(self, settings):
         print(f"> Optimising settings. Matching {self.optim} to {self.anchor}")
-        p = Pool(8)
+        p = Pool()
         return p.map(self.optimise_to_anchor, settings)
 
 

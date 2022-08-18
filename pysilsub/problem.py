@@ -544,7 +544,8 @@ class SilentSubstitutionProblem(StimulationDevice):
             bg_smlri,
             mod_smlri,
         )
-
+    
+    # TODO: Catch error when background is not set
     def get_photoreceptor_contrasts(
         self, x0: Sequence[float], contrast_statistic: str = "simple"
     ) -> pd.Series:
