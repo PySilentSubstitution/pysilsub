@@ -19,6 +19,63 @@
   },
   {
    "cell_type": "markdown",
+   "id": "fccddf25-eb45-45fa-bd90-b1fef772c02d",
+   "metadata": {},
+   "source": [
+    "`pysilsub.problems.SilentSubstitutionProblem`\n",
+    "---------------------------------------------"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "b676a6f0-5b67-4292-b5b3-9bba558ce4f6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pysilsub.problems import SilentSubstitutionProblem as SSP\n",
+    "\n",
+    "ssp = SSP(\n",
+    "    calibration='../../data/S2_corrected_oo_spectra.csv',\n",
+    "    wavelengths=[380, 781, 1],\n",
+    "    resolutions=[4095, 4095, 4095, 4095, 4095, 4095, 4095, 4095, 4095, 4095, ],\n",
+    "    colors=['blueviolet', 'royalblue', 'darkblue', 'blue', 'cyan', 'green', 'lime', 'orange', 'red', 'darkred'],\n",
+    "    name='SpectraTuneLab'\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "1490d833-2efc-429b-abbe-31045752f064",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<pysilsub.problems.SilentSubstitutionProblem at 0x7fd678ba5810>"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "abd05bd9-ed24-42ca-b128-7d41ecce8e28",
+   "metadata": {},
+   "source": [
+    "Defining a problem\n",
+    "------------------\n",
+    "\n",
+    "Problems are defined by setting"
+   ]
+  },
+  {
+   "cell_type": "markdown",
    "id": "845f235c-a7d2-4068-b392-a88786f315d6",
    "metadata": {},
    "source": [

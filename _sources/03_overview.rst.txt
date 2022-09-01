@@ -1,6 +1,9 @@
 Overview
 ========
 
+*PySilSub* has two main modules: devices.py and problems.py. The former
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

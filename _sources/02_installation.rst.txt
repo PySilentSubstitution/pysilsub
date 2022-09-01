@@ -29,29 +29,40 @@ If you want to make changes to the code and have those changes instantly availab
 
     $ python setup.py develop
 
+Which is the same as doing an editable install with *pip*:
+
+.. code-block:: bash
+
+    $ pip install -e
+
 Requirements
 ------------
 
-*PySilSub* requires Python3 and a set of standard numerical computing packages, all of which are listed in *requirements.txt*:
+*PySilSub* requires Python (>=3.8, <3.11), a set of standard numerical computing packages, and some plotting libraries (which eventually may not be required):
 
-.. include:: ../requirements.txt
-   :literal:
+- numpy
+- scipy
+- matplotlib
+- pandas
+- importlib-resources
+- seaborn
+- colour-science
 
 The following additional packages may also be helpful for development:
 
-.. include:: ../dev-requirements.txt
-   :literal:
+- spyder
+- jupyterlab
 
 All requirements can be installed by running :code:`pip install -r requirements.txt`.
 
 Virtual environments
 --------------------
 
-We recommend installing *PySilSub* in a virtual environment. This can be done using either `Python's virtual environments <https://docs.python.org/3/tutorial/venv.html>`_ or `conda <https://docs.conda.io/en/latest/>`_:
+It is best to install *PySilSub* in a virtual environment. This can be done using either `Python's virtual environments <https://docs.python.org/3/tutorial/venv.html>`_ or `conda <https://docs.conda.io/en/latest/>`_:
 
 .. code-block:: bash
 
-    $ conda create -n pysilsub python=3.7.7
+    $ conda create -n pysilsub python=3.9
     $ conda activate pysilsub
     $ python setup.py install
 
