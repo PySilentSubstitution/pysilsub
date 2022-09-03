@@ -38,7 +38,7 @@ Which is the same as doing an editable install with *pip*:
 Requirements
 ------------
 
-*PySilSub* requires Python (>=3.8, <3.11), a set of standard numerical computing packages,  and some plotting libraries which eventually may not be required:
+*PySilSub* requires Python (>=3.8, <3.11), a set of standard numerical computing packages, and some plotting libraries (which eventually may not be required):
 
 - numpy
 - scipy

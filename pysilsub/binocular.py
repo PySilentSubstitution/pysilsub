@@ -21,8 +21,8 @@ class BinocularStimulationDevice:
 
     def __init__(self, left, right):
         """Use this class to match the settings for one device against another.
-        
-        
+
+
         Parameters
         ----------
         left : pysilsub.StimulationDevice
@@ -93,9 +93,9 @@ class BinocularStimulationDevice:
             s2 = np.array(s2)
 
         return sum(pow((s1 - s2), 2))
-    
+
     # TODO: set ftol / gtol
-    # Defaults: 'ftol': 2.220446049250313e-09, 'gtol': 1e-05, 
+    # Defaults: 'ftol': 2.220446049250313e-09, 'gtol': 1e-05,
     def optimise_to_anchor(self, settings):
 
         x0 = settings
@@ -103,11 +103,19 @@ class BinocularStimulationDevice:
             fun=self.objective_function,
             args=(settings),
             x0=x0,
-            bounds=[(0.0, 1.0,) for primary in range(10)],
+            bounds=[
+                (
+                    0.0,
+                    1.0,
+                )
+                for primary in range(10)
+            ],
             method="L-BFGS-B",
-            options={"disp": False,
-                     "ftol": 2.220446049250313e-09,
-                     "gtol": 1e-05},
+            options={
+                "disp": False,
+                "ftol": 2.220446049250313e-09,
+                "gtol": 1e-05,
+            },
         )
         print(result.x)
         return result.x
@@ -139,7 +147,13 @@ if __name__ == "__main__":
     settings = [np.tile(s, 10) for s in x]
 
     # Bounds
-    bounds = [(0.0, 1.0,) for primary in range(10)]
+    bounds = [
+        (
+            0.0,
+            1.0,
+        )
+        for primary in range(10)
+    ]
 
     # S2_settings = Sbin.optimise(settings[1], bounds)
     results = Sbin.optimise_settings(settings)

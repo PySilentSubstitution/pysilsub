@@ -8,7 +8,7 @@ Created on Wed Feb  9 13:58:55 2022
 import pandas as pd
 from scipy.optimize import minimize, basinhopping
 
-from pysilsub.problem import SilentSubstitutionProblem as SSP
+from pysilsub.problems import SilentSubstitutionProblem as SSP
 
 ssp = SSP.from_json('../data/STLAB_1_York.json')
 # Which device to use
@@ -25,7 +25,7 @@ ssp = SSP.from_package_data('STLAB_2_York')
 # Check 3-primary LMS 100% contrast
 ssp.ignore = ['R']
 ssp.modulate = ['S']
-ssp.minimize = ['M', 'L','I']
+ssp.minimize = ['I', 'M', 'L']
 
 ssp.target_contrast = .48
 ssp.background = [.5] * ssp.nprimaries 
@@ -52,10 +52,10 @@ ssp.ignore = ['R']
 ssp.modulate = ['S']
 ssp.minimize = ['M', 'L','I']
 ssp.background = [.5] * ssp.nprimaries
-ssp.target_contrast = .3
+ssp.target_contrast = 'max-'
 opt_result = ssp.optim_solve()
 fig = ssp.plot_solution(opt_result.x)
-ssp.print_photoreceptor_contrasts(opt_result.x, "simple")
+ssp.print_photoreceptor_contrasts(opt_result.x)
 
 #%% Global optimsation
 

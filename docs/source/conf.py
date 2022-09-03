@@ -31,11 +31,20 @@ release = '0.0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-"nbsphinx", "sphinxcontrib.napoleon", "sphinx.ext.autodoc", "sphinx_autodoc_typehints"
+"sphinxcontrib.napoleon", "sphinx.ext.autodoc", "sphinx_autodoc_typehints", "nbsphinx"
 ]
 
 # Show docs in order of definition
+autodoc_class_signature = 'both'
 autodoc_member_order = 'bysource'
+#autodoc_typehints_format = 'short'
+#autodoc_typehints = 'both'
+#autodoc_type_aliases = {
+#    'PrimaryInput': 'pysilsub.devices.PrimaryInput',
+#    'PrimaryWeights': 'pysilsub.devices.PrimaryWeights',
+#    'PrimarySettings': 'pysilsub.devices.PrimarySettings',
+#    'DeviceInput': 'pysilsub.devices.DeviceInput'
+#}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

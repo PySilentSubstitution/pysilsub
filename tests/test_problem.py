@@ -17,13 +17,39 @@ sys.path.insert(
 import pandas as pd
 import numpy as np
 
-from pysilsub.problem import SilentSubstitutionProblem
+from pysilsub.problems import SilentSubstitutionProblem as SSP
 
+
+
+TARGET_CONTRAST_CASES = {
+    'float': .1,
+    'list': [.1, .1, .1]
+    }
+
+BOUNDS_CASE = [(0.0, 1.0)] * 10
+
+PROBLEM_CASES = [
+    {
+    'ignore': ['R'],
+    'minimize': ['M', 'L', 'I'],
+    'modulate': ['S']
+    },
+    {
+    'ignore': [None],
+    'minimize': ['M', 'L', 'I', 'R'],
+    'modulate': ['S']
+    },
+    {
+    'ignore': ['R'],
+    'minimize': ['I'],
+    'modulate': ['S', 'M', 'L']
+    }
+    ]
 
 class TestProblem(unittest.TestCase):
     
     def setUp(self):
-        self.problem = SilentSubstitutionProblem.from_package_data("BCGAR")
+        self.problem = SSP.from_package_data("BCGAR")
         self.problem.ignore = ['R']
         self.problem.modulate = ['S']
         self.problem.minimize = ['M', 'L', 'I']
@@ -33,6 +59,18 @@ class TestProblem(unittest.TestCase):
     def tearDown(self):
         del self.problem
         del self.x0
+        
+    def test_background_property(self):
+        pass
+    
+    def test_bounds_are_valid(self):
+        assert self.problem._bounds_are_valid(BOUNDS_CASE)
+    
+    def test_receptor_input_is_valid(self):
+        pass
+    
+    def test_problem_is_valid(self):
+        pass
         
     def test_objective_function(self):
         result = self.problem.objective_function(self.x0)

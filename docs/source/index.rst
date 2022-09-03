@@ -26,10 +26,10 @@ algebra and numerical optimisation via a configurable, intuitive interface:
    problem = SSP.from_package_data('STLAB_1_York')  # Load example data
    problem.ignore = ['R']  # Ignore rod photoreceptors
    problem.minimize = ['S', 'M', 'L']  # Minimise cone contrast
-   problem.modulate = ['I']  # Target melnopsin
+   problem.modulate = ['I']  # Target melanopsin
    problem.target_contrast = .5  # With 50% contrast 
    solution = problem.optim_solve()  # Solve with optimisation
-   fig = problem.plot_solution(solution)  # Plot the solution
+   fig = problem.plot_solution(solution.x)  # Plot the solution
 
 .. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/optim_result.svg
    :alt: Plot of result
