@@ -69,8 +69,9 @@ This is a test release and should not be used for production.
    03_overview
    05_examples
    06_api
-   09_funding
-   10_citation
+   07_project_notes
+   10_funding
+   11_citation
  
 .. rubric:: Tables and indices
 ------------------------------
