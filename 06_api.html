@@ -1,22 +1,24 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>API Documentation &#8212; PySilSub 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Funding" href="09_funding.html" />
-    <link rel="prev" title="Contrast modulations" href="05c_contrast_modulations.html" />
+    <link rel="next" title="Project notes" href="07_project_notes.html" />
+    <link rel="prev" title="Linear algebra" href="05b_linear_algebra.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,76 +35,553 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pysilsub.CIE">
-<span id="api-documentation"></span><h1>API Documentation<a class="headerlink" href="#module-pysilsub.CIE" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="pysilsub-cie">
-<h2>pysilsub.CIE<a class="headerlink" href="#pysilsub-cie" title="Permalink to this headline">¶</a></h2>
+  <section id="module-pysilsub.devices">
+<span id="api-documentation"></span><h1>API Documentation<a class="headerlink" href="#module-pysilsub.devices" title="Permalink to this heading">¶</a></h1>
+<section id="pysilsub-devices">
+<h2>pysilsub.devices<a class="headerlink" href="#pysilsub-devices" title="Permalink to this heading">¶</a></h2>
+<p>Module with generic object-oriented interface for calibrated multiprimary
+stimulation devices.</p>
+<p>&#64;author: jtm</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDeviceError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.devices.</span></span><span class="sig-name descname"><span class="pre">StimulationDeviceError</span></span><a class="headerlink" href="#pysilsub.devices.StimulationDeviceError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic Python-exception-derived object.</p>
+<p>Raised programmatically by <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> methods when arguments do
+not agree with internal parameters and those used to instantiate the class.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.devices.</span></span><span class="sig-name descname"><span class="pre">StimulationDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIE_standard_observer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic class for calibrated multiprimary stimultion device.</p>
+<p>Includes methods to visualise and predict data for a calibrated
+multiprimary system.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_wavelengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CIE_standard_observer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate class with specified parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calibration</strong> (<em>str</em><em> or </em><em>pd.DataFrame</em>) – DataFrame or path to CSV file with spectral measurements to
+characterise the output of the device. Column headers must be
+wavelengths and each row a spectrum. Additional columns are needed
+to identify the Primary/Setting. For example,
+380, 381, …, 780, Primary, Setting. See
+<a class="reference external" href="https://pysilentsubstitution.github.io/pysilsub/03a_stimulation_devices.html#pysilsub.device.StimulationDevice">here</a>
+for further info. See also <cite>cls.load_calibration_file()</cite></p></li>
+<li><p><strong>calibration_wavelengths</strong> (<em>sequence of int</em>) – [start, stop, step] of wavelength range, e.g., [380, 781, 1] for
+380 to 780 in 1 nm bins. The default is None, in which case the
+wavelength range is determined from the calibration spds.</p></li>
+<li><p><strong>primary_resolutions</strong> (<em>sequence of int</em>) – Resolution depth of primaries, i.e., the number of steps available
+for specifying the intensity of each primary. This is a list of
+integers to allow for systems where primaries may have different
+resolution depths. The number of elements must equal the number of
+device primaries.</p></li>
+<li><p><strong>primary_colors</strong> (<em>sequence of str</em><em> or </em><em>rgb</em>) – Sequence of valid color names for the primaries. Must be in
+<a class="reference external" href="https://matplotlib.org/stable/gallery/color/named_colors.html">matplotlib.colors.cnames</a>.
+Alternatively, pass a sequence of RGB values.</p></li>
+<li><p><strong>observer</strong> (<em>str</em><em> or </em><em>pysilsub.observer.Observer</em><em>, </em><em>optional</em>) – Colorimetric observer model. The default is “CIE_standard_observer”
+, in which case defaults to the CIE standard colorimetric observer
+model (age=32, field_size=10), but can pass a custom observer
+model.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the device or stimulation system, e.g., <code class="docutils literal notranslate"><span class="pre">8-bit</span> <span class="pre">BCGAR</span>
+<span class="pre">photostimulator</span></code>. The default name is <cite>Stimulation Device</cite>.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – Additional information from the config file. The default is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_json</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor that works from preformatted json config file.</p>
+<p>See <cite>pysilsub.config</cite> for further details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_json</strong> (<em>str</em>) – json file with configuration parameters for <cite>StimulationDevice</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>pysilsub.StimulationDevice</cite></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.from_package_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_package_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">example</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.from_package_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor that uses example data from the package distribution.</p>
+<p>For further details:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">show_package_data</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>example</strong> (<em>str</em>) – <p>Currently the following options are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>’STLAB_York’</p></li>
+<li><p>’STLAB_Oxford’</p></li>
+<li><p>’BCGAR’</p></li>
+<li><p>’VirtualSky’</p></li>
+</ul>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><code class="docutils literal notranslate"><span class="pre">device</span> <span class="pre">=</span> <span class="pre">StimulationDevice.from_package_example('BCGAR')</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>pysilsub.StimulationDevice</cite></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.show_package_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">show_package_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.show_package_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show details of example data in the package distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print detailed information if True. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Available package data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.load_calibration_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_calibration_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration_fpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.load_calibration_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load calibration file into pandas DataFrame.</p>
+<p>First row must contain column headers <em>Primary</em> and <em>Setting</em> and
+numbers to describe the wavelength sampling (e.g., Primary, Setting,
+380, 381, …, 780). All remaining rows row should contain a spectral
+measurement and the corresponding values for <em>Primary</em> and <em>Setting</em>
+to identify the measurement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>calibration_fpath</strong> (<em>str</em>) – Path to CSV file with correct format (see above).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>calibration</strong> – DataFrame with Multi-Index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.plot_gamut">
+<span class="sig-name descname"><span class="pre">plot_gamut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_1931_horseshoe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_CIE170_2_horseshoe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plt_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.plot_gamut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the gamut of the stimulation device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – Axes on which to plot. The default is None.</p></li>
+<li><p><strong>show_1931_horseshoe</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to show the CIE1931 chromaticity horseshoe. The default is
+True.</p></li>
+<li><p><strong>show_CIE170_2_horseshoe</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to show the CIE170_2 chromaticity horseshoe. The default is
+True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ax</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.axes.Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.plot_calibration_spds">
+<span class="sig-name descname"><span class="pre">plot_calibration_spds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plt_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.plot_calibration_spds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the spectral power distributions for the stimulation device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ax</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>matplotlib.axes.Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.plot_calibration_spds_and_gamut">
+<span class="sig-name descname"><span class="pre">plot_calibration_spds_and_gamut</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.plot_calibration_spds_and_gamut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot calibration SPDs alongside gamut on CIE chromaticity horseshoe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fig</strong> – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>plt.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.plot_multiprimary_spd">
+<span class="sig-name descname"><span class="pre">plot_multiprimary_spd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_primaries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plt_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.plot_multiprimary_spd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot predicted spd for list of device settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>settings</strong> (<em>list of int</em><em> or </em><em>list of float</em>) – List of settings for the device primaries. Must be of length
+<cite>self.nprimaries</cite> and consist entirely of float (0.-1.) or int
+(0-max resolution).</p></li>
+<li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – Axes on which to plot. The default is None.</p></li>
+<li><p><strong>name</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – A name for the spectrum. The default is 0.</p></li>
+<li><p><strong>show_primaries</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to show the primary components of the spectrum. The default
+is False.</p></li>
+<li><p><strong>**plt_kwargs</strong> – Options to pass to matplotlib plotting method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ax</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.axes.Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.predict_primary_spd">
+<span class="sig-name descname"><span class="pre">predict_primary_spd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.predict_primary_spd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict output for a single device primary at a given setting.</p>
+<p>This is the basis for all predictions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>primary</strong> (<em>int</em>) – Device primary.</p></li>
+<li><p><strong>primary_input</strong> (<em>int</em><em> or </em><em>float</em>) – Requested input for device primary. Must be float (&gt;=0.0|&lt;=1.0) or
+int (&gt;=0|&lt;=max resolution).</p></li>
+<li><p><strong>name</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – A name for the spectrum. The default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If requested value of primary_input exceeds resolution.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Predicted spd for primary / primary_input.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.predict_multiprimary_spd">
+<span class="sig-name descname"><span class="pre">predict_multiprimary_spd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiprimary_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nosum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.predict_multiprimary_spd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict spectral power distribution for requested primary inputs.</p>
+<p>Predict the SPD output of the stimulation device for a given list of
+primary inputs. Assumes linear summation of primaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>multiprimary_input</strong> (<em>list of int</em><em> or </em><em>float</em>) – Rquested inputs for the device primaries. List of length
+<cite>self.nprimaries</cite> consisting of either float (&gt;=0.0|&lt;=1.0) or
+int (&gt;=0|&lt;=max resolution).</p></li>
+<li><p><strong>name</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – A name for the spectrum, e.g. ‘Background’. The default is 0.</p></li>
+<li><p><strong>nosum</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to sum the primary components of the spectrum.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the number of elements in <cite>settings</cite> is greater than the number
+    of device primaries.
+    
+    If the elements in <cite>settings</cite> are not exclusively int or float.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Predicted spectra or spectrum for given device settings.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame if nosum=True else pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.calculate_aopic_irradiances">
+<span class="sig-name descname"><span class="pre">calculate_aopic_irradiances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.calculate_aopic_irradiances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate aopic irradiances from calibration spds.</p>
+<p>Using the CIE026 spectral sensetivities, calculate alpha-opic
+irradiances (S, M, L, R, I) for every spectrum in <cite>self.calibration</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Alphaopic irradiances.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.calculate_lux">
+<span class="sig-name descname"><span class="pre">calculate_lux</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.calculate_lux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using the CIE1924 photopic luminosity function, calculate lux for
+every spectrum in <cite>self.calibration</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lux values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.predict_multiprimary_aopic">
+<span class="sig-name descname"><span class="pre">predict_multiprimary_aopic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiprimary_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.predict_multiprimary_aopic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict a-opic irradiances of device for requested primary inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>multiprimary_input</strong> (<em>list of int</em><em> or </em><em>float</em>) – Rquested inputs for the device primaries. List of length
+<cite>self.nprimaries</cite> consisting of either float (&gt;=0.0|&lt;=1.0) or
+int (&gt;=0|&lt;=max resolution).</p></li>
+<li><p><strong>name</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – A name for the output, e.g. ‘Background’. The default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>aopic</strong> – Predicted a-opic irradiances for given device settings.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.find_settings_xyY">
+<span class="sig-name descname"><span class="pre">find_settings_xyY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">luminance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_solution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.find_settings_xyY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find device settings for a spectrum with requested xyY values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xy</strong> (<em>sequence of float</em>) – Requested chromaticity coordinates (xy).</p></li>
+<li><p><strong>luminance</strong> (<em>float</em>) – Requested luminance.</p></li>
+<li><p><strong>tolerance</strong> (<em>float</em><em>, </em><em>optional</em>) – Acceptable precision for result.</p></li>
+<li><p><strong>plot_solution</strong> (<em>bool</em><em>, </em><em>optional</em>) – Set to True to plot the solution. The default is False.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Set to True to print status messages. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError if len</strong><strong>(</strong><strong>xy</strong><strong>) </strong><strong>!= 2</strong> – </p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> – The result of the optimisation procedure, with result.x as the
+settings that will produce the spectrum.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>OptimizeResult</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.do_gamma">
+<span class="sig-name descname"><span class="pre">do_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'polynomial'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.do_gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a gamma table from reverse polynomial or beta cdf curve fits.</p>
+<p>For each primary, calculate the unweigthed sum of the spectral
+calibration measurements (output) at each setting (input). A reverse
+curve fit on these data gives the new input values required for
+linearisation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fit</strong> (<em>str</em><em>, </em><em>optional</em>) – ‘polynomial’ or ‘beta_cdf’. The default is ‘polynomial’.</p></li>
+<li><p><strong>save_plots_to</strong> (<em>str</em><em>, </em><em>optional</em>) – Folder to save plots in. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.plot_gamma">
+<span class="sig-name descname"><span class="pre">plot_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_plots_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_corrected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.plot_gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot gamma results for each primary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_plots_to</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to folder where plots should be saved. The default is None.</p></li>
+<li><p><strong>show_corrected</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to show gamma corrected predicted values in the plots. The
+default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.gamma_lookup">
+<span class="sig-name descname"><span class="pre">gamma_lookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.gamma_lookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look up the gamma corrected value for a primary input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>primary</strong> (<em>int</em>) – Device primary.</p></li>
+<li><p><strong>primary_input</strong> (<em>int</em><em> or </em><em>float</em>) – Requested input for device primary. Must be float (&gt;=0.0|&lt;=1.0) or
+int (&gt;=0|&lt;=max resolution).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gamma corrected primary input value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.gamma_correct">
+<span class="sig-name descname"><span class="pre">gamma_correct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiprimary_input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.gamma_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the gamma corrected values for multiprimary device input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>multiprimary_input</strong> (<em>Sequence of int</em><em> or </em><em>float</em>) – Rquested inputs for the device primaries. List of length
+<cite>self.nprimaries</cite> consisting of either float (&gt;=0.0|&lt;=1.0) or
+int (&gt;=0|&lt;=max resolution).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gamma corrected multiprimary input values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.s2w">
+<span class="sig-name descname"><span class="pre">s2w</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.s2w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert settings to weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>settings</strong> (<em>Sequence of int</em>) – List of length <cite>self.nprimaries</cite> containing device settings
+ranging from 0 to max-resolution for each primary.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of primary weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.devices.StimulationDevice.w2s">
+<span class="sig-name descname"><span class="pre">w2s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.devices.StimulationDevice.w2s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert weights to settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>weights</strong> (<em>Sequence of float</em>) – List of length <cite>self.nprimaries</cite> containing primary input weights,
+ranging from 0. to 1., for each primary.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of primary settings.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<span class="target" id="module-pysilsub.CIE"></span><section id="pysilsub-cie">
+<h2>pysilsub.CIE<a class="headerlink" href="#pysilsub-cie" title="Permalink to this heading">¶</a></h2>
 <p>Convenience functions for accessing CIE standards.</p>
 <p>Obtained from <a class="reference external" href="http://www.cvrl.org/">http://www.cvrl.org/</a></p>
 <p>&#64;author: jtm</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pysilsub.CIE.get_CIE_2006_10_deg_CMF">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE_2006_10_deg_CMF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE_2006_10_deg_CMF" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE_2006_10_deg_CMF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE_2006_10_deg_CMF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the CIE 2006 XYZ 10-deg physiologically relevant color matching
 functions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asdf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the results as a pandas DataFrame. The default is
-False.</p></li>
-<li><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Width of the wavelength bins in nanometers (must be <cite>1</cite> or <cite>5</cite>). The
-default is <cite>1</cite>.</p></li>
-<li><p><strong>trim_visible</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to trim the CMFs to 380-780 nm. The default is True.</p></li>
-</ul>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Desired width of the wavelength bins in nanometers. The default is <cite>1</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>cmf</strong> – The CIE 2006 XYZ 10-deg physiologically relevant CMFs.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>cmf</strong> – CIE 2006 XYZ 10-deg physiologically relevant CMFs.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray or pandas.DataFrame</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.CIE.get_CIE_CMF">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE_CMF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE_CMF" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.CIE.get_CIE_1931_2_deg_CMF">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE_1931_2_deg_CMF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE_1931_2_deg_CMF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the CIE 1931 XYZ 2-deg color matching functions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asdf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the results as a pandas DataFrame. The default is
-False.</p></li>
-<li><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Width of the wavelength bins in nanometers (must be <cite>1</cite> or <cite>5</cite>). The
-default is <cite>1</cite>.</p></li>
-</ul>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Desired width of the wavelength bins in nanometers. The default is <cite>1</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>cmf</strong> – The CIE 1931 XYZ 2-deg CMFs.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>cmf</strong> – CIE 1931 XYZ 2-deg CMFs.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray or pandas.DataFrame</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pysilsub.CIE.get_CIES026">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIES026</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIES026" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the CIE026 spectral sensitivities.</p>
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIES026</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIES026" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the CIES026 photoreceptor action spectra.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Width of the wavelength bins in nanometers (must be <cite>1</cite> or <cite>5</cite>). The
-default is <cite>1</cite>.</p></li>
-<li><p><strong>fillna</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to replace nan values with zero.</p></li>
-</ul>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Desired width of the wavelength bins in nanometers. The default is <cite>1</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>sss</strong> – CIES026 spectral sensitivities for s, m, l, rods, and melanopsin.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>action spectra</strong> – CIES026 spectral sensitivities for s, m, l, rods, and melanopsin.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray or pandas.DataFrame</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -112,222 +591,132 @@ default is <cite>1</cite>.</p></li>
 <span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE_1924_photopic_vl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE_1924_photopic_vl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the CIE1924 photopic luminosity function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Width of the wavelength bins in nanometers (must be <cite>1</cite> or <cite>5</cite>). The
-default is <cite>1</cite>.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Desired width of the wavelength bins in nanometers. The default is <cite>1</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>vl</strong> – The CIE1924 photopic luminosity function.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.Series</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.CIE.get_matrix_LMStoXYZ">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_matrix_LMStoXYZ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_matrix_LMStoXYZ" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.CIE.get_matrix_10_deg_LMStoXYZ">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_matrix_10_deg_LMStoXYZ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_matrix_10_deg_LMStoXYZ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get LMS to XYZ conversion matrix for 10 degree field size.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The matrix.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
-<span class="target" id="module-pysilsub.colorfunc"></span><div class="section" id="pysilsub-colorfunc">
-<h2>pysilsub.colorfunc<a class="headerlink" href="#pysilsub-colorfunc" title="Permalink to this headline">¶</a></h2>
-<p>Tools for navigating between colorspaces.</p>
-<p>Many have been translated from MATLAB’s Psychtoolbox/PsychColormetric</p>
-<p>&#64;author: jtm</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.xyY_to_XYZ">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">xyY_to_XYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.xyY_to_XYZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute tristimulus values from chromaticity and luminance.</p>
+<dt class="sig sig-object py" id="pysilsub.CIE.get_matrix_2_deg_LMStoXYZ">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_matrix_2_deg_LMStoXYZ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_matrix_2_deg_LMStoXYZ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get LMS to XYZ transformation matrix for 2 degree field size.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>xyY</strong> (<em>Triplet</em>) – Array of values representing chromaticity (xy) and luminance (Y).</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The matrix.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>XYZ</strong> – Tristimulus values.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.XYZ_to_xyY">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">XYZ_to_xyY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">XYZ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.XYZ_to_xyY" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute chromaticity and luminance from tristimulus values.</p>
+<dt class="sig sig-object py" id="pysilsub.CIE.get_CIE170_2_chromaticity_coordinates">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE170_2_chromaticity_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_of_purples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE170_2_chromaticity_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the CIE170_2 chromaticity coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>XYZ</strong> (<em>Triplet</em>) – Tristimulus values.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line_of_purples</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to connect the line of purples by repeating the first row at
+the end. The default is <cite>True</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>xyY</strong> – Chromaticity coordinates (xy) and luminance (Y).</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>xyz</strong> – CIE170_2 chromaticity coordinates.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.XYZ_to_LMS">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">XYZ_to_LMS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">XYZ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.XYZ_to_LMS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute cone excitation (LMS) coordinates from tristimulus values.</p>
+<dt class="sig sig-object py" id="pysilsub.CIE.get_CIEPO06_optical_density">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIEPO06_optical_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIEPO06_optical_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optical density of lens and other ocular media.</p>
+<p>Function D_ocul for an average 32-yr-old observer (pupil diameter &lt; 3mm)
+(Stockman, Sharpe and Fach (1999).</p>
+<p>D_ocul can be separated into two components: D_ocul_1 represents portion
+affected by aging after age 20, and D_ocul_2 represents portion stable
+after age 20. (After Pokorny, Smith and Lutze, 1987).</p>
+<p>The optical density of the lens of an average observer between the ages of
+20 and 60 yr is determined by D_ocul = D_ocul_1 [1 + 0.02(A-32)] +
+D_ocul_2</p>
+<p>For an average observer over the age of 60, D_ocul = D_ocul_1
+[1.56 + 0.0667(A-60)] + D_ocul_2 where A is the observer’s age.</p>
+<p>D_ocul_2 is the Stockman and Sharpe (2000) tabulation of lens density
+scaled to represent a 32-yr-old observer (the average age of the Stiles
+and Burch observers) with a small pupil (&lt; 3 mm). To estimate the lens
+density function for a completely open pupil (&gt; 7 mm), multiply the
+tabulated values by 0.86207.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>XYZ</strong> (<em>Triplet</em>) – Tristimulus values.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>CIEPO06_optical_density</strong> – Optical density as a function of wavelength.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>LMS coordinates.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.LMS_to_XYZ">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">LMS_to_XYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">LMS</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.LMS_to_XYZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute tristimulus values from cone excitation (LMS) coordinates.</p>
+<dt class="sig sig-object py" id="pysilsub.CIE.get_CIEPO06_macula_density">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIEPO06_macula_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIEPO06_macula_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optical density D_macula of the macular pigment.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>LMS</strong> (<em>Triplet</em>) – LMS (cone excitation) coordinates.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tristimulus values.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.xyY_to_LMS">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">xyY_to_LMS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.xyY_to_LMS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute cone excitation (LMS) coordinates from chromaticity and
-luminance.</p>
+<dt class="sig sig-object py" id="pysilsub.CIE.get_CIE_A_lms">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE_A_lms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE_A_lms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Photopigment relative quantal absorbance spectra in log units.</p>
+<p>Photopigment optical density curves calculated from the 2° (or 10°) cone
+spectral sensitivities of Stockman and Sharpe (2000) at 0.1, 1 or 5 nm
+steps. The 0.1 and 1 nm functions were obtained by the interpolation of
+the 5 nm functions using a cubic spline. The functions are normalized to
+peak at unity at the nearest 0.1 nm step.  In making these calculations, a
+macular pigment density of 0.35 at peak, a lens density of 1.76 at 400 nm,
+and peak photopigment optical densities of 0.50 (for L and M) and 0.40
+(for S) were assumed.  The lens and macular pigment density spectra were
+those of Stockman, Sharpe and Fach (1999).</p>
+<p>Stockman, A., Sharpe, L. T., &amp; Fach, C. C. (1999). The spectral sensitivity
+of the human short-wavelength cones. Vision Research, 39, 2901-2927.</p>
+<p>Stockman, A., &amp; Sharpe, L. T. (2000). Spectral sensitivities of the middle-
+and long-wavelength sensitive cones derived from measurements in observers
+of known genotype. Vision Research, 40, 1711-1737.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>xyY</strong> (<em>Triplet</em>) – Array of values representing chromaticity (xy) and luminance (Y).</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>LMS coordinates.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.LMS_to_xyY">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">LMS_to_xyY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">LMS</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.LMS_to_xyY" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute xyY coordinates from LMS values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>LMS</strong> (<em>Triplet</em>) – LMS (cone excitation) coordinates.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of values representing chromaticity (xy) and luminance (Y).</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.spd_to_XYZ">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">spd_to_XYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.spd_to_XYZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a spectrum to an XYZ point.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>spd</strong> (<em>SPD</em>) – Spectral power distribution in calibrated units..</p></li>
-<li><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Bin width of the spd in nanometers. The default is 1.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tristimulus values.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.spd_to_lux">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">spd_to_lux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.spd_to_lux" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a spectrum to luminance (lux).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>spd</strong> (<em>SPD</em>) – Spectral power distribution in calibrated units.</p></li>
-<li><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Bin width of the spd in nanometers. The default is 1.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Luminance.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.spd_to_xyY">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">spd_to_xyY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.spd_to_xyY" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute xyY coordinates from spectral power distribution.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>spd</strong> (<em>SPD</em>) – Spectral power distribution in calibrated units.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>xyY.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.colorfunc.xy_luminance_to_xyY">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.colorfunc.</span></span><span class="sig-name descname"><span class="pre">xy_luminance_to_xyY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">luminance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.colorfunc.xy_luminance_to_xyY" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return xyY from xy and luminance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xy</strong> (<em>Sequence</em><em>[</em><em>float</em><em>]</em>) – xy chromaticity coordinates.</p></li>
-<li><p><strong>luminance</strong> (<em>float</em>) – Luminance in lux or cd/m2.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>xyY.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<span class="target" id="module-pysilsub.precep"></span><div class="section" id="pysilsub-precep">
-<h2>pysilsub.precep<a class="headerlink" href="#pysilsub-precep" title="Permalink to this headline">¶</a></h2>
+</section>
+<span class="target" id="module-pysilsub.precep"></span><section id="pysilsub-precep">
+<h2>pysilsub.precep<a class="headerlink" href="#pysilsub-precep" title="Permalink to this heading">¶</a></h2>
 <p>Convenience functions for accessing prereceptoral filter functions.</p>
 <p>Obtained from <a class="reference external" href="http://www.cvrl.org/">http://www.cvrl.org/</a></p>
 <p>&#64;author: jtm</p>
@@ -348,7 +737,7 @@ observers of known genotype. Vision Research, 40, 1711-1737.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>asdf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the results as a pandas DataFrame. The default is
 True.</p></li>
@@ -357,10 +746,10 @@ default is <cite>1</cite>.</p></li>
 <li><p><strong>trim_visible</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to trim the CMFs to 380-780 nm. The default is True.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>density</strong> – Lens optical density as a function of wavelength.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray or pandas.DataFrame</p>
 </dd>
 </dl>
@@ -378,7 +767,7 @@ default is <cite>1</cite>.</p></li>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>asdf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the results as a pandas DataFrame. The default is
 False.</p></li>
@@ -387,16 +776,16 @@ default is <cite>1</cite>.</p></li>
 <li><p><strong>trim_visible</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to trim the CMFs to 380-780 nm. The default is True.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>density</strong> – Macula pigment optical density as a function of wavelength.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray or pandas.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 <p class="rubric">Tables and indices</p>
 <hr class="docutils" />
 <ul class="simple">
@@ -404,7 +793,7 @@ default is <cite>1</cite>.</p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
+</section>
 
 
           </div>
@@ -440,15 +829,16 @@ default is <cite>1</cite>.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pysilsub-devices">pysilsub.devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysilsub-cie">pysilsub.CIE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pysilsub-colorfunc">pysilsub.colorfunc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysilsub-precep">pysilsub.precep</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
 
 
@@ -462,8 +852,8 @@ default is <cite>1</cite>.</p></li>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="05c_contrast_modulations.html" title="previous chapter">Contrast modulations</a></li>
-      <li>Next: <a href="09_funding.html" title="next chapter">Funding</a></li>
+      <li>Previous: <a href="05b_linear_algebra.html" title="previous chapter">Linear algebra</a></li>
+      <li>Next: <a href="07_project_notes.html" title="next chapter">Project notes</a></li>
   </ul></li>
 </ul>
 </div>
@@ -476,7 +866,7 @@ default is <cite>1</cite>.</p></li>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -493,7 +883,7 @@ default is <cite>1</cite>.</p></li>
       &copy;2022, Joel T. Martin.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

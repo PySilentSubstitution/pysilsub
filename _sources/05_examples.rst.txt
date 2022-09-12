@@ -1,13 +1,13 @@
-Worked examples
-===============
+Examples
+========
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
    
-   05a_maximum_contrast
-   05c_contrast_modulations
-
+   05a_numerical_optimisation
+   05b_linear_algebra
+   
    
 .. rubric:: Tables and indices
 ------------------------------

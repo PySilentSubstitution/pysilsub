@@ -1,16 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>Challanges &#8212; PySilSub 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -248,6 +250,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -256,10 +259,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -271,24 +278,27 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Challanges">
-<h1>Challanges<a class="headerlink" href="#Challanges" title="Permalink to this headline">¶</a></h1>
+<section id="Challanges">
+<h1>Challanges<a class="headerlink" href="#Challanges" title="Permalink to this heading">¶</a></h1>
 <p>Here we list some of the challanges to the method of silent substitution and suggest how they can be dealt with.</p>
-<div class="section" id="Prereceptoral-filtering">
-<h2>Prereceptoral filtering<a class="headerlink" href="#Prereceptoral-filtering" title="Permalink to this headline">¶</a></h2>
+<section id="Prereceptoral-filtering">
+<h2>Prereceptoral filtering<a class="headerlink" href="#Prereceptoral-filtering" title="Permalink to this heading">¶</a></h2>
 <p>Light passes through the ocular media before it strikes the retina</p>
-<div class="section" id="Macular-pigment-density">
-<h3>Macular pigment density<a class="headerlink" href="#Macular-pigment-density" title="Permalink to this headline">¶</a></h3>
+<section id="Macular-pigment-density">
+<h3>Macular pigment density<a class="headerlink" href="#Macular-pigment-density" title="Permalink to this heading">¶</a></h3>
 <p>The macula lutea</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -317,9 +327,9 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/03d_challanges_3_1.png" src="_images/03d_challanges_3_1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Lens-density">
-<h3>Lens density<a class="headerlink" href="#Lens-density" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="Lens-density">
+<h3>Lens density<a class="headerlink" href="#Lens-density" title="Permalink to this heading">¶</a></h3>
 <p>The crystalline lens in the human eye yellows with age due to absorption of short wavelength light.</p>
 <img alt="_images/lens_yellowing_age.jpg" src="_images/lens_yellowing_age.jpg" />
 <div class="nbinput docutils container">
@@ -378,10 +388,10 @@ Wavelength
 Name: Density, Length: 441, dtype: float64
 </pre></div></div>
 </div>
-</div>
-</div>
-<div class="section" id="Retinal-inhomogeneity">
-<h2>Retinal inhomogeneity<a class="headerlink" href="#Retinal-inhomogeneity" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="Retinal-inhomogeneity">
+<h2>Retinal inhomogeneity<a class="headerlink" href="#Retinal-inhomogeneity" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>macular pigment filters light seen by fovea, effectively shifting the spectral sensetivity of photoreceptors in this region</p>
 <ul>
@@ -394,17 +404,17 @@ Name: Density, Length: 441, dtype: float64
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="Individual-differences">
-<h2>Individual differences<a class="headerlink" href="#Individual-differences" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Individual-differences">
+<h2>Individual differences<a class="headerlink" href="#Individual-differences" title="Permalink to this heading">¶</a></h2>
 <p>The cone fundamentals used to model photoreceptor responses are based on a ‘standard observer’, but in reality the spectral sensetivites are affected by:</p>
 <ul class="simple">
 <li><p>spatial variation in macular pigment - this can alter stimulus properties</p></li>
 <li><p>effect of age on cone fundamentals</p></li>
 </ul>
-</div>
-<div class="section" id="Device-uncertainty">
-<h2>Device uncertainty<a class="headerlink" href="#Device-uncertainty" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Device-uncertainty">
+<h2>Device uncertainty<a class="headerlink" href="#Device-uncertainty" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>instrumental drift, non-linearities</p></li>
 <li><p>failures of additvity (have we seen this in the red primaries of STLAB?)</p></li>
@@ -413,9 +423,9 @@ Name: Density, Length: 441, dtype: float64
 <li><p>calibrate, characterize, simulate</p></li>
 <li><p>thermal effects of LEDs</p></li>
 </ul>
-</div>
-<div class="section" id="Rod-intrusion">
-<h2>Rod intrusion<a class="headerlink" href="#Rod-intrusion" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Rod-intrusion">
+<h2>Rod intrusion<a class="headerlink" href="#Rod-intrusion" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>silence or ignore</p></li>
 <li><p>rod saturation threshold:</p>
@@ -433,8 +443,8 @@ Name: Density, Length: 441, dtype: float64
 </pre></div>
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -470,10 +480,11 @@ Name: Density, Length: 441, dtype: float64
 <li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
 
 
@@ -499,7 +510,7 @@ Name: Density, Length: 441, dtype: float64
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -516,7 +527,7 @@ Name: Density, Length: 441, dtype: float64
       &copy;2022, Joel T. Martin.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

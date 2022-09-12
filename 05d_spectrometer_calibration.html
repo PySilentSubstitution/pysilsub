@@ -1,0 +1,633 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>DIY Spectrometer calibration &#8212; PySilSub 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<section id="DIY-Spectrometer-calibration">
+<h1>DIY Spectrometer calibration<a class="headerlink" href="#DIY-Spectrometer-calibration" title="Permalink to this heading">¶</a></h1>
+<p>Spectrometers are used to measure light. A probe is pointed at the light source and feeds the light sample through to the optical bench. The light hits a prism, or diffraction grating, and the spectrum of light is spread out accross a sensor that reports a measure related to the ammount of light that hits the sensor.</p>
+<p>Depending on your spectrometer, you may be need to calibrate it. Here’s what we did step by step with our OceanOptics JAZ spectrometer to get units in W/cm2/nm.</p>
+</section>
+<section id="OceanOptics-JAZ">
+<h1>OceanOptics JAZ<a class="headerlink" href="#OceanOptics-JAZ" title="Permalink to this heading">¶</a></h1>
+<p><img alt="OceanOptics JAZ spectrometer" src="_images/jaz.png" /></p>
+<p>Our JAZ spectrometer</p>
+<section id="Obtaining-measurements">
+<h2>Obtaining measurements<a class="headerlink" href="#Obtaining-measurements" title="Permalink to this heading">¶</a></h2>
+<p>OceanView software, matlab, etc. Easiest in Python.</p>
+<section id="Seabreeze">
+<h3><code class="docutils literal notranslate"><span class="pre">Seabreeze</span></code><a class="headerlink" href="#Seabreeze" title="Permalink to this heading">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">seabreeze</span> <span class="kn">import</span> <span class="n">spectrometers</span>
+
+<span class="k">def</span> <span class="nf">ocean_optics_measurement</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s1">&#39;./my_measurement.csv&#39;</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">oo</span> <span class="o">=</span> <span class="n">spectrometers</span><span class="o">.</span><span class="n">Spectrometer</span><span class="o">.</span><span class="n">from_serial_number</span><span class="p">(</span><span class="s1">&#39;JAZA1505&#39;</span><span class="p">)</span>
+        <span class="n">oo</span><span class="o">.</span><span class="n">integration_time_micros</span><span class="p">(</span><span class="mi">1000</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>  <span class="c1"># 1 s</span>
+        <span class="n">wls</span> <span class="o">=</span> <span class="n">oo</span><span class="o">.</span><span class="n">wavelengths</span><span class="p">()</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">oo</span><span class="o">.</span><span class="n">intensities</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt; Measurement terminated  by user&#39;</span><span class="p">)</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">oo</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">ocean_optics_measurement</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="pyplr.oceanops.OceanOptics">
+<h3><code class="docutils literal notranslate"><span class="pre">pyplr.oceanops.OceanOptics</span></code><a class="headerlink" href="#pyplr.oceanops.OceanOptics" title="Permalink to this heading">¶</a></h3>
+<p>Interface with more features</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyplr</span> <span class="kn">import</span> <span class="n">oceanops</span>
+
+<span class="k">def</span> <span class="nf">ocean_optics_measurement</span><span class="p">(</span><span class="s1">&#39;./my_measurement.csv&#39;</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">oo</span> <span class="o">=</span> <span class="n">oceanops</span><span class="o">.</span><span class="n">OceanOptics</span><span class="o">.</span><span class="n">from_serial_number</span><span class="p">(</span><span class="s1">&#39;JAZA1505&#39;</span><span class="p">)</span>
+        <span class="n">wls</span> <span class="o">=</span> <span class="n">oo</span><span class="o">.</span><span class="n">wavelengths</span><span class="p">()</span>
+        <span class="n">counts</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">oo</span><span class="o">.</span><span class="n">measurement</span><span class="p">(</span><span class="n">nscans_to_average</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt; Measurement terminated  by user&#39;</span><span class="p">)</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">oo</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">ocean_optics_measurement</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Wavelength-calibration">
+<h2>Wavelength calibration<a class="headerlink" href="#Wavelength-calibration" title="Permalink to this heading">¶</a></h2>
+<p>Our JAZ spectrometer has internal wavelengths that are calibrated in house. Overtime the reported wavelengths are liable to shift due to mechanical shock and other factors. If you have access to a light source capable of producing spectral lines you can perform your own wavelength calibration.</p>
+<p>Spectral lines are fascinating properties of the universe.</p>
+<p>We borrowed an argon lamp from our local physics department.</p>
+<p><img alt="8594e18649cc4efeb63fd10145d769c4" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 400px;" /></p>
+<p>Measurement of the lamp produced a spectrum with lots of spectral lines. The next thing we needed to do was find out the known positions of these spectral lines. These can be obtained from the <a class="reference external" href="https://physics.nist.gov/PhysRefData/ASD/lines_form.html">NIST atomic spectra database</a></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.polynomial</span> <span class="kn">import</span> <span class="n">Polynomial</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;darkgrid&#39;</span><span class="p">)</span>
+
+<span class="c1"># Details of measurement</span>
+<span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;jaz&#39;</span>
+<span class="n">light_source</span> <span class="o">=</span> <span class="s1">&#39;Ar&#39;</span>
+
+<span class="c1"># Load spectrum</span>
+<span class="n">spd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;../../../BakerWadeBBSRC/data/spectral/</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">light_source</span><span class="si">}</span><span class="s1">_spd.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../../BakerWadeBBSRC/data/spectral/lines/Ar_1_lines_300_1000.csv&#39;</span><span class="p">)</span>
+<span class="c1">#lines = lines[lines.rel_pwr &gt; 4]  # drop tiny peaks</span>
+
+<span class="c1">#%% Choose some peaks based on some criteria. Play with these parameters to</span>
+<span class="c1"># find so that there are several detected peaks across the range of wavelengths</span>
+<span class="n">peak_idxs</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">spd</span><span class="p">[</span><span class="s1">&#39;pwr&#39;</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mi">1800</span><span class="p">,</span> <span class="n">prominence</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">10</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">peaks</span> <span class="o">=</span> <span class="n">spd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">peak_idxs</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+<span class="c1"># # Find &#39;true&#39; wls, assuming they are the closest to the left. Probably not</span>
+<span class="c1"># the best approach, because some lines are not resolved by the spectrometer.</span>
+<span class="c1"># true_wl = []</span>
+<span class="c1"># for _, row in peaks.iterrows():</span>
+<span class="c1">#     diff = (lines.wl-row.wl)</span>
+<span class="c1">#     true = diff[diff &lt; 0].abs().argmin()</span>
+<span class="c1">#     true_wl.append(lines.loc[true, &#39;wl&#39;])</span>
+
+<span class="c1"># For better results, manually choose true wavelengths by inspecting the line</span>
+<span class="c1"># positions and general pattern of drift</span>
+<span class="n">true_wl</span> <span class="o">=</span> <span class="p">[</span><span class="mf">394.8979</span><span class="p">,</span> <span class="mf">404.4418</span><span class="p">,</span> <span class="mf">415.859</span><span class="p">,</span> <span class="mf">419.8317</span><span class="p">,</span> <span class="mf">426.6286</span><span class="p">,</span> <span class="mf">433.3561</span><span class="p">,</span>
+            <span class="mf">451.0733</span><span class="p">,</span> <span class="mf">459.6097</span><span class="p">,</span> <span class="mf">470.2316</span><span class="p">,</span> <span class="mf">518.7746</span><span class="p">,</span> <span class="mf">522.1271</span><span class="p">,</span> <span class="mf">545.1652</span><span class="p">,</span>
+            <span class="mf">549.5874</span><span class="p">,</span> <span class="mf">560.6733</span><span class="p">,</span> <span class="mf">565.0704</span><span class="p">,</span> <span class="mf">573.952</span><span class="p">,</span> <span class="mf">583.4263</span><span class="p">,</span> <span class="mf">588.8584</span><span class="p">,</span>
+            <span class="mf">599.8999</span><span class="p">,</span> <span class="mf">603.2127</span><span class="p">,</span> <span class="mf">610.5635</span><span class="p">,</span> <span class="mf">617.3096</span><span class="p">,</span> <span class="mf">621.5938</span><span class="p">,</span> <span class="mf">630.7657</span><span class="p">,</span>
+            <span class="mf">641.6307</span><span class="p">,</span> <span class="mf">653.8112</span><span class="p">,</span> <span class="mf">660.4853</span><span class="p">,</span> <span class="mf">667.7282</span><span class="p">,</span> <span class="mf">675.2834</span><span class="p">,</span> <span class="mf">687.1289</span><span class="p">,</span>
+            <span class="mf">693.7664</span><span class="p">,</span> <span class="mf">703.0251</span><span class="p">,</span> <span class="mf">714.7042</span><span class="p">,</span> <span class="mf">720.698</span><span class="p">,</span> <span class="mf">731.1716</span><span class="p">,</span> <span class="mf">735.3293</span><span class="p">,</span>
+            <span class="mf">743.6297</span><span class="p">,</span> <span class="mf">789.1075</span><span class="p">,</span> <span class="mf">860.5776</span><span class="p">,</span> <span class="mf">866.7944</span><span class="p">,</span> <span class="mf">919.4638</span><span class="p">,</span> <span class="mf">935.422</span><span class="p">,</span>
+            <span class="mf">965.7786</span><span class="p">,</span> <span class="mf">978.4503</span><span class="p">]</span>
+
+
+<span class="c1"># Eyeball the graph and remove peaks that should not be used, for example,</span>
+<span class="c1"># the peaks without proximal &quot;true&quot; lines</span>
+<span class="n">drop_px</span> <span class="o">=</span> <span class="p">[</span><span class="mi">448</span><span class="p">,</span> <span class="mi">648</span><span class="p">,</span> <span class="mi">947</span><span class="p">]</span>
+<span class="n">peaks</span> <span class="o">=</span> <span class="n">peaks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">peaks</span><span class="o">.</span><span class="n">pxl</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drop_px</span><span class="p">)]</span>  <span class="c1"># non existant peak</span>
+<span class="n">peaks</span><span class="p">[</span><span class="s1">&#39;true_wl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">true_wl</span>
+
+<span class="c1"># # Plot the spd and peaks</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spd</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">],</span> <span class="n">spd</span><span class="p">[</span><span class="s1">&#39;pwr&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="c1">#plt.scatter(peaks[&#39;wl&#39;], peaks[&#39;pwr&#39;], marker=&#39;x&#39;, c=&#39;k&#39;)</span>
+<span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">],</span> <span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Ar I line positions&#39;</span><span class="p">)</span>
+<span class="c1">#plt.vlines(peaks[&#39;wl&#39;], ymin, ymax, color=&#39;k&#39;, ls=&#39;:&#39;, lw=.5, label=&#39;Detected peaks&#39;)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength (nm)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Relative flux&#39;</span><span class="p">)</span>
+<span class="c1">#plt.savefig(&#39;../img/{device}_{light_source}_lines_plot.pdf&#39;)</span>
+
+<span class="c1">#%%</span>
+<span class="c1"># Polynomial fit</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">peaks</span><span class="p">[</span><span class="s1">&#39;pxl&#39;</span><span class="p">],</span> <span class="n">peaks</span><span class="p">[</span><span class="s1">&#39;true_wl&#39;</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">calibrated_wls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">spd</span><span class="o">.</span><span class="n">pxl</span><span class="p">)</span>
+<span class="n">spd</span><span class="p">[</span><span class="s1">&#39;cal_wl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calibrated_wls</span>
+<span class="c1">#spd.to_csv(f&#39;../hardware/OceanOptics/{device}/{device}_Ar_1_calibrated_wavelengths.csv&#39;, index=None)</span>
+
+<span class="c1"># Plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">peaks1</span> <span class="o">=</span> <span class="n">peaks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">peaks</span><span class="o">.</span><span class="n">pxl</span><span class="o">&lt;</span><span class="mi">1024</span><span class="p">]</span>
+<span class="n">spd1</span> <span class="o">=</span> <span class="n">spd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">spd</span><span class="o">.</span><span class="n">pxl</span><span class="o">&lt;</span><span class="mi">1024</span><span class="p">]</span>
+<span class="n">lines1</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lines</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">spd1</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spd1</span><span class="o">.</span><span class="n">wl</span><span class="p">,</span> <span class="n">spd1</span><span class="o">.</span><span class="n">pwr</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spectrometer wavelengths&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spd1</span><span class="o">.</span><span class="n">cal_wl</span><span class="p">,</span> <span class="n">spd1</span><span class="o">.</span><span class="n">pwr</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Calibrated wavelengths&#39;</span><span class="p">)</span>
+<span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">true_wl</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="o">*</span><span class="mf">.95</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Ar I lines&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">peaks1</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Detected peaks&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">peaks2</span> <span class="o">=</span> <span class="n">peaks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">peaks</span><span class="o">.</span><span class="n">pxl</span><span class="o">&gt;=</span><span class="mi">1024</span><span class="p">]</span>
+<span class="n">spd2</span> <span class="o">=</span> <span class="n">spd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">spd</span><span class="o">.</span><span class="n">pxl</span><span class="o">&gt;=</span><span class="mi">1024</span><span class="p">]</span>
+<span class="n">lines2</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lines</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">spd2</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spd2</span><span class="o">.</span><span class="n">wl</span><span class="p">,</span> <span class="n">spd2</span><span class="o">.</span><span class="n">pwr</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spectrometer wavelengths&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spd2</span><span class="o">.</span><span class="n">cal_wl</span><span class="p">,</span> <span class="n">spd2</span><span class="o">.</span><span class="n">pwr</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Calibrated wavelengths&#39;</span><span class="p">)</span>
+<span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">lines2</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">],</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="o">*</span><span class="mf">.95</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Ar I line positions&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">peaks2</span><span class="p">[</span><span class="s1">&#39;wl&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Detected peaks&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axs</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength (nm)&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Relative power&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Argon lamp wavelength calibration (</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="c1">#fig.savefig(f&#39;../figs/{device}_{light_source}_wl_calib_plot.pdf&#39;)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/05d_spectrometer_calibration_8_0.png" src="_images/05d_spectrometer_calibration_8_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/05d_spectrometer_calibration_8_1.png" src="_images/05d_spectrometer_calibration_8_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spd2</span><span class="o">.</span><span class="n">wl</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1024     709.616625
+1025     709.956017
+1026     710.295361
+1027     710.634658
+1028     710.973908
+           ...
+2043    1028.620790
+2044    1028.905195
+2045    1029.189540
+2046    1029.473824
+2047    1029.758047
+Name: wl, Length: 1024, dtype: float64
+</pre></div></div>
+</div>
+</section>
+<section id="Irradiance-calibration">
+<h2>Irradiance calibration<a class="headerlink" href="#Irradiance-calibration" title="Permalink to this heading">¶</a></h2>
+<p><img alt="acacd71e3a364ec5b545525e754813c2" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/photoreceptor_characters.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">PySilSub</a></h1>
+
+
+
+<p class="blurb">A Python software for performing the method of silent substitution.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=PySilentSubstitution&repo=pysilsub&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Joel T. Martin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/05d_spectrometer_calibration.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

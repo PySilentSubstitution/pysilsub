@@ -1,16 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>Installation &#8212; PySilSub 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -33,8 +35,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <p><em>PySilSub</em> is registered on <a class="reference external" href="https://pypi.org/">PyPI</a>, so the latest version can be installed easily via the <em>pip</em> packaging tool (this will also install the dependencies automatically):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install pysilsub
 </pre></div>
@@ -58,8 +60,8 @@ $ python setup.py install
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -e
 </pre></div>
 </div>
-<div class="section" id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">¶</a></h2>
 <p><em>PySilSub</em> requires Python (&gt;=3.8, &lt;3.11), a set of standard numerical computing packages, and some plotting libraries (which eventually may not be required):</p>
 <ul class="simple">
 <li><p>numpy</p></li>
@@ -76,18 +78,18 @@ $ python setup.py install
 <li><p>jupyterlab</p></li>
 </ul>
 <p>All requirements can be installed by running <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code>.</p>
-</div>
-<div class="section" id="virtual-environments">
-<h2>Virtual environments<a class="headerlink" href="#virtual-environments" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="virtual-environments">
+<h2>Virtual environments<a class="headerlink" href="#virtual-environments" title="Permalink to this heading">¶</a></h2>
 <p>It is best to install <em>PySilSub</em> in a virtual environment. This can be done using either <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">Python’s virtual environments</a> or <a class="reference external" href="https://docs.conda.io/en/latest/">conda</a>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda create -n pysilsub <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
 $ conda activate pysilsub
 $ python setup.py install
 </pre></div>
 </div>
-</div>
-<div class="section" id="notes-potential-issues">
-<h2>Notes/Potential Issues<a class="headerlink" href="#notes-potential-issues" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="notes-potential-issues">
+<h2>Notes/Potential Issues<a class="headerlink" href="#notes-potential-issues" title="Permalink to this heading">¶</a></h2>
 <p>We are aware of the following:</p>
 <p class="rubric">Tables and indices</p>
 <hr class="docutils" />
@@ -96,8 +98,8 @@ $ python setup.py install
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -138,10 +140,11 @@ $ python setup.py install
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
 
 
@@ -169,7 +172,7 @@ $ python setup.py install
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -186,7 +189,7 @@ $ python setup.py install
       &copy;2022, Joel T. Martin.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -1,16 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>Calibration and configuration &#8212; PySilSub 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -33,8 +35,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="Calibration-and-configuration">
-<h1>Calibration and configuration<a class="headerlink" href="#Calibration-and-configuration" title="Permalink to this headline">¶</a></h1>
+  <section id="Calibration-and-configuration">
+<h1>Calibration and configuration<a class="headerlink" href="#Calibration-and-configuration" title="Permalink to this heading">¶</a></h1>
 <p>A standard RGB computer monitor has only three primaries. This means it isn’t great for silent substitution, but it is a good example to show how to calibrate and configure a multiprimary system for use with <em>PySilSub</em> because the same principles can be applied to a device with any number of primaries.</p>
 <p>To make a calibration file you will need to measure the output of the primaries with a spectrometer. As a minimum, the file should include measurements for each primary at its maximum output, as well as an ambient spectral measurement where all primaries are off. Most standard monitors have 8-bit resolution which means that the input is specified with values between 0 and 255. So the settings to be measured are:</p>
 <ul class="simple">
@@ -46,14 +48,6 @@
 <p>One way to obtain these measurements would be to write a simple program that sets the full screen colour using each of the above settings before sampling with a spectrometer.</p>
 <p>When you have the measurements, put them in a CSV file where the first row describes the wavelength sampling (e.g., 380, 381, …, 780) and every subsequent row contains a spectral measurement. Also include column headers <em>Primary</em> and <em>Setting</em> with numerical values to identify the spectral measurements.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 29%" />
-<col style="width: 29%" />
-<col style="width: 13%" />
-<col style="width: 13%" />
-<col style="width: 4%" />
-<col style="width: 13%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Primary</p></th>
 <th class="head"><p>Setting</p></th>
@@ -123,14 +117,6 @@
 <p>We can now do useful things like plot the calibration SPDs and their chromaticities, as well as predict the spectral output of the device for any combination of settings.</p>
 <p>This is OK, but most computer monitors–and most light devices for that matter–do not have a linear input-output relationship (sometimes called gamma), so our predictions are unlikely to be accurate. We can improve the accuracy of the device model by obtaining multiple measurements for each primary accross the input range. For example:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 29%" />
-<col style="width: 29%" />
-<col style="width: 13%" />
-<col style="width: 13%" />
-<col style="width: 4%" />
-<col style="width: 13%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Primary</p></th>
 <th class="head"><p>Setting</p></th>
@@ -309,7 +295,7 @@
     <span class="n">device_config</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
+</section>
 
 
           </div>
@@ -345,10 +331,11 @@
 <li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
 
 
@@ -374,7 +361,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -391,7 +378,7 @@
       &copy;2022, Joel T. Martin.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

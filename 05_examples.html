@@ -1,21 +1,23 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Worked examples &#8212; PySilSub 0.0.1 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Examples &#8212; PySilSub 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Maximisng contrast" href="05a_maximum_contrast.html" />
+    <link rel="next" title="Numerical optimization" href="05a_numerical_optimisation.html" />
     <link rel="prev" title="Silent substitution problems" href="03c_silent_substitution_problems.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -33,13 +35,24 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="worked-examples">
-<h1>Worked examples<a class="headerlink" href="#worked-examples" title="Permalink to this headline">¶</a></h1>
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="05a_maximum_contrast.html">Maximisng contrast</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05c_contrast_modulations.html">Contrast modulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05a_numerical_optimisation.html">Numerical optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="05a_numerical_optimisation.html#Basic-example">Basic example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05a_numerical_optimisation.html#Maximising-contrast">Maximising contrast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05a_numerical_optimisation.html#Local-vs. global-optimisation">Local vs. global optimisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05a_numerical_optimisation.html#Using-an-external-optimiser">Using an external optimiser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05b_linear_algebra.html">Linear algebra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="05b_linear_algebra.html#Basic-example">Basic example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05b_linear_algebra.html#Worked-example">Worked example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05b_linear_algebra.html#Contrast-modulations">Contrast modulations</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <p class="rubric">Tables and indices</p>
@@ -49,7 +62,7 @@
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
+</section>
 
 
           </div>
@@ -85,14 +98,15 @@
 <li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Worked examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="05a_maximum_contrast.html">Maximisng contrast</a></li>
-<li class="toctree-l2"><a class="reference internal" href="05c_contrast_modulations.html">Contrast modulations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="05a_numerical_optimisation.html">Numerical optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05b_linear_algebra.html">Linear algebra</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
 
 
@@ -107,7 +121,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="03c_silent_substitution_problems.html" title="previous chapter">Silent substitution problems</a></li>
-      <li>Next: <a href="05a_maximum_contrast.html" title="next chapter">Maximisng contrast</a></li>
+      <li>Next: <a href="05a_numerical_optimisation.html" title="next chapter">Numerical optimization</a></li>
   </ul></li>
 </ul>
 </div>
@@ -120,7 +134,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -137,7 +151,7 @@
       &copy;2022, Joel T. Martin.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

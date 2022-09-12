@@ -1,16 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>Linear algebra &#8212; PySilSub 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -248,6 +250,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -256,10 +259,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -271,18 +278,21 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Linear-algebra">
-<h1>Linear algebra<a class="headerlink" href="#Linear-algebra" title="Permalink to this headline">¶</a></h1>
+<section id="Linear-algebra">
+<h1>Linear algebra<a class="headerlink" href="#Linear-algebra" title="Permalink to this heading">¶</a></h1>
 <p>Silent substitution problems can also be solved with linear algebra. Suppose</p>
 <p>Algebraic solutions to silent substitution problems are computationally inexpensive and produce zero error in linear systems. Assume we have a 4-primary stimulation device with 8-bit resolution (256 steps). As a background spectrum we use each LED at half maximum</p>
 <p>Linear algebra can produce solutions that match photoreceptor activations . Generally speaking, they are fast and computationally inexpensive. Howevr, there is only a one solution</p>
@@ -339,9 +349,9 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <p>SSProblem that encapsulates the issue and prepares for solutions with linear algebra and numerical optimisation.</p>
-</div>
-<div class="section" id="Solving-with-linear-algebra">
-<h1>Solving with linear algebra<a class="headerlink" href="#Solving-with-linear-algebra" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="Solving-with-linear-algebra">
+<h1>Solving with linear algebra<a class="headerlink" href="#Solving-with-linear-algebra" title="Permalink to this heading">¶</a></h1>
 <p>Silent substitution problems can also be solved with linear algebra. Continuing with our 5-primary device, suppose that we now want to isolate S-cones. Borrowing the notation from <a class="reference external" href="https://jov.arvojournals.org/article.aspx?articleid=2213232">Cao et al. (2015)</a>, let’s say that the spectral power distributions of the five primaries at maximum are <span class="math notranslate nohighlight">\(\tilde{P_{0}}(\lambda), \tilde{P_{1}}(\lambda), \tilde{P_{2}}(\lambda), \tilde{P_{3}}(\lambda), \tilde{P_{4}}(\lambda)\)</span>, with
 <span class="math notranslate nohighlight">\(\alpha = [p_{0}, p_{1}, p_{2}, p_{3}, p_{4}]\)</span> representing the proportion of the maximum for each LED, the photoreceptor excitations <span class="math notranslate nohighlight">\(\beta = [S M L R I]\)</span> can be calculated algebraicly with <span class="math notranslate nohighlight">\(\alpha = \beta A\)</span>, where <span class="math notranslate nohighlight">\(A\)</span> is a matrix representing the <em>a</em>-opic irradiances for each primary at its maximum setting:</p>
 <p><span class="math notranslate nohighlight">\(A=\begin{bmatrix} S_{0} &amp; S_{1} &amp; S_{2} &amp; S_{3} &amp; S_{4}\\ M_{0} &amp; M_{1} &amp; M_{2} &amp; M_{3} &amp; M_{4}\\ L_{0} &amp; L_{1} &amp; L_{2} &amp; L_{3} &amp; L_{4}\\ R_{0} &amp; R_{1} &amp; R_{2} &amp; R_{3} &amp; R_{4}\\ I_{0} &amp; I_{1} &amp; I_{2} &amp; I_{3} &amp; I_{4}\end{bmatrix}\)</span></p>
@@ -1005,7 +1015,7 @@ dtype: float64
 </pre></div>
 </div>
 </div>
-</div>
+</section>
 
 
           </div>
@@ -1041,10 +1051,11 @@ dtype: float64
 <li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09_funding.html">Funding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
 
 
@@ -1070,7 +1081,7 @@ dtype: float64
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -1087,7 +1098,7 @@ dtype: float64
       &copy;2022, Joel T. Martin.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
