@@ -25,7 +25,7 @@ def ss_solution_plot(**kwargs):
         axes=axs[1], title=False, standalone=False
     )
 
-    cie170_2 = get_CIE170_2_chromaticity_coordinates(connect=True)
+    cie170_2 = get_CIE170_2_chromaticity_coordinates()
     axs[1].plot(cie170_2["x"], cie170_2["y"], c="k", ls=":", label="CIE 170-2")
     axs[1].legend()
     axs[1].set(title="CIE 1931 horseshoe", xlim=(-0.1, 0.9), ylim=(-0.1, 0.9))

@@ -85,7 +85,13 @@ class BinocularStimulationDevice:
             fun=self.objective_function,
             args=(settings),
             x0=x0,
-            bounds=[(0.0, 1.0,) for primary in range(10)],
+            bounds=[
+                (
+                    0.0,
+                    1.0,
+                )
+                for primary in range(10)
+            ],
             method="L-BFGS-B",
             options={"disp": False},
         )
@@ -116,7 +122,13 @@ x = (x + 1) / 2
 settings = [np.tile(s, 10) for s in x]
 
 # Bounds
-bounds = [(0.0, 1.0,) for primary in range(10)]
+bounds = [
+    (
+        0.0,
+        1.0,
+    )
+    for primary in range(10)
+]
 
 # S2_settings = Sbin.optimise(settings[1], bounds)
 results = Sbin.optimise_settings(settings)

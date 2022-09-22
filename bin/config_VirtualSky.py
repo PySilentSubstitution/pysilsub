@@ -31,7 +31,7 @@ NOTES = (
 
 def device_config():
     """Create JSON file with configuration parameters for StimulationDevice.
-    
+
 
     Returns
     -------

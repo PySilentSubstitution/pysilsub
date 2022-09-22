@@ -3,19 +3,19 @@
     "calibration_units": "W/m$^2$/nm",
     "name": "BCGAR (8-bit, linear)",
     "json_name": "BCGAR",
-    "wavelengths": [
+    "calibration_wavelengths": [
         380,
         781,
         1
     ],
-    "colors": [
+    "primary_colors": [
         "blue",
         "cyan",
         "green",
         "orange",
         "red"
     ],
-    "resolutions": [
+    "primary_resolutions": [
         255,
         255,
         255,

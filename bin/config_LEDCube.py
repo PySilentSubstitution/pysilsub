@@ -18,20 +18,17 @@ import seaborn as sns
 RESOLUTIONS = [1023] * 14
 COLORS = list(sns.color_palette("dark", n_colors=14))[::-1]
 # Absolute file path to permenant location of calibration file
-CALIBRATION_FPATH = (
-    "/Users/jtm545/Projects/PySilSub/data/LEDCube.csv"
-)
+CALIBRATION_FPATH = "/Users/jtm545/Projects/PySilSub/data/LEDCube.csv"
 CALIBRATION_UNITS = "W/$m^2$/s/nm"
 NAME = "LEDCube"
 JSON_NAME = "LEDCube"
 WAVELENGTHS = [380, 781, 1]
-NOTES = ("12 channel light source of unknown origin.")
-
+NOTES = "12 channel light source of unknown origin."
 
 
 def device_config():
     """Create JSON file with configuration parameters for StimulationDevice.
-    
+
 
     Returns
     -------

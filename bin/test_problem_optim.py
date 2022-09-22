@@ -8,21 +8,24 @@ Created on Wed Feb  9 13:58:55 2022
 
 from pysilsub.problems import SilentSubstitutionProblem as SSP
 
-ssp = SSP.from_package_data('STLAB_1_York')  # Load example data
-ssp.ignore = ['R']  # Ignore rod photoreceptors
-ssp.minimize = ['S', 'M', 'L']  # Minimise cone contrast
-ssp.modulate = ['I']  # Target melanopsin
-ssp.target_contrast = .2
+ssp = SSP.from_package_data("STLAB_1_York")  # Load example data
+ssp.ignore = ["R"]  # Ignore rod photoreceptors
+ssp.minimize = ["S", "M", "L"]  # Minimise cone contrast
+ssp.modulate = ["I"]  # Target melanopsin
+ssp.target_contrast = 0.2
 new_bounds = ssp.bounds
-new_bounds[4] = (.48, .52,)
+new_bounds[4] = (
+    0.48,
+    0.52,
+)
 solution = ssp.optim_solve()  # Solve with optimisation
 fig = ssp.plot_solution(solution.x)  # Plot the solution
 
-ssp.background = [.5] * ssp.nprimaries  # Half-max all channels
-ssp.ignore = ['R']  # Ignore rod photoreceptors
-ssp.minimize = ['M', 'L', 'I']  # Minimise L-cone, M-cone, and melanopsin
-ssp.modulate = ['S']  # Target S-cones
-ssp.target_contrast = .3
+ssp.background = [0.5] * ssp.nprimaries  # Half-max all channels
+ssp.ignore = ["R"]  # Ignore rod photoreceptors
+ssp.minimize = ["M", "L", "I"]  # Minimise L-cone, M-cone, and melanopsin
+ssp.modulate = ["S"]  # Target S-cones
+ssp.target_contrast = 0.3
 solution = ssp.linalg_solve()  # Solve with linear algebra
 fig = ssp.plot_solution(solution)  # Plot the solution
 

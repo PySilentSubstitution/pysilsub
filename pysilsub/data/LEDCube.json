@@ -1,14 +1,14 @@
 {
-    "calibration_fpath": "./data/LEDCube.csv",
+    "calibration": "./data/LEDCube.csv",
     "calibration_units": "W/$m^2$/s/nm",
     "name": "LEDCube",
     "json_name": "LEDCube",
-    "wavelengths": [
+    "calibration_wavelengths": [
         380,
         781,
         1
     ],
-    "colors": [
+    "primary_colors": [
         [
             0.5490196078431373,
             0.03137254901960784,
@@ -80,7 +80,7 @@
             0.4980392156862745
         ]
     ],
-    "resolutions": [
+    "primary_resolutions": [
         1023,
         1023,
         1023,

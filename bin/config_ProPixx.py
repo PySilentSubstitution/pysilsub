@@ -12,9 +12,7 @@ import json
 # Configure device
 RESOLUTIONS = [255] * 3
 COLORS = ["red", "green", "blue"]
-CALIBRATION_FPATH = (
-    "/Users/jtm545/Projects/PySilSub/data/ProPixx.csv"
-)
+CALIBRATION_FPATH = "/Users/jtm545/Projects/PySilSub/data/ProPixx.csv"
 CALIBRATION_UNITS = "Counts/s/nm"
 NAME = "ProPixx Projector"
 JSON_NAME = "ProPixx"

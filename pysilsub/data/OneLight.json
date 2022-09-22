@@ -3,12 +3,12 @@
     "calibration_units": "W/$m^2$/s/nm",
     "name": "OneLight",
     "json_name": "OneLight",
-    "wavelengths": [
+    "calibration_wavelengths": [
         380,
         781,
         2
     ],
-    "colors": [
+    "primary_colors": [
         [
             0.3415609381007305,
             0.3448673587081892,
@@ -290,7 +290,7 @@
             0.2668204536716648
         ]
     ],
-    "resolutions": [
+    "primary_resolutions": [
         256,
         256,
         256,

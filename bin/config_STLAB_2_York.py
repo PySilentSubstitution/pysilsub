@@ -10,8 +10,10 @@ import json
 
 
 # Configure device
-RESOLUTIONS = [4095] * 10
-COLORS = [
+CALIBRATION = "/Users/jtm545/Projects/PySilSub/data/STLAB/STLAB_2_oo_irrad_spectra.csv"
+CALIBRATION_WAVELENGTHS = [380, 781, 1]
+PRIMARY_RESOLUTIONS = [4095] * 10
+PRIMARY_COLORS = [
     "blueviolet",
     "royalblue",
     "darkblue",
@@ -23,34 +25,40 @@ COLORS = [
     "red",
     "darkred",
 ]
-CALIBRATION_FPATH = "/Users/jtm545/Projects/BakerWadeBBSRC/data/STLAB_2_spectra/Calibration_2/STLAB_2_jaz_visible.csv"
-CALIBRATION_UNITS = "Counts/s/nm"
+OBSERVER = 'CIE_standard_observer'
+
+# Other
+CALIBRATION_UNITS = "$\mu$W/cm$^2$/nm"
 CALIBRATION_DATE = "14/07/2022"
 NAME = "STLAB_2 (binocular, right eye)"
 JSON_NAME = "STLAB_2_York"
-WAVELENGTHS = [380, 781, 1]
 NOTES = (
-    "STLAB_2 is used in the psychology department at the University of "
-    + "York to stimulate the right eye in a binocular stimulation setup "
-    + "for the BakerWadeBBSRC project. For this setup, light is "
-    + "transported from STLAB via liquid light guides and diffused by "
-    + "discs of white diffuser glass, which are fused into a single "
-    + "image courtesy of a VR headset. Measurements taken with an "
-    + "OceanOptics JAZ spectrometer through the VR goggles."
-)
+    "STLAB_2 is used in the psychology department "
+    + "at the University of York to stimulate the left eye in a "
+    + "binocular stimulation setup for the BakerWadeBBSRC project. For "
+    + "this setup, light is transported from STLAB via liquid light "
+    + "guides and diffused by discs of white diffuser glass, which are "
+    + "fused into a single image courtesy of a VR headset. Measurements "
+    + "taken with an OceanOptics JAZ spectrometer through the VR goggles. "
+    + "Absolute irradiance calibration is with reference to a spectral "
+    + "measurement of a lamp with known power output immediately prior to "
+    + "obtaining the data."
+    )
 
 
 def device_config():
 
     config = {
-        "calibration_fpath": CALIBRATION_FPATH,
+        "calibration": CALIBRATION,
+        "calibration_wavelengths": CALIBRATION_WAVELENGTHS,
+        "primary_resolutions": PRIMARY_RESOLUTIONS,
+        "primary_colors": PRIMARY_COLORS,
+        'observer': OBSERVER,
         "calibration_units": CALIBRATION_UNITS,
         "calibration_date": CALIBRATION_DATE,
         "name": NAME,
         "json_name": JSON_NAME,
-        "wavelengths": WAVELENGTHS,
-        "colors": COLORS,
-        "resolutions": RESOLUTIONS,
+
         "notes": NOTES,
     }
 

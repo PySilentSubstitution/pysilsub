@@ -1,0 +1,14 @@
+,0
+board_temp,NA
+micro_temp,NA
+integration_time,257154
+scans_averaged,3
+boxcar_width,2
+max_reported,41960.72582521606
+upper_bound,58981.5
+lower_bound,52428.0
+model,JAZ
+serial,JAZA1505
+obtained,2022-09-20 12:10:40.083746
+lamp_file,../data/jaz/030410313_FIB.LMP
+fiber_diameter,400

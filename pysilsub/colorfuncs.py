@@ -16,7 +16,7 @@ from typing import Union, Sequence, Optional
 import numpy as np
 import pandas as pd
 
-from pysilsub.CIE import get_matrix_LMStoXYZ, get_CIE_2006_10_deg_CMF
+from pysilsub.CIE import get_matrix_10_deg_LMStoXYZ, get_CIE_2006_10_deg_CMF
 
 
 # Module vars
@@ -80,7 +80,7 @@ def XYZ_to_LMS(XYZ: Sequence[float]) -> pd.Series:
         LMS coordinates.
 
     """
-    LMS = np.dot(XYZ, np.linalg.inv(get_matrix_LMStoXYZ()).T)
+    LMS = np.dot(XYZ, np.linalg.inv(get_matrix_10_deg_LMStoXYZ()).T)
     return pd.Series(LMS, index=["L", "M", "S"])
 
 
@@ -98,7 +98,7 @@ def LMS_to_XYZ(LMS: Sequence[float]) -> pd.Series:
         Tristimulus values.
 
     """
-    XYZ = np.dot(LMS, get_matrix_LMStoXYZ().T)  # transposed matrix
+    XYZ = np.dot(LMS, get_matrix_10_deg_LMStoXYZ().T)  # transposed matrix
     return pd.Series(XYZ, index=["X", "Y", "Z"])
 
 
@@ -140,7 +140,7 @@ def LMS_to_xyY(LMS: Sequence[float]) -> pd.Series:
 
 
 def spd_to_XYZ(
-    spd: Union[pd.Series, np.array], binwidth: Optional[int] = 1
+    spd: Union[pd.Series, np.ndarray], binwidth: Optional[int] = 1
 ) -> pd.Series:
     """Convert a spectrum to an XYZ point.
 
@@ -162,7 +162,7 @@ def spd_to_XYZ(
 
 
 def spd_to_lux(
-    spd: Union[pd.Series, np.array], binwidth: Optional[int] = 1
+    spd: Union[pd.Series, np.ndarray], binwidth: Optional[int] = 1
 ) -> float:
     """Convert a spectrum to luminance (lux).
 
@@ -184,7 +184,7 @@ def spd_to_lux(
 
 
 def spd_to_xyY(
-    spd: Union[pd.Series, np.array], binwidth: Optional[int] = 1
+    spd: Union[pd.Series, np.ndarray], binwidth: Optional[int] = 1
 ) -> pd.Series:
     """Compute xyY coordinates from spectral power distribution.
 

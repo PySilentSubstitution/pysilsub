@@ -1,0 +1,73 @@
+{
+  "header": {
+    "version": 1,
+    "model": "VEGA10",
+    "channels": 10,
+    "spectracount": 3,
+    "transitionsCount": 3,
+    "fluxReference": 0,
+    "repeats": 10000
+  },
+  "metadata": {
+    "creation_time": "2022-09-21 11:13:02.736530",
+    "creator": "jtm"
+  },
+  "spectra": [
+    [
+      4082,
+      3406,
+      3967,
+      0,
+      0,
+      198,
+      3717,
+      2403,
+      0,
+      2076
+    ],
+    [
+      1926,
+      3664,
+      1644,
+      4049,
+      3652,
+      2404,
+      142,
+      2976,
+      4039,
+      4095
+    ],
+    [
+      4082,
+      3406,
+      3967,
+      0,
+      0,
+      198,
+      3717,
+      2403,
+      0,
+      2076
+    ]
+  ],
+  "transitions": [
+    {
+      "spectrum": 0,
+      "power": 100,
+      "time": 0,
+      "flags": 0
+    },
+    {
+      "spectrum": 1,
+      "power": 100,
+      "time": 63,
+      "flags": 0
+    },
+    {
+      "spectrum": 2,
+      "power": 100,
+      "time": 126,
+      "flags": 0
+    }
+  ]
+}
