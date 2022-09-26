@@ -1,35 +1,33 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-pysilsub.CIE
-============
+``pysilsub.CIE``
+================
 
 Convenience functions for accessing CIE standards.
 
 Obtained from http://www.cvrl.org/
 
-@author: jtm
-
 """
 
-from typing import Optional
+
 
 import importlib_resources
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 
-LUMENS_PER_WATT = 683.002  # Lumens per watt
+
 PKG = importlib_resources.files("pysilsub")
 
 
-def get_CIE_2006_10_deg_CMF(binwidth: Optional[int] = 1) -> pd.DataFrame:
+def get_CIE_2006_10_deg_CMF(binwidth: int = 1) -> pd.DataFrame:
     """Get the CIE 2006 XYZ 10-deg physiologically relevant color matching
     functions.
 
     Parameters
     ----------
-    binwidth : int, optional
+    binwidth : int
         Desired width of the wavelength bins in nanometers. The default is `1`.
 
     Returns
@@ -43,12 +41,12 @@ def get_CIE_2006_10_deg_CMF(binwidth: Optional[int] = 1) -> pd.DataFrame:
     return cmf.iloc[::binwidth, :]
 
 
-def get_CIE_1931_2_deg_CMF(binwidth: Optional[int] = 1) -> pd.DataFrame:
+def get_CIE_1931_2_deg_CMF(binwidth: int = 1) -> pd.DataFrame:
     """Get the CIE 1931 XYZ 2-deg color matching functions.
 
     Parameters
     ----------
-    binwidth : int, optional
+    binwidth : int
         Desired width of the wavelength bins in nanometers. The default is `1`.
 
     Returns
@@ -62,12 +60,12 @@ def get_CIE_1931_2_deg_CMF(binwidth: Optional[int] = 1) -> pd.DataFrame:
     return cmf.iloc[::binwidth, :]
 
 
-def get_CIES026(binwidth: Optional[int] = 1):
+def get_CIES026(binwidth: int = 1):
     """Get the CIES026 photoreceptor action spectra.
 
     Parameters
     ----------
-    binwidth : int, optional
+    binwidth : int
         Desired width of the wavelength bins in nanometers. The default is `1`.
 
     Returns
@@ -81,12 +79,12 @@ def get_CIES026(binwidth: Optional[int] = 1):
     return action_spectra.iloc[::binwidth, :]
 
 
-def get_CIE_1924_photopic_vl(binwidth: Optional[int] = 1) -> pd.DataFrame:
+def get_CIE_1924_photopic_vl(binwidth: int = 1) -> pd.DataFrame:
     """Get the CIE1924 photopic luminosity function.
 
     Parameters
     ----------
-    binwidth : int, optional
+    binwidth : int
         Desired width of the wavelength bins in nanometers. The default is `1`.
 
     Returns
@@ -137,13 +135,13 @@ def get_matrix_2_deg_LMStoXYZ() -> npt.NDArray:
 
 
 def get_CIE170_2_chromaticity_coordinates(
-    line_of_purples: Optional[bool] = True,
+    line_of_purples: bool = True,
 ) -> pd.DataFrame:
     """Get the CIE170_2 chromaticity coordinates.
 
     Parameters
     ----------
-    line_of_purples : bool, optional
+    line_of_purples : bool
         Whether to connect the line of purples by repeating the first row at
         the end. The default is `True`.
 

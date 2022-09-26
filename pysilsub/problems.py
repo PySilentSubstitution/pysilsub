@@ -1,15 +1,16 @@
 """
-pysilsub.problems
-=================
+``pysilsub.problems``
+=====================
 
-Module with interface to definine, solve and visualise silent substitution
-problems for a given stimulation device.
-
-@author: jtm, ms
+Definine, solve and visualise silent substitution problems for a given observer
+and multiprimary stimulation device.
 
 """
+from __future__ import annotations
+
+
 import os.path as op
-from typing import List, Optional, Tuple, Sequence, Union
+from typing import Any, Sequence
 
 import numpy as np
 import numpy.typing as npt
@@ -27,7 +28,7 @@ from .devices import (
     PrimaryColors,
 )
 from .colorfuncs import spd_to_xyY
-from .plotting import ss_solution_plot
+from .plots import ss_solution_plot
 from .observers import _Observer
 
 
@@ -83,13 +84,13 @@ class SilentSubstitutionProblem(StimulationDevice):
 
     def __init__(
         self,
-        calibration: Union[str, pd.DataFrame],
+        calibration: str | pd.DataFrame,
         calibration_wavelengths: Sequence[int],
         primary_resolutions: Sequence[int],
         primary_colors: PrimaryColors,
-        observer: Optional[Union[str, _Observer]] = "CIE_standard_observer",
-        name: Optional[str] = None,
-        config: Optional[dict] = None,
+        observer: str | _Observer = "CIE_standard_observer",
+        name: str | None = None,
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Instantiate class with specified parameters.
 
@@ -145,6 +146,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             config,
         )
 
+        # TODO: default as [] instead of None
         # Problem parameters
         self._background = None
         self._ignore = None
@@ -171,7 +173,7 @@ class SilentSubstitutionProblem(StimulationDevice):
     # Properties of a SilentSubstitutionProblem
     @property
     def background(self):
-        """The background spectrum for the silent substitution stimulus.
+        """Define a background spectrum for the silent substitution stimulus.
 
         Setting the *background* property internally conditions the silent
         substitution problem.
@@ -219,7 +221,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
     @property
     def bounds(self) -> PrimaryBounds:
-        """The input bounds for each primary.
+        """Define input bounds for each primary.
 
         The *bounds* property ensures that solutions are within gamut. Bounds
         should be defined as a list of tuples of length ``self.nprimaries``,
@@ -267,7 +269,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         self._bounds = list(new_bounds)
 
     @property
-    def ignore(self) -> Union[List[str], List[None]]:
+    def ignore(self) -> list[str] | list[None]:
         """Photoreceptor(s) to be ignored.
 
         Setting the *ignore* property internally conditions the silent
@@ -309,7 +311,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         return self._ignore
 
     @ignore.setter
-    def ignore(self, receptors_to_ignore: Union[List[str], List[None]]) -> None:
+    def ignore(self, receptors_to_ignore: list[str] | list[None]) -> None:
         """Set the *ignore* property."""
         self._assert_receptor_input_is_valid(receptors_to_ignore)
         self._ignore = [
@@ -317,7 +319,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         ]
 
     @property
-    def minimize(self) -> List[str]:
+    def minimize(self) -> list[str]:
         """Photoreceptor(s) to be minimized.
 
         Setting the *minimize* property internally conditions the silent
@@ -359,7 +361,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         ]
 
     @property
-    def modulate(self) -> List[str]:
+    def modulate(self) -> list[str]:
         """Photoreceptor(s) to modulate.
 
         Setting the *modulate* property internally conditions the silent
@@ -393,7 +395,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         return self._modulate
 
     @modulate.setter
-    def modulate(self, receptors_to_modulate: List[str]) -> None:
+    def modulate(self, receptors_to_modulate: list[str]) -> None:
         """Set the *modulate* property."""
         self._assert_receptor_input_is_valid(receptors_to_modulate)
         self._modulate = [
@@ -403,7 +405,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         ]
 
     @property
-    def target_contrast(self) -> Union[npt.NDArray, str]:
+    def target_contrast(self) -> npt.NDArray | str:
         """Target contrast to aim for on modulated photoreceptor(s).
 
         Setting the *target_contrast* property conditions the silent
@@ -453,7 +455,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
     @target_contrast.setter
     def target_contrast(
-        self, target_contrast: Union[float, Sequence[float], str]
+        self, target_contrast: float | Sequence[float] | str
     ) -> None:
         """Set the *target_contrast* property."""
         try:
@@ -512,7 +514,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             raise SilSubProblemError("Invalid input for bounds (see above).")
 
     def _assert_receptor_input_is_valid(
-        self, receptors: Sequence[Union[str, None]]
+        self, receptors: Sequence[str | None]
     ) -> None:
         """Throw an error if user tries to invent new photoreceptors."""
         if not isinstance(receptors, (list, tuple)):
@@ -584,7 +586,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
     def smlri_calculator(
         self, x0: PrimaryWeights
-    ) -> Tuple[pd.Series, pd.Series]:
+    ) -> tuple[pd.Series, pd.Series]:
         """Calculate alphaopic irradiances for candidate solution.
 
         Parameters
@@ -619,7 +621,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         )
 
     def print_photoreceptor_contrasts(
-        self, x0: PrimaryWeights, contrast_statistic: Optional[str] = "simple"
+        self, x0: PrimaryWeights, contrast_statistic: str = "simple"
     ):
         """Print photoreceptor contrasts for a given solution."""
         contrasts = self.get_photoreceptor_contrasts(x0, contrast_statistic)
@@ -627,7 +629,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
     # TODO: Catch error when background is not set
     def get_photoreceptor_contrasts(
-        self, x0: PrimaryWeights, contrast_statistic: Optional[str] = "simple"
+        self, x0: PrimaryWeights, contrast_statistic: str = "simple"
     ) -> pd.Series:
         """Return contrasts for ignored, minimized and modulated photoreceptors.
 
@@ -702,10 +704,10 @@ class SilentSubstitutionProblem(StimulationDevice):
         """
         contrast = self.get_photoreceptor_contrasts(x0)
         return sum(pow(contrast[self.minimize].values, 2))
-    
+
     # TODO: Release the KWARGS
     def optim_solve(
-        self, global_search: Optional[bool] = False, **kwargs
+        self, global_search: bool = False, **kwargs
     ) -> optimize.OptimizeResult:
         """Use optimisation to solve the current silent substitution problem.
 
@@ -716,8 +718,8 @@ class SilentSubstitutionProblem(StimulationDevice):
         If `self.background` has not been set, both the background and the
         modulation spectrum are optimised.
 
-        If `self.target_contrast` has been set to `np.inf` or `-np.inf`, the 
-        optimser will aim to maximise or minimize contrast, respectively, 
+        If `self.target_contrast` has been set to `np.inf` or `-np.inf`, the
+        optimser will aim to maximise or minimize contrast, respectively,
         otherwise it will aim to converge on the target contrast.
 
         Parameters
@@ -748,12 +750,12 @@ class SilentSubstitutionProblem(StimulationDevice):
         constraints = [
             {"type": "eq", "fun": self.silencing_constraint, "tol": 1e-04}
         ]
-        
+
         if not global_search:  # Local minimization
-            
+
             default_options = {"iprint": 2, "disp": True}
-            options = kwargs.pop('options', default_options)
-                
+            options = kwargs.pop("options", default_options)
+
             print("> Performing local optimization with SLSQP.")
             result = optimize.minimize(
                 fun=self.objective_function,
@@ -762,35 +764,35 @@ class SilentSubstitutionProblem(StimulationDevice):
                 bounds=bounds,
                 constraints=constraints,
                 options=options,
-                **kwargs
+                **kwargs,
             )
-            
+
         elif global_search:  # Global minimization
             print(
                 "> Performing global optimization with basinhopping and SLSQP"
             )
-            
+
             # Configure global defaults
-            disp = kwargs.pop('disp', True)
+            disp = kwargs.pop("disp", True)
             # Configure local defaults
             default_minimizer_kwargs = {
                 "method": "SLSQP",
                 "constraints": constraints,
                 "bounds": bounds,
-                'options': {'iprint':2, 'disp':True}
-                }            
-            minimizer_kwargs = kwargs.pop('minimizer_kwargs', default_minimizer_kwargs)
-                
+                "options": {"iprint": 2, "disp": True},
+            }
+            minimizer_kwargs = kwargs.pop(
+                "minimizer_kwargs", default_minimizer_kwargs
+            )
+
             # Do optimization
             result = optimize.basinhopping(
                 func=self.objective_function,
                 x0=self.initial_guess_x0(),
                 minimizer_kwargs=minimizer_kwargs,
                 disp=disp,
-                **kwargs
+                **kwargs,
             )
-
-
 
         return result
 
@@ -879,29 +881,33 @@ class SilentSubstitutionProblem(StimulationDevice):
         if all([s > b[0] and s < b[1] for s in solution for b in self.bounds]):
             return solution
         else:
-            raise ValueError("Solution is out of gamut, lower target contrast.")
+            raise ValueError(
+                "Solution is out of gamut, lower target contrast."
+            )
 
     def plot_solution(self, solution):
         """Plot the silent substitution solution.
-        
-        
+
+
         Parameters
         ----------
         solution : array_like
-            The solution returned by one of the solvers. 
-        
-        
+            The solution returned by one of the solvers.
+
+
         Returns
         -------
         fig : plt.Figure
-            
+
         """
         # get aopic
         bg_ao, mod_ao = self.smlri_calculator(solution)
         df_ao = (
             pd.concat([bg_ao, mod_ao], axis=1)
             .T.melt(
-                value_name="aopic", var_name="Photoreceptor", ignore_index=False
+                value_name="aopic",
+                var_name="Photoreceptor",
+                ignore_index=False,
             )
             .reset_index()
             .rename(columns={"index": "Spectrum"})
@@ -912,17 +918,22 @@ class SilentSubstitutionProblem(StimulationDevice):
             bg_spd = self.predict_multiprimary_spd(
                 self._background, name="Background"
             )
-            mod_spd = self.predict_multiprimary_spd(solution, name="Modulation")
+            mod_spd = self.predict_multiprimary_spd(
+                solution, name="Modulation"
+            )
         except:
             bg_spd = self.predict_multiprimary_spd(
                 solution[: self.nprimaries], name="Background"
             )
             mod_spd = self.predict_multiprimary_spd(
-                solution[self.nprimaries : self.nprimaries * 2], name="Modulation"
+                solution[self.nprimaries : self.nprimaries * 2],
+                name="Modulation",
             )
 
         # get xy
-        bg_xy = spd_to_xyY(bg_spd, binwidth=self.calibration_wavelengths[2])[:2]
+        bg_xy = spd_to_xyY(bg_spd, binwidth=self.calibration_wavelengths[2])[
+            :2
+        ]
         mod_xy = spd_to_xyY(mod_spd, binwidth=self.calibration_wavelengths[2])[
             :2
         ]

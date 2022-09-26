@@ -22,7 +22,7 @@ copyright = '2022, Joel T. Martin'
 author = 'Joel T. Martin'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.0.13'
 
 
 # -- General configuration ---------------------------------------------------
@@ -30,9 +30,7 @@ release = '0.0.1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-"sphinxcontrib.napoleon", "sphinx.ext.autodoc", "sphinx_autodoc_typehints", "nbsphinx"
-]
+extensions = ["nbsphinx", "sphinx.ext.napoleon", "sphinx.ext.autodoc"]
 
 # Show docs in order of definition
 autodoc_class_signature = 'both'

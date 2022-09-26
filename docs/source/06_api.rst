@@ -1,6 +1,11 @@
 API Documentation
 =================
 
+.. automodule:: pysilsub.observers
+   :members:
+   :special-members:
+   :exclude-members: __dict__,__weakref__,__repr__,__str__
+   
 .. automodule:: pysilsub.devices
    :members:
    :special-members:
@@ -12,17 +17,12 @@ API Documentation
    :exclude-members: __dict__,__weakref__,__repr__,__str__
    :show-inheritance:
 
+.. automodule:: pysilsub.colorfuncs
+   :members:
+   :special-members:
+   :exclude-members: __dict__,__weakref__
+
 .. automodule:: pysilsub.CIE
-   :members:
-   :special-members:
-   :exclude-members: __dict__,__weakref__
-
-.. automodule:: pysilsub.colorfunc
-   :members:
-   :special-members:
-   :exclude-members: __dict__,__weakref__
-
-.. automodule:: pysilsub.precep
    :members:
    :special-members:
    :exclude-members: __dict__,__weakref__

@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Sep  4 20:34:26 2022
 
-@author: jtm545
 """
+``pysilsub.observers``
+======================
 
-from typing import List, Dict, Union
+Standard and individualistic colorimetric observer models.
+
+"""
+from __future__ import annotations
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,8 +22,13 @@ from pysilsub.CIE import (
 )
 
 
+# TODO: use these
+MAX_DENSITY_LM: float = 0.38
+MAX_DENSITY_S: float = 0.3
 
-# TODO: eventually this is where we can define custom receptors, such as 
+
+# TODO: eventually this is where we can define custom receptors, such as S*, M*
+# L*, etc.
 class _Observer:
     """Observer base class.
 
@@ -34,8 +42,8 @@ class _Observer:
     """
 
     # Class attribute colors for photoreceptors
-    photoreceptors: List[str] = ["S", "M", "L", "R", "I"]
-    photoreceptor_colors: Dict[str, str] = {
+    photoreceptors: list[str] = ["S", "M", "L", "R", "I"]
+    photoreceptor_colors: dict[str, str] = {
         "S": "tab:blue",
         "M": "tab:green",
         "L": "tab:red",
@@ -46,9 +54,7 @@ class _Observer:
     def __init__(self) -> None:
         self.action_spectra = None
 
-    def plot_action_spectra(
-        self, ax: plt.Axes = None, **plt_kwargs
-    ) -> plt.Axes:
+    def plot_action_spectra(self, ax: plt.Axes = None, **kwargs) -> plt.Axes:
         """Plot photoreceptor action spectra for the observer.
 
         Parameters
@@ -65,11 +71,11 @@ class _Observer:
         """
         # TODO: error for no action spectra
         if self.action_spectra is None:
-            raise AttributeError('No action spectra to plot.')
+            raise AttributeError("No action spectra to plot.")
         if ax is None:
             ax = plt.gca()
         self.action_spectra.plot(
-            color=self.photoreceptor_colors, ax=ax, **plt_kwargs
+            color=self.photoreceptor_colors, ax=ax, **kwargs
         )
         ax.set_xlabel("Wavelength (nm)")
         ax.set_ylabel("Spectral sensetivity")
@@ -101,7 +107,7 @@ class IndividualColorimetricObserver(_Observer):
 
     """
 
-    def __init__(self, age: Union[int, float], field_size: Union[int, float]):
+    def __init__(self, age: int | float, field_size: int | float):
         super().__init__()
         self.age = age
         self.field_size = field_size

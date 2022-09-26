@@ -1,18 +1,15 @@
 """
-pysilsub.devices
-================
+``pysilsub.devices``
+====================
 
-Module with generic object-oriented interface for calibrated multiprimary
-stimulation devices. 
-
-@author: jtm
-
+Software model for multiprimary stimulation devices. 
+ 
 """
 from __future__ import annotations
 
 import os
 import os.path as op
-from typing import Any, List, Union, Optional, Tuple, Sequence, Dict
+from typing import Any, Optional, Sequence, Union, List, Tuple, Type
 import json
 from pprint import pprint
 
@@ -34,7 +31,7 @@ from .CIE import (
     get_CIE_1924_photopic_vl,
     get_CIE170_2_chromaticity_coordinates,
 )
-from .plotting import ss_solution_plot
+from .plots import ss_solution_plot
 from .observers import _Observer, StandardColorimetricObserver
 
 
@@ -66,13 +63,13 @@ class StimulationDevice:
 
     def __init__(
         self,
-        calibration: Union[str, pd.DataFrame],
+        calibration: str | pd.DataFrame,
         calibration_wavelengths: Sequence[int],
         primary_resolutions: Sequence[int],
         primary_colors: PrimaryColors,
-        observer: Optional[Union[str, _Observer]] = "CIE_standard_observer",
-        name: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
+        observer: str | Type[_Observer] | None = "CIE_standard_observer",
+        name: str | None = None,
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Instantiate class with specified parameters.
 
@@ -100,7 +97,7 @@ class StimulationDevice:
             Sequence of valid color names for the primaries. Must be in
             `matplotlib.colors.cnames <https://matplotlib.org/stable/gallery/color/named_colors.html>`_.
             Alternatively, pass a sequence of RGB values.
-        observer : str or pysilsub.observer.Observer, optional
+        observer : str or pysilsub.observer.Observer
             Colorimetric observer model. The default is "CIE_standard_observer"
             , in which case defaults to the CIE standard colorimetric observer
             model (age=32, field_size=10), but can pass a custom observer
@@ -163,13 +160,12 @@ class StimulationDevice:
 
     @classmethod
     def from_json(cls, config_json: str) -> StimulationDevice:
-        """Constructor that works from preformatted json config file.
+        """Construct class from preformatted json config file.
 
         See `pysilsub.config` for further details.
 
         Parameters
         ----------
-
         config_json : str
             json file with configuration parameters for `StimulationDevice`.
 
@@ -194,7 +190,7 @@ class StimulationDevice:
 
     @classmethod
     def from_package_data(cls, example: str) -> StimulationDevice:
-        """Constructor that uses example data from the package distribution.
+        """Construct class from example package data.
 
         For further details::
 
@@ -202,7 +198,6 @@ class StimulationDevice:
 
         Parameters
         ----------
-
         example : str
             Currently the following options are available:
 
@@ -213,7 +208,6 @@ class StimulationDevice:
 
         Example
         -------
-
         ``device = StimulationDevice.from_package_example('BCGAR')``
 
         Returns
@@ -240,7 +234,7 @@ class StimulationDevice:
 
     # TODO: decide what this does
     @classmethod
-    def show_package_data(cls, verbose: Optional[bool] = False) -> List[str]:
+    def show_package_data(cls, verbose: bool = False) -> list[str]:
         """Show details of example data in the package distribution.
 
         Parameters
@@ -255,7 +249,9 @@ class StimulationDevice:
 
         """
         pkg = importlib_resources.files("pysilsub")
-        available = [f for f in os.listdir(pkg / "data") if f.endswith(".json")]
+        available = [
+            f for f in os.listdir(pkg / "data") if f.endswith(".json")
+        ]
 
         for f in available:
             if not verbose:
@@ -335,7 +331,9 @@ class StimulationDevice:
                 f"{self.primaries}"
             )
 
-        if not isinstance(primary_input, (int, np.integer, float, np.floating)):
+        if not isinstance(
+            primary_input, (int, np.integer, float, np.floating)
+        ):
             raise TypeError(
                 "Must specify float (>=0.|<=1.) or int (>=0|<=max resolution) "
                 + "for primary input."
@@ -371,7 +369,7 @@ class StimulationDevice:
             self._assert_primary_input_is_valid(primary, primary_input)
 
     def _assert_wavelengths_are_valid(
-        self, wavelengths: Sequence[Union[int, float]]
+        self, wavelengths: Sequence[int | float]
     ) -> None:
         """Check wavelengths match those in the calibration file."""
         if not all(
@@ -381,7 +379,9 @@ class StimulationDevice:
                 "Specfied wavelengths do not match calibration spds."
             )
 
-    def _assert_resolutions_are_valid(self, resolutions: Sequence[int]) -> None:
+    def _assert_resolutions_are_valid(
+        self, resolutions: Sequence[int]
+    ) -> None:
         """Check resolutions are valid."""
         if not len(resolutions) == self.nprimaries:
             raise StimulationDeviceError(
@@ -389,28 +389,27 @@ class StimulationDevice:
                 + f"{len(resolutions)} resolutions were given."
             )
 
-    def _assert_is_valid_rgb(self, rgb: Sequence[Sequence[float]]) -> None:
+    def _assert_is_valid_rgb(self, rgb: Sequence[float]) -> None:
         """Check RGB input is valid."""
-        are_all_float = all(
-            [isinstance(val, (float, np.floating)) for val in rgb]
-        )
-        are_all_between_0_1 = all([(val >= 0.0 and val <= 1.0) for val in rgb])
-        are_all_int = all([isinstance(val, (int, np.integer)) for val in rgb])
-        are_all_between_0_255 = all([(val >= 0 and val <= 255) for val in rgb])
+        all_float = all([isinstance(val, (float, np.floating)) for val in rgb])
+        all_between_0_1 = all([(val >= 0.0 and val <= 1.0) for val in rgb])
+        all_int = all([isinstance(val, (int, np.integer)) for val in rgb])
+        all_between_0_255 = all([(val >= 0 and val <= 255) for val in rgb])
 
         if not (
-            (are_all_float and are_all_between_0_1)
-            or (are_all_int and are_all_between_0_255)
+            (all_float and all_between_0_1) or (all_int and all_between_0_255)
         ):
             raise StimulationDeviceError(
                 "Invalid RGB specification. Please use tuples of float "
                 + "(>=0.|<=1.) or int (>=0|<=255)."
             )
 
-    def _assert_colors_are_valid(self, colors: PrimaryColors) -> True:
+    def _assert_colors_are_valid(self, colors: PrimaryColors) -> None:
         """Check primary color specification is valid."""
         if not isinstance(colors, (list, tuple)):
-            raise StimulationDeviceError("Must pass a list or tuple of colors.")
+            raise StimulationDeviceError(
+                "Must pass a list or tuple of colors."
+            )
 
         if not len(colors) == self.nprimaries:
             raise StimulationDeviceError(
@@ -437,9 +436,7 @@ class StimulationDevice:
                 "Colors must be a list of valid color names or RGB values."
             )
 
-        return True
-
-    def _assert_observer_is_valid(self, observer):
+    def _assert_observer_is_valid(self, observer) -> None:
         """Check observer is valid."""
         if not (
             (observer == "CIE_standard_observer")
@@ -467,10 +464,11 @@ class StimulationDevice:
             args=(self.calibration_wavelengths[-1],),
             axis=1,
         )
-        xyY = xyY.append(xyY.iloc[0], ignore_index=True)  # Join the dots
+        # Join the dots
+        xyY = pd.concat([xyY, xyY.iloc[0].to_frame().T], ignore_index=True)
         return xyY[["x", "y"]]
 
-    def _xy_in_gamut(self, xy_coord: Tuple[float, float]) -> bool:
+    def _xy_in_gamut(self, xy_coord: tuple[float, float]) -> bool:
         """Return True if xy_coord is within the gamut of the device."""
         poly_path = mplpath.Path(self._get_gamut().to_numpy())
         return poly_path.contains_point(xy_coord)
@@ -483,7 +481,7 @@ class StimulationDevice:
         show_1931_horseshoe: bool = True,
         show_CIE170_2_horseshoe: bool = True,
         **kwargs,
-    ) -> Union[plt.Figure, None]:
+    ) -> plt.Figure | None:
         """Plot the gamut of the stimulation device.
 
         Parameters
@@ -514,14 +512,14 @@ class StimulationDevice:
             ax.plot(
                 cie170_2["x"], cie170_2["y"], c="k", ls=":", label="CIE 170-2"
             )
-            
+
         # Defaults plot kws
-        lw = kwargs.pop('lw', 2)
-        marker = kwargs.pop('marker', 'x')
-        markersize = kwargs.pop('markersize', 8)
-        color = kwargs.pop('color', 'k')
-        label = kwargs.pop('label', 'Gamut')
-        
+        lw = kwargs.pop("lw", 2)
+        marker = kwargs.pop("marker", "x")
+        markersize = kwargs.pop("markersize", 8)
+        color = kwargs.pop("color", "k")
+        label = kwargs.pop("label", "Gamut")
+
         ax.plot(
             gamut["x"],
             gamut["y"],
@@ -558,9 +556,9 @@ class StimulationDevice:
                 ylabel = self.config["calibration_units"]
             except:
                 ylabel = "Power"
-        
+
         # Plot defaults
-        lw = kwargs.pop('lw', .5)
+        lw = kwargs.pop("lw", 0.5)
 
         data = self._melt_spds(spds=data)
 
@@ -581,10 +579,8 @@ class StimulationDevice:
         return ax
 
     def plot_calibration_spds_and_gamut(
-            self, 
-            spd_kwargs: dict | None = None,
-            gamut_kwargs: dict | None = None
-            ) -> plt.Figure:
+        self, spd_kwargs: dict | None = None, gamut_kwargs: dict | None = None
+    ) -> plt.Figure:
         """Plot calibration SPDs alongside gamut on CIE chromaticity horseshoe.
 
         Returns
@@ -593,12 +589,11 @@ class StimulationDevice:
             The figure.
 
         """
-        
         if spd_kwargs is None:
             spd_kwargs = {}
         if gamut_kwargs is None:
-            gamut_kwargs = {}      
-            
+            gamut_kwargs = {}
+
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
         self.plot_calibration_spds(ax=ax1, **spd_kwargs)
         self.plot_gamut(ax=ax2, **gamut_kwargs)
@@ -609,7 +604,7 @@ class StimulationDevice:
         self,
         primary: int,
         primary_input: PrimaryInput,
-        name: Union[int, str] = 0,
+        name: int | str = 0,
     ) -> npt.NDArray:
         """Predict output for a single device primary at a given setting.
 
@@ -655,8 +650,8 @@ class StimulationDevice:
     def predict_multiprimary_spd(
         self,
         multiprimary_input: DeviceInput,
-        name: Union[int, str] = 0,
-        nosum: Optional[bool] = False,
+        name: int | str = 0,
+        nosum: bool = False,
     ) -> pd.Series:
         """Predict spectral power distribution for requested primary inputs.
 
@@ -729,7 +724,9 @@ class StimulationDevice:
             Lux values.
 
         """
-        vl = get_CIE_1924_photopic_vl(binwidth=self.calibration_wavelengths[-1])
+        vl = get_CIE_1924_photopic_vl(
+            binwidth=self.calibration_wavelengths[-1]
+        )
         lux = self.calibration.dot(vl.values) * 683  # lux conversion factor
         lux.columns = ["lux"]
         return lux
@@ -737,7 +734,7 @@ class StimulationDevice:
     def predict_multiprimary_aopic(
         self,
         multiprimary_input: DeviceInput,
-        name: Union[int, str] = 0,
+        name: int | str = 0,
     ) -> pd.Series:
         """Predict a-opic irradiances of device for requested primary inputs.
 
@@ -764,9 +761,9 @@ class StimulationDevice:
         self,
         xy: Sequence[float],
         luminance: float,
-        tolerance: Optional[float] = 1e-6,
-        plot_solution: Optional[bool] = False,
-        verbose: Optional[bool] = True,
+        tolerance: float = 1e-6,
+        plot_solution: bool = False,
+        verbose: bool = True,
     ) -> optimize.OptimizeResult:
         """Find device settings for a spectrum with requested xyY values.
 
@@ -806,7 +803,7 @@ class StimulationDevice:
         requested_LMS = colorfuncs.xyY_to_LMS(requested_xyY)
 
         # Objective function to find device settings for given xyY
-        def _xyY_objective_function(x0: List[float]):
+        def _xyY_objective_function(x0: list[float]):
             aopic = self.predict_multiprimary_aopic(x0)
             return sum(
                 pow(requested_LMS - aopic[["L", "M", "S"]].to_numpy(), 2)
@@ -1045,6 +1042,11 @@ class StimulationDevice:
             Gamma corrected primary input value.
 
         """
+        if self.gamma is None:
+            raise StimulationDeviceError(
+                "Gamm atable does not exist. Run `do_gamma()` first."
+            )
+
         self._assert_primary_input_is_valid(primary, primary_input)
         if isinstance(primary_input, (float, np.floating)):
             primary_input = int(
@@ -1052,7 +1054,7 @@ class StimulationDevice:
             )
         return int(self.gamma.loc[primary, primary_input])
 
-    def gamma_correct(self, multiprimary_input: DeviceInput) -> List:
+    def gamma_correct(self, multiprimary_input: DeviceInput) -> list:
         """Return the gamma corrected values for multiprimary device input.
 
         Parameters
@@ -1074,7 +1076,7 @@ class StimulationDevice:
             for primary, primary_input in enumerate(multiprimary_input)
         ]
 
-    def s2w(self, settings: PrimarySettings) -> List[float]:
+    def s2w(self, settings: PrimarySettings) -> list[float]:
         """Convert settings to weights.
 
         Parameters
@@ -1098,7 +1100,7 @@ class StimulationDevice:
             float(s / r) for s, r in zip(settings, self.primary_resolutions)
         ]
 
-    def w2s(self, weights: PrimaryWeights) -> List[int]:
+    def w2s(self, weights: PrimaryWeights) -> list[int]:
         """Convert weights to settings.
 
         Parameters

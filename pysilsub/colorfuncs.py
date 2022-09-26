@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-pysilsub.colorfunc
-==================
+``pysilsub.colorfuncs``
+======================
 
 Tools for navigating between colorspaces.
 
 Many have been translated from MATLAB's Psychtoolbox/PsychColormetric
 
-@author: jtm
 """
 
-from typing import Union, Sequence, Optional
+from __future__ import annotations
+
+
+from typing import Sequence
 
 import numpy as np
 import pandas as pd
@@ -20,7 +22,7 @@ from pysilsub.CIE import get_matrix_10_deg_LMStoXYZ, get_CIE_2006_10_deg_CMF
 
 
 # Module vars
-LUX_FACTOR = 683.0  # .002?
+LUX_FACTOR = 683.002  #
 
 
 def xyY_to_XYZ(xyY: Sequence[float]) -> pd.Series:
@@ -103,8 +105,7 @@ def LMS_to_XYZ(LMS: Sequence[float]) -> pd.Series:
 
 
 def xyY_to_LMS(xyY: Sequence[float]) -> pd.Series:
-    """Compute cone excitation (LMS) coordinates from chromaticity and
-    luminance.
+    """Compute cone excitation (LMS) coordinates from chromaticity and luminance.
 
     Parameters
     ----------
@@ -139,9 +140,7 @@ def LMS_to_xyY(LMS: Sequence[float]) -> pd.Series:
     return pd.Series(XYZ_to_xyY(XYZ), index=["x", "y", "Y"])
 
 
-def spd_to_XYZ(
-    spd: Union[pd.Series, np.ndarray], binwidth: Optional[int] = 1
-) -> pd.Series:
+def spd_to_XYZ(spd: pd.Series | np.ndarray, binwidth: int = 1) -> pd.Series:
     """Convert a spectrum to an XYZ point.
 
     Parameters
@@ -161,9 +160,7 @@ def spd_to_XYZ(
     return pd.Series(spd.dot(cmf), index=["X", "Y", "Z"])
 
 
-def spd_to_lux(
-    spd: Union[pd.Series, np.ndarray], binwidth: Optional[int] = 1
-) -> float:
+def spd_to_lux(spd: pd.Series | np.ndarray, binwidth: int = 1) -> float:
     """Convert a spectrum to luminance (lux).
 
     Parameters
@@ -183,11 +180,8 @@ def spd_to_lux(
     return spd.dot(Y) * LUX_FACTOR
 
 
-def spd_to_xyY(
-    spd: Union[pd.Series, np.ndarray], binwidth: Optional[int] = 1
-) -> pd.Series:
+def spd_to_xyY(spd: pd.Series | np.ndarray, binwidth: int = 1) -> pd.Series:
     """Compute xyY coordinates from spectral power distribution.
-
 
     Parameters
     ----------
