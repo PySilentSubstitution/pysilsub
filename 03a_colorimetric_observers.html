@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Colorimetric observer models &#8212; PySilSub 0.0.1 documentation</title>
+    <title>Colorimetric observer models &#8212; PySilSub 0.0.13 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -295,7 +295,7 @@ div.rendered_html tbody tr:hover {
 </style>
 <section id="Colorimetric-observer-models">
 <h1>Colorimetric observer models<a class="headerlink" href="#Colorimetric-observer-models" title="Permalink to this heading">¶</a></h1>
-<p>Alphaopic irradiance, the ammount of incident light that is ‘seen’ by individual photoreceptor classes, is a core computation for silent substitution. It is calculated by weighting a light spectrum by estimates of the photoreceptor spectral sensetivites via a simple dot product operation.</p>
+<p>Alphaopic irradiance is the ammount of incident light that is ‘seen’ by individual photoreceptor classes. It is a core measure for silent substitution, calculated by weighting a light spectrum by estimates of the photoreceptor spectral sensetivites via a simple dot product operation.</p>
 <img alt="aopic irradiance" src="_images/alphaopic_irradiance.svg" /><p>The International Commission on Illumination (CIE) define <a class="reference external" href="https://cie.co.at/publications/colorimetric-observers">average colorimetric observer models</a> (e.g., CIE 1931 Standard Colorimetric Observer), which include estimates of the photoreceptor spectral sensetivities, assuming a stimulus of a certain size. The <a class="reference external" href="http://www.cvrl.org/">UCL Colour Vision Research Laboratory</a> maintain a repository of these data.</p>
 <section id="pysilsub.observers.StandardColorimetricObserver">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers.StandardColorimetricObserver</span></code><a class="headerlink" href="#pysilsub.observers.StandardColorimetricObserver" title="Permalink to this heading">¶</a></h2>
