@@ -21,7 +21,7 @@ algebra and numerical optimisation via a configurable, intuitive interface:
 
 .. code:: python
 
-   from pysilsub.problem import SilentSubstitutionProblem as SSP
+   from pysilsub.problems import SilentSubstitutionProblem as SSP
 
    problem = SSP.from_package_data('STLAB_1_York')  # Load example data
    problem.ignore = ['R']  # Ignore rod photoreceptors

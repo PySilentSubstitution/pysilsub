@@ -45,7 +45,7 @@ a sister project offering a Python framework for researching the pupillary
 light reflex with the Pupil Core eye tracking platform.</p>
 <p>With <em>PySilSub</em>, solutions to silent substitution problems are found with linear
 algebra and numerical optimisation via a configurable, intuitive interface:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.problem</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.problems</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
 
 <span class="n">problem</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_1_York&#39;</span><span class="p">)</span>  <span class="c1"># Load example data</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>  <span class="c1"># Ignore rod photoreceptors</span>
@@ -96,6 +96,7 @@ run the above code after a simple pip install:</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="07a_spectrometer_calibration.html">Spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07b_prereceptoral_filtering.html">Individual differences</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>

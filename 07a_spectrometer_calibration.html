@@ -19,7 +19,7 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Funding" href="10_funding.html" />
+    <link rel="next" title="Prereceptoral filtering" href="07b_prereceptoral_filtering.html" />
     <link rel="prev" title="Project notes" href="07_project_notes.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -665,7 +665,7 @@ Name: Counts, Length: 2048, dtype: float64
 </ul>
 <p>The JAZ stores wavelength coefficients from when it was last calibrated, but wavelength calibrations are liable to drift over time due to various factors (e.g., mechanical shock, environmental conditions).</p>
 <p>The ground truth for wavelength calibration is dervied from sampling a light source that produces <a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line">spectral lines</a>, so we borrowed a <a class="reference external" href="http://www.lamptech.co.uk/Spec%20Sheets/D%20SP%20Philips%20LL%20Ar.htm">Philips argon lamp</a> from our local physics department.</p>
-<p><img alt="0969d0e070bf4c6fa078721f830264ed" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
+<p><img alt="2d1df37486cc4226999bf5e336355b66" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
 <p>Measurement of the lamp produced a spectrum with lots of lines. I consulted the <a class="reference external" href="https://physics.nist.gov/PhysRefData/ASD/lines_form.html">NIST atomic spectra database</a> to find the known positions of the lines.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -824,7 +824,7 @@ I_p = (S_p - D_p) * C_p / (T * A * dL_p)
 <p>Our NIST-traceable HL-2000-CAL light source is suitable for absolute irradiance calculation. It has a tungsten-halogen bulb with a color temperature of 3100 kelvin, and it came with calibration files expressing its known power output at certain wavelengths in <span class="math notranslate nohighlight">\(\mu W/cm^2/nm\)</span>, when measured with either a fibre optic probe or cosine corrector (the sampling optic affects the measured power).</p>
 <p>It is relatively easy to perform an absolute irradiance calibration with the <a class="reference external" href="https://www.oceaninsight.com/products/software/acquisition-and-analysis/oceanview/">Ocean View software</a>, which is available for a 30-day free trial.</p>
 <p>Turn the light source on and wait for it to reach thermal equilibrium (~15 mins) and then select the <em>Absolute Irradiance Calibration</em> option. The software guides you through the process of taking a reference measurement, a dark measurement to compensate for electrical noise in the CCD, uploading the relevant lamp calibration file, and obtaining the <span class="math notranslate nohighlight">\(\mu J/count\)</span> pixel calibration file.</p>
-<p><img alt="92b8a4c6d1834a6cb32b2e563bab4b9b" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
+<p><img alt="8434c40fa8044ffbab2f22bc189d520c" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
 <p>The calibration output looks like this.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -1335,6 +1335,7 @@ Now block all light and hit enter to obtain dark counts:
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="07_project_notes.html">Project notes</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07b_prereceptoral_filtering.html">Prereceptoral filtering</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
@@ -1354,7 +1355,7 @@ Now block all light and hit enter to obtain dark counts:
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="07_project_notes.html">Project notes</a><ul>
       <li>Previous: <a href="07_project_notes.html" title="previous chapter">Project notes</a></li>
-      <li>Next: <a href="10_funding.html" title="next chapter">Funding</a></li>
+      <li>Next: <a href="07b_prereceptoral_filtering.html" title="next chapter">Prereceptoral filtering</a></li>
   </ul></li>
   </ul></li>
 </ul>
