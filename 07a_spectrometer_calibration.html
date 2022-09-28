@@ -19,7 +19,6 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Prereceptoral filtering" href="07b_prereceptoral_filtering.html" />
     <link rel="prev" title="Project notes" href="07_project_notes.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -665,7 +664,7 @@ Name: Counts, Length: 2048, dtype: float64
 </ul>
 <p>The JAZ stores wavelength coefficients from when it was last calibrated, but wavelength calibrations are liable to drift over time due to various factors (e.g., mechanical shock, environmental conditions).</p>
 <p>The ground truth for wavelength calibration is dervied from sampling a light source that produces <a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line">spectral lines</a>, so we borrowed a <a class="reference external" href="http://www.lamptech.co.uk/Spec%20Sheets/D%20SP%20Philips%20LL%20Ar.htm">Philips argon lamp</a> from our local physics department.</p>
-<p><img alt="2d1df37486cc4226999bf5e336355b66" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
+<p><img alt="b280d43a8bef4ed9bf7f62b83c701c78" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
 <p>Measurement of the lamp produced a spectrum with lots of lines. I consulted the <a class="reference external" href="https://physics.nist.gov/PhysRefData/ASD/lines_form.html">NIST atomic spectra database</a> to find the known positions of the lines.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -824,7 +823,7 @@ I_p = (S_p - D_p) * C_p / (T * A * dL_p)
 <p>Our NIST-traceable HL-2000-CAL light source is suitable for absolute irradiance calculation. It has a tungsten-halogen bulb with a color temperature of 3100 kelvin, and it came with calibration files expressing its known power output at certain wavelengths in <span class="math notranslate nohighlight">\(\mu W/cm^2/nm\)</span>, when measured with either a fibre optic probe or cosine corrector (the sampling optic affects the measured power).</p>
 <p>It is relatively easy to perform an absolute irradiance calibration with the <a class="reference external" href="https://www.oceaninsight.com/products/software/acquisition-and-analysis/oceanview/">Ocean View software</a>, which is available for a 30-day free trial.</p>
 <p>Turn the light source on and wait for it to reach thermal equilibrium (~15 mins) and then select the <em>Absolute Irradiance Calibration</em> option. The software guides you through the process of taking a reference measurement, a dark measurement to compensate for electrical noise in the CCD, uploading the relevant lamp calibration file, and obtaining the <span class="math notranslate nohighlight">\(\mu J/count\)</span> pixel calibration file.</p>
-<p><img alt="8434c40fa8044ffbab2f22bc189d520c" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
+<p><img alt="caf98231987c4211a9ac331098da5dea" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
 <p>The calibration output looks like this.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -1201,99 +1200,6 @@ Now block all light and hit enter to obtain dark counts:
 <img alt="_images/07a_spectrometer_calibration_35_1.png" src="_images/07a_spectrometer_calibration_35_1.png" />
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[109]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">new_irrad</span> <span class="o">*</span> <span class="n">vl</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mi">683</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[109]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-18007.45179803614
-</pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">this_calibration_spectrum</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;[uW/cm2/nm]&#39;</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">this_calibration_spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;AxesSubplot:xlabel=&#39;Wavelength&#39;&gt;
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/07a_spectrometer_calibration_38_1.png" src="_images/07a_spectrometer_calibration_38_1.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
-
-<span class="n">viswls</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">new</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">this_calibration_spectrum</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">this_calibration_spectrum</span><span class="p">)(</span><span class="n">viswls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">viswls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;wavelength&#39;</span>
-<span class="n">new</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;[uW/cm2/nm]&#39;</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;calibrated_reference_sample.csv&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
 </section>
 </section>
 
@@ -1335,7 +1241,6 @@ Now block all light and hit enter to obtain dark counts:
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="07_project_notes.html">Project notes</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Spectrometer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="07b_prereceptoral_filtering.html">Prereceptoral filtering</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
@@ -1355,7 +1260,6 @@ Now block all light and hit enter to obtain dark counts:
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="07_project_notes.html">Project notes</a><ul>
       <li>Previous: <a href="07_project_notes.html" title="previous chapter">Project notes</a></li>
-      <li>Next: <a href="07b_prereceptoral_filtering.html" title="next chapter">Prereceptoral filtering</a></li>
   </ul></li>
   </ul></li>
 </ul>

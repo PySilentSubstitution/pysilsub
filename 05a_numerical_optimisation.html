@@ -593,66 +593,31 @@ basinhopping step 10: f -8.67393 trial_f -8.67393 accepted 1  lowest_f -9.38603
 <h2>Using an external optimiser<a class="headerlink" href="#Using-an-external-optimiser" title="Permalink to this heading">¶</a></h2>
 <p>For example, ipopt is a fast nonlinear optimizer.</p>
 <p><em>‘Ipopt (Interior Point OPTimizer, pronounced eye-pea-Opt) is a software package for large-scale nonlinear optimization. cyipopt is a python wrapper around Ipopt. It enables using Ipopt from the comfort of the great Python scripting language. Ipopt is available from the COIN-OR initiative, under the Eclipse Public License (EPL).’</em></p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cyipopt</span> <span class="kn">import</span> <span class="n">minimize_ipopt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># from cyipopt import minimize_ipopt</span>
 
-<span class="c1"># Define problem</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
+<span class="c1"># # Define problem</span>
+<span class="c1"># ssp.ignore = [&#39;R&#39;]</span>
+<span class="c1"># ssp.modulate = [&#39;I&#39;]</span>
+<span class="c1"># ssp.minimize = [&#39;S&#39;, &#39;M&#39;, &#39;L&#39;]</span>
+<span class="c1"># ssp.background = [.5] * ssp.nprimaries</span>
+<span class="c1"># ssp.target_contrast = None</span>
+<span class="c1"># ssp.print_problem()</span>
 
-<span class="c1"># Set up optimisation</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">minimize_ipopt</span><span class="p">(</span>
-    <span class="n">fun</span><span class="o">=</span><span class="n">ssp</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span>
-    <span class="n">x0</span><span class="o">=</span><span class="n">ssp</span><span class="o">.</span><span class="n">initial_guess_x0</span><span class="p">(),</span>
-    <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="n">ss</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span>
-    <span class="n">constraints</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>
-    <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
-    <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="sa">b</span><span class="s2">&quot;print_level&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;constr_viol_tol&quot;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">},</span>
-<span class="p">)</span>
+<span class="c1"># # Set up optimisation</span>
+<span class="c1"># result = minimize_ipopt(</span>
+<span class="c1">#     fun=ssp.objective_function,</span>
+<span class="c1">#     x0=ssp.initial_guess_x0(),</span>
+<span class="c1">#     args=(),</span>
+<span class="c1">#     bounds=ss.bounds,</span>
+<span class="c1">#     constraints=constraints,</span>
+<span class="c1">#     tol=1e-5,</span>
+<span class="c1">#     options={b&quot;print_level&quot;: 5, b&quot;constr_viol_tol&quot;: 1e-5},</span>
+<span class="c1"># )</span>
 <br/></pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ImportError</span>                               Traceback (most recent call last)
-<span class="ansi-green-fg">/var/folders/c9/7yddvl1n2ss863cgfngj0wpm0000gp/T/ipykernel_34993/51457726.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">from</span> cyipopt <span class="ansi-green-fg">import</span> minimize_ipopt
-<span class="ansi-green-intense-fg ansi-bold">      2</span>
-<span class="ansi-green-intense-fg ansi-bold">      3</span> <span class="ansi-red-fg"># Define problem</span>
-<span class="ansi-green-intense-fg ansi-bold">      4</span> ssp<span class="ansi-blue-fg">.</span>ignore <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;R&#39;</span><span class="ansi-blue-fg">]</span>
-<span class="ansi-green-intense-fg ansi-bold">      5</span> ssp<span class="ansi-blue-fg">.</span>modulate <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;I&#39;</span><span class="ansi-blue-fg">]</span>
-
-<span class="ansi-red-fg">ImportError</span>: dlopen(/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/cyipopt.cpython-37m-darwin.so, 0x0002): Library not loaded: &#39;@rpath/libipopt.1.dylib&#39;
-  Referenced from: &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/cyipopt.cpython-37m-darwin.so&#39;
-  Reason: tried: &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/../../libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/../../libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/bin/../lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib&#39; (no such file), &#39;/Users/jtm545/opt/anaconda3/envs/silsub/bin/../lib/libipopt.1.dylib&#39; (no such file), &#39;/usr/local/lib/libipopt.1.dylib&#39; (no such file), &#39;/usr/lib/libipopt.1.dylib&#39; (no such file)
-</pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
 </div>
 </div>
 </section>

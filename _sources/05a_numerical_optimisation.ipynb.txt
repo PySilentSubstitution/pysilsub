@@ -399,60 +399,32 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 2,
    "id": "416066a9-9c09-42e3-9164-dcde67700c5f",
    "metadata": {},
-   "outputs": [
-    {
-     "ename": "ImportError",
-     "evalue": "dlopen(/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/cyipopt.cpython-37m-darwin.so, 0x0002): Library not loaded: '@rpath/libipopt.1.dylib'\n  Referenced from: '/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/cyipopt.cpython-37m-darwin.so'\n  Reason: tried: '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/../../libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/../../libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/bin/../lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/bin/../lib/libipopt.1.dylib' (no such file), '/usr/local/lib/libipopt.1.dylib' (no such file), '/usr/lib/libipopt.1.dylib' (no such file)",
-     "output_type": "error",
-     "traceback": [
-      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
-      "\u001b[0;31mImportError\u001b[0m                               Traceback (most recent call last)",
-      "\u001b[0;32m/var/folders/c9/7yddvl1n2ss863cgfngj0wpm0000gp/T/ipykernel_34993/51457726.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0;32mfrom\u001b[0m \u001b[0mcyipopt\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mminimize_ipopt\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      2\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0;31m# Define problem\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0mssp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mignore\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m[\u001b[0m\u001b[0;34m'R'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0mssp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmodulate\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m[\u001b[0m\u001b[0;34m'I'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-      "\u001b[0;31mImportError\u001b[0m: dlopen(/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/cyipopt.cpython-37m-darwin.so, 0x0002): Library not loaded: '@rpath/libipopt.1.dylib'\n  Referenced from: '/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/cyipopt.cpython-37m-darwin.so'\n  Reason: tried: '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/../../libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/python3.7/site-packages/../../libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/bin/../lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/lib/libipopt.1.dylib' (no such file), '/Users/jtm545/opt/anaconda3/envs/silsub/bin/../lib/libipopt.1.dylib' (no such file), '/usr/local/lib/libipopt.1.dylib' (no such file), '/usr/lib/libipopt.1.dylib' (no such file)"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
-    "from cyipopt import minimize_ipopt\n",
+    "# from cyipopt import minimize_ipopt\n",
     "\n",
-    "# Define problem\n",
-    "ssp.ignore = ['R']\n",
-    "ssp.modulate = ['I']\n",
-    "ssp.minimize = ['S', 'M', 'L']\n",
-    "ssp.background = [.5] * ssp.nprimaries\n",
-    "ssp.target_contrast = None\n",
-    "ssp.print_problem()\n",
+    "# # Define problem\n",
+    "# ssp.ignore = ['R']\n",
+    "# ssp.modulate = ['I']\n",
+    "# ssp.minimize = ['S', 'M', 'L']\n",
+    "# ssp.background = [.5] * ssp.nprimaries\n",
+    "# ssp.target_contrast = None\n",
+    "# ssp.print_problem()\n",
     "\n",
-    "# Set up optimisation\n",
-    "result = minimize_ipopt(\n",
-    "    fun=ssp.objective_function,\n",
-    "    x0=ssp.initial_guess_x0(),\n",
-    "    args=(),\n",
-    "    bounds=ss.bounds,\n",
-    "    constraints=constraints,\n",
-    "    tol=1e-5,\n",
-    "    options={b\"print_level\": 5, b\"constr_viol_tol\": 1e-5},\n",
-    ")\n"
+    "# # Set up optimisation\n",
+    "# result = minimize_ipopt(\n",
+    "#     fun=ssp.objective_function,\n",
+    "#     x0=ssp.initial_guess_x0(),\n",
+    "#     args=(),\n",
+    "#     bounds=ss.bounds,\n",
+    "#     constraints=constraints,\n",
+    "#     tol=1e-5,\n",
+    "#     options={b\"print_level\": 5, b\"constr_viol_tol\": 1e-5},\n",
+    "# )\n"
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 5,
-   "id": "ca16cada-c013-432d-91a5-a39b73d440cd",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "082304af-5770-4082-89a2-313471dadf18",
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {
@@ -471,7 +443,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.7.13"
+   "version": "3.10.4"
   },
   "vscode": {
    "interpreter": {

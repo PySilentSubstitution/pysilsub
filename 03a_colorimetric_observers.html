@@ -305,19 +305,19 @@ w = \int\limits_{\lambda_1}^{\lambda_2}E(\lambda)V(\lambda)d\lambda
 w = \sum\limits_{380}^{780}E(\lambda)V(\lambda)\Delta\lambda
 \end{equation}</span></p>
 <img alt="aopic irradiance" src="_images/alphaopic_irradiance.svg" /><p>The International Commission on Illumination (CIE) define <a class="reference external" href="https://cie.co.at/publications/colorimetric-observers">average colorimetric observer models</a> (e.g., CIE 1931 Standard Colorimetric Observer) with estimates of the photoreceptor spectral sensitivities for a given age and field size. The estimates are based on decades of research involving predominantly psychophysical methods but also techniques such as microelectrode recording and microspectrophotometry of photoreceptors.</p>
-<p><em>PySilSub</em> uses an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> class to account for observer-related specifics. At present this is just a sensible placeholder for the photoreceptor action spectra but in the future it may be extended to better account for <a class="reference internal" href="07b_prereceptoral_filtering.html"><span class="doc">inter-observer differences in ocular physiology</span></a>.</p>
+<p><em>PySilSub</em> uses an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> class to account for observer-related specifics. At present this is just a sensible placeholder for the photoreceptor action spectra but in the future it may be extended to better account for <a class="reference external" href="07b_prereceptoral_filtering.ipynb">inter-observer differences in ocular physiology</a>.</p>
 <section id="pysilsub.observers.StandardColorimetricObserver">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers.StandardColorimetricObserver</span></code><a class="headerlink" href="#pysilsub.observers.StandardColorimetricObserver" title="Permalink to this heading">¶</a></h2>
 <p>The standard observer model for a 32-year-old observer and 10-degree field size. Default action spectra are normalised in the radiometric system. Data obtained from <a class="reference external" href="http://www.cvrl.org/database/text/intros/introod.htm">www.cvrl.org</a>.</p>
 <p>Note that different values apply for the photon system and this requires a conversion.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">observers</span>
 
 <span class="n">observer</span> <span class="o">=</span> <span class="n">observers</span><span class="o">.</span><span class="n">StandardColorimetricObserver</span><span class="p">()</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Conversion for photon system</span>
 <span class="n">observer</span><span class="o">.</span><span class="n">action_spectra</span> <span class="o">=</span> <span class="p">(</span>
@@ -346,18 +346,18 @@ w = \sum\limits_{380}^{780}E(\lambda)V(\lambda)\Delta\lambda
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers.IndividualColorimetricObserver</span></code><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver" title="Permalink to this heading">¶</a></h2>
 <p>EXPERIMENTAL: This observer class allows for the spectral sensitivities to be adjusted for the effects of age (20-80 years) and field size (1° - 10°) in accordance with <a class="reference external" href="https://cie.co.at/publications/fundamental-chromaticity-diagram-physiological-axes-part-1">CIE 170-1:2006</a>. Currently only LMS are adjusted but it will also be possible to build rod and melanopsin fundamentals that account for age and field size.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[77]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">standard_observer</span> <span class="o">=</span> <span class="n">observers</span><span class="o">.</span><span class="n">StandardColorimetricObserver</span><span class="p">()</span>
 <span class="n">individual_observer</span> <span class="o">=</span> <span class="n">observers</span><span class="o">.</span><span class="n">IndividualColorimetricObserver</span><span class="p">(</span><span class="n">age</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">field_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">ax</span> <span class="o">=</span> <span class="n">standard_observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">standard_observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">individual_observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">twinax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
 <span class="n">twinax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Standard observer&#39;</span><span class="p">)</span>
-<span class="n">twinax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Individual observer (32 years, 2$\degree$ field size)&#39;</span><span class="p">)</span>
+<span class="n">twinax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Individual observer (60 years, 2$\degree$ field size)&#39;</span><span class="p">)</span>
 <span class="n">twinax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
 <span class="n">twinax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">);</span>
 </pre></div>
@@ -368,6 +368,14 @@ w = \sum\limits_{380}^{780}E(\lambda)V(\lambda)\Delta\lambda
 </div>
 <div class="output_area docutils container">
 <img alt="_images/03a_colorimetric_observers_4_0.png" src="_images/03a_colorimetric_observers_4_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
 </div>
 </div>
 </section>
