@@ -63,7 +63,7 @@ old, field size of 10 degrees).</p>
 <dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.observers.</span></span><span class="sig-name descname"><span class="pre">IndividualColorimetricObserver</span></span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Individual colorimetric observer model.</p>
-<p>Action spectra for S, M and L cones are adjusted for age and field size.</p>
+<p>Action spectra for sc, mc and lc cones are adjusted for age and field size.</p>
 <p>See Asano et al. and CIE report for further details.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver.__init__">
@@ -587,9 +587,9 @@ problem and then use the solver methods to find a solution:</p>
 <span class="c1"># contrast while ignoring rods and silencing M-cones, L-cones</span>
 <span class="c1"># and melanopsin.</span>
 <span class="n">problem</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_York&#39;</span><span class="p">)</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">]</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">nprimaries</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.2</span>
 <span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">()</span>
@@ -601,9 +601,9 @@ problem and then use the solver methods to find a solution:</p>
 <span class="c1"># melanopsin contrast while ignoring rods and silencing the</span>
 <span class="c1"># cones.</span>
 <span class="n">problem</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_York&#39;</span><span class="p">)</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">()</span>
@@ -731,14 +731,14 @@ is constrained during optimisation:</p>
 <p>Setting the <em>ignore</em> property internally conditions the silent
 substitution problem such that the specified photoreceptor(s) will be
 ignored by the solvers (enabling them to find more contrast). In most
-cases <em>ignore</em> will be set to [‘R’], because it is considered safe
+cases <em>ignore</em> will be set to [‘rh’], because it is considered safe
 practice to ignore rods when stimuli are in the photopic range
 (&gt;300 cd/m2):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>But you could also choose to ignore rods and melanopsin:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>In the event that you don’t want to ignore any photoreceptors, you must
@@ -768,7 +768,7 @@ silent substitution problem.</p>
 <p>Setting the <em>minimize</em> property internally conditions the silent
 substitution problem such that contrast on the target photoreceptors
 will be minimized. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Would minimize contrast on the cone photoreceptors.</p>
@@ -794,11 +794,11 @@ silent substitution problem.</p>
 <p>Setting the <em>modulate</em> property internally conditions the silent
 substitution problem so the solvers know which photoreceptor(s) should
 be targeted with contrast. For example, to modulate melanopsin:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>It is also possible to modulate multiple photoreceptors:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Setting the <em>modulate</em> property is an essential step for conditioning a
@@ -832,9 +832,9 @@ with different contrasts, <em>target_contrast</em> should be a sequence of
 values (if you specify multiple receptors to modulate and pass a float
 then it is assumed <em>target_contrast</em> should be the same for each
 photoreceptor):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -1316,7 +1316,7 @@ functions.</p>
 <dd class="field-odd"><p><strong>binwidth</strong> (<em>int</em>) – Desired width of the wavelength bins in nanometers. The default is <cite>1</cite>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>action spectra</strong> – CIES026 spectral sensitivities for s, m, l, rods, and melanopsin.</p>
+<dd class="field-even"><p><strong>action spectra</strong> – CIES026 spectral sensitivities for sc, mc, lc, rh, and mel.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>

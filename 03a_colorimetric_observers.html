@@ -300,18 +300,20 @@ div.rendered_html tbody tr:hover {
 w = \int\limits_{\lambda_1}^{\lambda_2}E(\lambda)V(\lambda)d\lambda
 \end{equation}</span></p>
 <p>Where <span class="math notranslate nohighlight">\(\lambda_1\)</span> and <span class="math notranslate nohighlight">\(\lambda_2\)</span> define the wavelength range, <span class="math notranslate nohighlight">\(E(\lambda)\)</span> is the measured light spectrum (radiance or irradiance, in photons or watts), <span class="math notranslate nohighlight">\(V(\lambda)\)</span> is the estimated sensitivity function of the photoreceptor in question, and <span class="math notranslate nohighlight">\(d\lambda\)</span> is the size of the wavelength bins.</p>
-<p>When this operation concerns the spectral sensitivity functions of retinal photoreceptors, as in the example below, the resulting measures may be called <a class="reference external" href="https://files.cie.co.at/CIE%20S%20026%20alpha-opic%20Toolbox%20User%20Guide.pdf">a-opic irradiance</a>.</p>
+<p>By <a class="reference external" href="https://cie.co.at/publications/cie-system-metrology-optical-radiation-iprgc-influenced-responses-light-0">CIE S 026/E:2018</a> convention, when this operation concerns the spectral sensitivity functions of retinal photoreceptors, the resulting measures may be called <span class="math notranslate nohighlight">\(\alpha\)</span>-opic irradiance, where <span class="math notranslate nohighlight">\(\alpha\)</span> denotes the opsin-based photopigment of one of the five photoreceptors (cyanolabe, chlorolabe, erythrolabe, rhodopsin and melanopsin). The example below shows how a measured
+spectrum is converted to <span class="math notranslate nohighlight">\(\alpha\)</span>-opic irradiance.</p>
 <p><span class="math">\begin{equation}
-w = \sum\limits_{380}^{780}E(\lambda)V(\lambda)\Delta\lambda
+w = \sum\limits_{380}^{780}E(\lambda)S_\alpha(\lambda)\Delta\lambda
 \end{equation}</span></p>
-<img alt="aopic irradiance" src="_images/alphaopic_irradiance.svg" /><p>The International Commission on Illumination (CIE) define <a class="reference external" href="https://cie.co.at/publications/colorimetric-observers">average colorimetric observer models</a> (e.g., CIE 1931 Standard Colorimetric Observer) with estimates of the photoreceptor spectral sensitivities for a given age and field size. The estimates are based on decades of research involving predominantly psychophysical methods but also techniques such as microelectrode recording and microspectrophotometry of photoreceptors.</p>
-<p><em>PySilSub</em> uses an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> class to account for observer-related specifics. At present this is just a sensible placeholder for the photoreceptor action spectra but in the future it may be extended to better account for <a class="reference external" href="07b_prereceptoral_filtering.ipynb">inter-observer differences in ocular physiology</a>.</p>
+<img alt="aopic irradiance" src="_images/alphaopic_irradiance.svg" /><p>The International Commission on Illumination (CIE) define <a class="reference external" href="https://cie.co.at/publications/colorimetric-observers">average colorimetric observer models</a> (e.g., CIE 1931 Standard Colorimetric Observer, CIE 1964 Standard Colorimetric Observer) with estimates of the photoreceptor spectral sensitivities for a given age and field size. The estimates are based on decades of research involving predominantly psychophysical methods but also techniques such as microelectrode recording and
+microspectrophotometry of photoreceptors. The CIE 1964 standard colorimetric observer assumes an age and field size of 32 years and 10°, and is suitable for most situations.</p>
+<p>However, it is sometimes desirable to address individual differences in ocular physiology by adjusting the spectral sensitivity functions for age and field size. To support this, <em>PySilSub</em> uses an <code class="docutils literal notranslate"><span class="pre">Observer</span></code> class, which at present is just a placeholder for the photoreceptor action spectra, but which may be extended to better account for <a class="reference external" href="07b_prereceptoral_filtering.ipynb">inter-observer differences in ocular physiology</a>.</p>
 <section id="pysilsub.observers.StandardColorimetricObserver">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers.StandardColorimetricObserver</span></code><a class="headerlink" href="#pysilsub.observers.StandardColorimetricObserver" title="Permalink to this heading">¶</a></h2>
-<p>The standard observer model for a 32-year-old observer and 10-degree field size. Default action spectra are normalised in the radiometric system. Data obtained from <a class="reference external" href="http://www.cvrl.org/database/text/intros/introod.htm">www.cvrl.org</a>.</p>
-<p>Note that different values apply for the photon system and this requires a conversion.</p>
+<p>The standard observer model for a 32-year-old observer and 10° field size. Default action spectra (obtained from <a class="reference external" href="http://www.cvrl.org/database/text/intros/introod.htm">www.cvrl.org</a>) are normalised in the radiometric system.</p>
+<p><strong>Note:</strong> For quantities expressed in the spectral photon system, a wavelength-dependent conversion and renormalisation is required to generate applicable action spectra.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">observers</span>
@@ -322,7 +324,7 @@ w = \sum\limits_{380}^{780}E(\lambda)V(\lambda)\Delta\lambda
 <span class="c1"># Conversion for photon system</span>
 <span class="n">observer</span><span class="o">.</span><span class="n">action_spectra</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">observer</span><span class="o">.</span><span class="n">action_spectra</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>  <span class="c1"># Multiply by wavelength</span>
-        <span class="k">lambda</span> <span class="n">col</span><span class="p">:</span> <span class="n">col</span> <span class="o">*</span> <span class="n">col</span><span class="o">.</span><span class="n">index</span> <span class="o">*</span> <span class="p">(</span><span class="mf">5.05e15</span><span class="p">))</span>
+        <span class="k">lambda</span> <span class="n">col</span><span class="p">:</span> <span class="n">col</span> <span class="o">*</span> <span class="n">col</span><span class="o">.</span><span class="n">index</span> <span class="o">*</span> <span class="mf">5.05e15</span><span class="p">)</span>  <span class="c1"># E = hf</span>
     <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">col</span><span class="p">:</span> <span class="n">col</span> <span class="o">/</span> <span class="n">col</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
 <span class="p">)</span>
 <span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -346,7 +348,7 @@ w = \sum\limits_{380}^{780}E(\lambda)V(\lambda)\Delta\lambda
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers.IndividualColorimetricObserver</span></code><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver" title="Permalink to this heading">¶</a></h2>
 <p>EXPERIMENTAL: This observer class allows for the spectral sensitivities to be adjusted for the effects of age (20-80 years) and field size (1° - 10°) in accordance with <a class="reference external" href="https://cie.co.at/publications/fundamental-chromaticity-diagram-physiological-axes-part-1">CIE 170-1:2006</a>. Currently only LMS are adjusted but it will also be possible to build rod and melanopsin fundamentals that account for age and field size.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">standard_observer</span> <span class="o">=</span> <span class="n">observers</span><span class="o">.</span><span class="n">StandardColorimetricObserver</span><span class="p">()</span>
@@ -356,7 +358,7 @@ w = \sum\limits_{380}^{780}E(\lambda)V(\lambda)\Delta\lambda
 <span class="n">individual_observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">twinax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
-<span class="n">twinax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Standard observer&#39;</span><span class="p">)</span>
+<span class="n">twinax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Standard observer (32 years, 10$\degree$ field size)&#39;</span><span class="p">)</span>
 <span class="n">twinax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Individual observer (60 years, 2$\degree$ field size)&#39;</span><span class="p">)</span>
 <span class="n">twinax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
 <span class="n">twinax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">);</span>
@@ -368,14 +370,6 @@ w = \sum\limits_{380}^{780}E(\lambda)V(\lambda)\Delta\lambda
 </div>
 <div class="output_area docutils container">
 <img alt="_images/03a_colorimetric_observers_4_0.png" src="_images/03a_colorimetric_observers_4_0.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
 </div>
 </div>
 </section>
