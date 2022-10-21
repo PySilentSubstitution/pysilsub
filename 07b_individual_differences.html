@@ -307,7 +307,7 @@ div.rendered_html tbody tr:hover {
 <section id="Lens-pigment-density-and-age">
 <h2>Lens pigment density and age<a class="headerlink" href="#Lens-pigment-density-and-age" title="Permalink to this heading">¶</a></h2>
 <p>The crystalline lens has a yellow pigment that accumulates with age due absorption of UV radiation. This pigment acts as a prereceptoral filter that attenuates blue light.</p>
-<p><img alt="31f323d94f2c4d38b081443b985994a6" class="no-scaled-link" src="_images/lensesAge.jpg" style="width: 200px; height: 200px;" /></p>
+<p><img alt="2472f49657e94db6b8f261c29bdb8484" class="no-scaled-link" src="_images/lensesAge.jpg" style="width: 200px; height: 200px;" /></p>
 <p>Stockman, Sharpe and Fach (1999) report estimates of the lens density function <span class="math notranslate nohighlight">\(D_{ocul}\)</span> of an average 32-year-old observer, assuming a pupil diameter &lt; 3mm.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -434,12 +434,12 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/07b_individual_differences_2_1.png" src="_images/07b_individual_differences_2_1.png" />
 </div>
 </div>
-<p>According to Pokorny, Smith and Lutze (1987), <span class="math notranslate nohighlight">\(D_{ocul}\)</span> can be separated into two components. The first, <span class="math notranslate nohighlight">\(D_{ocul^1}\)</span>, represents a portion that is affected by ageing after 20 years, and the second, <span class="math notranslate nohighlight">\(D_{ocul^2}\)</span> represents a portion that is stable after 20 years.</p>
+<p>According to Pokorny, Smith and Lutze (1987), <span class="math notranslate nohighlight">\(D_{ocul}(\lambda)\)</span> can be separated into two components. The first, <span class="math notranslate nohighlight">\(D_{ocul^1}(\lambda)\)</span>, represents a portion that is affected by ageing after 20 years, and the second, <span class="math notranslate nohighlight">\(D_{ocul^2}(\lambda)\)</span> represents a portion that is stable after 20 years.</p>
 <p>The optical density of the lens of an average observer between the ages of 20 and 60 years is given by:</p>
-<p><span class="math notranslate nohighlight">\(D_{ocul} = D_{ocul^1} [1 + 0.02(A-32)] + D_{ocul^2}\)</span></p>
+<p><span class="math notranslate nohighlight">\(D_{ocul}(\lambda) = D_{ocul, 1}(\lambda) [1 + 0.02(A-32)] + D_{ocul, 2}(\lambda)\)</span></p>
 <p>For an average observer over the age of 60 the equation is:</p>
-<p><span class="math notranslate nohighlight">\(D_{ocul} = D_{ocul^1} [1.56 + 0.0667(A-60)] + D_{ocul^2}\)</span></p>
-<p>Both where <span class="math notranslate nohighlight">\(A\)</span> is the observer age and <span class="math notranslate nohighlight">\(D_{ocul^2}\)</span> are the Stockman and Sharpe (2000) lens density data scaled to represent a 32-year-old observer (the average age of the Stiles and Burch observers) with a small pupil (&lt; 3 mm).</p>
+<p><span class="math notranslate nohighlight">\(D_{ocul}(\lambda) = D_{ocul, 1}(\lambda) [1.56 + 0.0667(A-60)] + D_{ocul, 2}(\lambda)\)</span></p>
+<p>Both where <span class="math notranslate nohighlight">\(A\)</span> is the observer age and <span class="math notranslate nohighlight">\(D_{ocul^2}(\lambda)\)</span> are the Stockman and Sharpe (2000) lens density data scaled to represent a 32-year-old observer (the average age of the Stiles and Burch observers) with a small pupil (&lt; 3 mm).</p>
 <p>Note: Lens density for a completely open pupil (&gt; 7 mm) can be estimated by multiplying the data by 0.86207.</p>
 <p>We can estimate lens optical density, <span class="math notranslate nohighlight">\(OD\)</span>, across the ages and convert to transmittance, <span class="math notranslate nohighlight">\(T\)</span>, for an intuitive visual.</p>
 <p><span class="math notranslate nohighlight">\(T = 10^{-OD} \times 100\)</span></p>
@@ -493,7 +493,7 @@ div.rendered_html tbody tr:hover {
 <h2>Macular pigment density and field size<a class="headerlink" href="#Macular-pigment-density-and-field-size" title="Permalink to this heading">¶</a></h2>
 <p>The macular lutea of the retina is pigmented yellow by a concentration of xanthophyll carotenoids (lutein, xeaxanthin, meso-xeaxanthin) which act as a blue light filter and may serve to protect foveal photoreceptors from phototoxic blue light radiation. By absorbing short wavelengths, much like the lens pigment, the macular pigment alters spectral sensitivity of the underlying photoreceptors, which means that light and colour perception varies within observers as a function of field size and
 viewing angle, and between observers as a function of macular pigment density and distribution.</p>
-<p><img alt="57b0397624f841c9857a9c5e86d364a7" class="no-scaled-link" src="_images/fundus.png" style="width: 200px; height: 200px;" /></p>
+<p><img alt="4312dc975936442d918133755331a8de" class="no-scaled-link" src="_images/fundus.png" style="width: 200px; height: 200px;" /></p>
 <p>Interestingly, the only source of the carotenoids that constitute the macular pigment is from diet, so maybe that’s why people think eating carots improves your eyesight.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:

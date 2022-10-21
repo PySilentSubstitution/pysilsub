@@ -295,7 +295,7 @@ div.rendered_html tbody tr:hover {
 </style>
 <section id="Spectrometer">
 <h1>Spectrometer<a class="headerlink" href="#Spectrometer" title="Permalink to this heading">¶</a></h1>
-<p>A spectrometer can be used to measure the spectral response of a system. A probe is pointed at the light source and the sample feeds through to the internal optical bench, which typically comprises routing mirrors, a prism or diffraction grating to separate the sample into its constituent wavelength coponents, and a sensor.</p>
+<p>Spectrometers may be used to measure the spectral response of a system. A probe is pointed at the light source and the sample feeds through to the internal optical bench, which typically comprises routing mirrors, a prism or diffraction grating to separate the sample into its constituent wavelength components, and a sensor.</p>
 <p><img alt="OceanOptics JAZ spectrometer" class="no-scaled-link" src="_images/jaz.png" style="width: 300px;" /></p>
 <p>Our JAZ spectrometer has a 16-bit CCD sensor with 2048 pixels and reports wavelengths from 330-1030 nm. The raw spectrum is reported in <em>counts</em>, a unit of measurement relating to the number of photons hitting the sensor during the integration period.</p>
 <section id="Obtaining-measurements">
@@ -306,7 +306,7 @@ div.rendered_html tbody tr:hover {
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">seabreeze</span></code></p>
 <p>Here’s a nice clean way to obtain and visualise a sample using seabreeze.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -361,7 +361,7 @@ div.rendered_html tbody tr:hover {
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pyplr</span></code></p>
 <p>It works in the same way and has all the same functionality, but there is a new <code class="docutils literal notranslate"><span class="pre">.sample(...)</span></code> method with some extra options.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyplr</span> <span class="kn">import</span> <span class="n">oceanops</span>
@@ -378,7 +378,7 @@ div.rendered_html tbody tr:hover {
         <span class="n">integration_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Optimize integration time</span>
         <span class="n">scans_to_average</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># Average of three scans</span>
         <span class="n">boxcar_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># Boxcar smoothing</span>
-        <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;daylight_reflected_off_a_wall&#39;</span>
+        <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;daylight_spectrum&#39;</span>
     <span class="p">)</span>
 
     <span class="c1"># Visualise</span>
@@ -401,11 +401,11 @@ div.rendered_html tbody tr:hover {
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.001 seconds
-        &gt; Maximum reported value: 196
-        &gt; Integration time: 0.283864 seconds
-        &gt; Maximum reported value: 27858
-        &gt; Integration time: 0.567596 seconds
-        &gt; Maximum reported value: 54664
+        &gt; Maximum reported value: 232
+        &gt; Integration time: 0.239306 seconds
+        &gt; Maximum reported value: 34789
+        &gt; Integration time: 0.383174 seconds
+        &gt; Maximum reported value: 53368
 &gt; Computing average of 3 scans
 &gt; Applying boxcar average (boxcar_width = 3)
 
@@ -421,7 +421,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Instead of returning <code class="docutils literal notranslate"><span class="pre">np.array</span></code>, the <code class="docutils literal notranslate"><span class="pre">.sample(...)</span></code> method returns <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code> and a Python dictionary with information about the sample.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span>
@@ -429,28 +429,28 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Wavelength
-339.117800    -95.880108
-339.496622    -95.880108
-339.875414    -95.880108
-340.254178    -95.880108
-340.632913    -72.797478
+339.117800    -53.088918
+339.496622    -53.088918
+339.875414    -53.088918
+340.254178    -53.088918
+340.632913    -40.432069
                  ...
-1027.022982    45.829739
-1027.304901    49.134864
-1027.586755    49.134864
-1027.868542    49.134864
-1028.150263    49.134864
+1027.022982    31.690945
+1027.304901    33.462733
+1027.586755    33.462733
+1027.868542    33.462733
+1028.150263    33.462733
 Name: Counts, Length: 2048, dtype: float64
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">info</span>
@@ -458,29 +458,29 @@ Name: Counts, Length: 2048, dtype: float64
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {&#39;board_temp&#39;: &#39;NA&#39;,
  &#39;micro_temp&#39;: &#39;NA&#39;,
- &#39;integration_time&#39;: 578402,
+ &#39;integration_time&#39;: 399950,
  &#39;scans_averaged&#39;: 3,
  &#39;boxcar_width&#39;: 3,
- &#39;max_reported&#39;: 54180.385884315416,
+ &#39;max_reported&#39;: 54440.926608466776,
  &#39;upper_bound&#39;: 58981.5,
  &#39;lower_bound&#39;: 52428.0,
  &#39;model&#39;: &#39;JAZ&#39;,
  &#39;serial&#39;: &#39;JAZA1505&#39;,
- &#39;obtained&#39;: &#39;2022-09-17 14:36:57.131657&#39;,
- &#39;sample_id&#39;: &#39;daylight_reflected_off_a_wall&#39;}
+ &#39;obtained&#39;: &#39;2022-10-21 16:21:39.521732&#39;,
+ &#39;sample_id&#39;: &#39;daylight_spectrum&#39;}
 </pre></div></div>
 </div>
 <p>Also, if you don’t specify an integration time, it will be adjusted until the maximum reported value is within 80-90% of pixel resolution, where linearity is best (as above).</p>
-<p>Signal-to-noise ratio may also be improved with scan averaging and boxcar smoothing, but be warned! The former increases overall sampling time and the latter comes at the expense of optical resolution and may wash out spectral features if a high value is used. A good rule of thumb is to use low values (e.g., 1-3).</p>
+<p>Signal-to-noise ratio may also be improved with scan averaging and boxcar smoothing, but be warned! The former increases overall sampling time and the latter comes at the expense of optical resolution and may wash out spectral features if a high value is used. A good rule of thumb is to use low values (e.g., 1-3). A better rule of thumb is to save each raw measurement and apply these steps later.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
@@ -538,14 +538,14 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3676
+        &gt; Maximum reported value: 1757
 
 
 &gt; Obtaining sample...
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3758
+        &gt; Maximum reported value: 1724
 &gt; Computing average of 2 scans
 
 
@@ -553,7 +553,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3684
+        &gt; Maximum reported value: 1790
 &gt; Computing average of 5 scans
 
 
@@ -561,7 +561,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3632
+        &gt; Maximum reported value: 1699
 &gt; Computing average of 10 scans
 
 
@@ -569,7 +569,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3565
+        &gt; Maximum reported value: 1691
 &gt; Computing average of 50 scans
 
 
@@ -577,7 +577,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3583
+        &gt; Maximum reported value: 1685
 &gt; Computing average of 100 scans
 
 
@@ -585,14 +585,14 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3557
+        &gt; Maximum reported value: 1718
 
 
 &gt; Obtaining sample...
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3546
+        &gt; Maximum reported value: 1704
 &gt; Applying boxcar average (boxcar_width = 1)
 
 
@@ -600,7 +600,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3537
+        &gt; Maximum reported value: 1697
 &gt; Applying boxcar average (boxcar_width = 2)
 
 
@@ -608,7 +608,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3531
+        &gt; Maximum reported value: 1742
 &gt; Applying boxcar average (boxcar_width = 5)
 
 
@@ -616,7 +616,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3604
+        &gt; Maximum reported value: 1683
 &gt; Applying boxcar average (boxcar_width = 10)
 
 
@@ -624,7 +624,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3545
+        &gt; Maximum reported value: 1713
 &gt; Applying boxcar average (boxcar_width = 50)
 
 
@@ -632,7 +632,7 @@ Name: Counts, Length: 2048, dtype: float64
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.01 seconds
-        &gt; Maximum reported value: 3543
+        &gt; Maximum reported value: 1705
 &gt; Applying boxcar average (boxcar_width = 100)
 
 
@@ -645,7 +645,7 @@ Name: Counts, Length: 2048, dtype: float64
 <img alt="_images/07a_spectrometer_calibration_10_1.png" src="_images/07a_spectrometer_calibration_10_1.png" />
 </div>
 </div>
-<p>I’ve found my seabreeze extension very useful, especially when automating measurements (e.g., when measuring the spectral response of a multiprimary system).</p>
+<p>I like my Seabreeze extension. It’s very useful for automating measurements (e.g., when measuring the spectral response of a multi-primary system).</p>
 </section>
 </section>
 <section id="Wavelength-calibration">
@@ -665,10 +665,10 @@ Name: Counts, Length: 2048, dtype: float64
 </ul>
 <p>The JAZ stores wavelength coefficients from when it was last calibrated, but wavelength calibrations are liable to drift over time due to various factors (e.g., mechanical shock, environmental conditions).</p>
 <p>The ground truth for wavelength calibration is dervied from sampling a light source that produces <a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line">spectral lines</a>, so we borrowed a <a class="reference external" href="http://www.lamptech.co.uk/Spec%20Sheets/D%20SP%20Philips%20LL%20Ar.htm">Philips argon lamp</a> from our local physics department.</p>
-<p><img alt="b280d43a8bef4ed9bf7f62b83c701c78" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
+<p><img alt="0466db7bcede46e5892dbafa9841e60b" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
 <p>Measurement of the lamp produced a spectrum with lots of lines. I consulted the <a class="reference external" href="https://physics.nist.gov/PhysRefData/ASD/lines_form.html">NIST atomic spectra database</a> to find the known positions of the lines.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -676,8 +676,8 @@ Name: Counts, Length: 2048, dtype: float64
 
 
 <span class="c1"># Load sample and spectral lines</span>
-<span class="n">ar_spd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../data/jaz/jaz_Ar_spd.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;wl&#39;</span><span class="p">)</span>
-<span class="n">ar_lines</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../data/jaz/NIST_Ar_1_lines_300_1000.csv&#39;</span><span class="p">)</span>
+<span class="n">ar_spd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../data/jazcal/jaz_Ar_spd.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;wl&#39;</span><span class="p">)</span>
+<span class="n">ar_lines</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../data/jazcal/NIST_Ar_1_lines_300_1000.csv&#39;</span><span class="p">)</span>
 
 <span class="c1"># Plot spd and line positions</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
@@ -698,7 +698,7 @@ Name: Counts, Length: 2048, dtype: float64
 </div>
 <p>Many of the lines were not resolved by the spectrometer, presumably due to undersaturation or pixel resolution limitations, but most tallied up with visible peaks. I used a peak-finding algorithm to try and find the corresponding peaks in the spectrum, based on certain criteria.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
@@ -720,7 +720,7 @@ Name: Counts, Length: 2048, dtype: float64
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -729,7 +729,7 @@ Name: Counts, Length: 2048, dtype: float64
 </div>
 <p>This showed a general pattern of rightward drift of about 1 nm, but the line pairing was not obvious so I zoomed in on a pdf plot and manually paired the detected peaks with the nearest line to the left, if there was one, dropping it otherwise. This led to 44 lines accross the full range of reported wavelengths.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># True line positions for selected peaks</span>
@@ -753,7 +753,7 @@ Name: Counts, Length: 2048, dtype: float64
 </div>
 <p>Now, to calculate the wavelength coefficients and predict the new values.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Third order polynomial</span>
@@ -780,7 +780,7 @@ Name: Counts, Length: 2048, dtype: float64
 <p>These coefficients can be updated in the spectrometer using Ocean Optics software, or the new wavelengths can be applied at a later stage of processing.</p>
 <p>Here’s the visible portion of the original spectrum plotted against the old and new wavelengths. Note that the true lines match better with the peaks when they are plotted against the calibrated wavelengths.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
@@ -824,30 +824,31 @@ I_p = (S_p - D_p) * C_p / (T * A * dL_p)
 <p>Our NIST-traceable HL-2000-CAL light source is suitable for absolute irradiance calculation. It has a tungsten-halogen bulb with a color temperature of 3100 kelvin, and it came with calibration files expressing its known power output at certain wavelengths in <span class="math notranslate nohighlight">\(\mu W/cm^2/nm\)</span>, when measured with either a fibre optic probe or cosine corrector (the sampling optic affects the measured power).</p>
 <p>It is relatively easy to perform an absolute irradiance calibration with the <a class="reference external" href="https://www.oceaninsight.com/products/software/acquisition-and-analysis/oceanview/">Ocean View software</a>, which is available for a 30-day free trial.</p>
 <p>Turn the light source on and wait for it to reach thermal equilibrium (~15 mins) and then select the <em>Absolute Irradiance Calibration</em> option. The software guides you through the process of taking a reference measurement, a dark measurement to compensate for electrical noise in the CCD, uploading the relevant lamp calibration file, and obtaining the <span class="math notranslate nohighlight">\(\mu J/count\)</span> pixel calibration file.</p>
-<p><img alt="caf98231987c4211a9ac331098da5dea" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
+<p><img alt="eb37fe94c4534cacbd3f415262e43de3" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
 <p>The calibration output looks like this.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="c1"># Load the HL-2000-CAL lamp calibration data for fibre optic probe</span>
-<span class="n">lamp_file</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;../../data/jaz/030410313_FIB.LMP&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="c1"># Load the HL-2000-CAL lamp calibration data for cosine corrector</span>
+<span class="n">lamp_file</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;../../data/jazcal/030410313_CC.LMP&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">lamp_file</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Wavelength&#39;</span><span class="p">,</span> <span class="s1">&#39;uJ/cm2&#39;</span><span class="p">]</span>
 <span class="n">lamp_file</span> <span class="o">=</span> <span class="n">lamp_file</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
 
 <span class="c1"># Load the Ocean View calibration output</span>
-<span class="n">ocean_view_cal</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;../../data/jaz/JAZ_OOIIrrad.cal&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
-<span class="n">lamp_preview</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;../../data/jaz/JAZ_LampIntensityPreview.txt&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">ocean_view_cal</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;../../data/jazcal/oceanview_jaz_cc_OOIIrrad.cal&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+<span class="n">lamp_preview</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;../../data/jazcal/oceanview_jaz_cc_LampIntensityPreview.txt&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">lamp_preview</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">lamp_preview</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
 <span class="n">lamp_preview</span> <span class="o">=</span> <span class="n">lamp_preview</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Wavelength&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
 
 <span class="c1"># Visualise</span>
 <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="n">ocean_view_cal</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$\mu J$/count&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;OceanView calibration file&#39;</span><span class="p">)</span>
-<span class="n">lamp_file</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Wavelength&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;uJ/cm2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;HL-2000-CAL&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Known output of light source&#39;</span><span class="p">)</span>
-<span class="n">lamp_preview</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$\mu W$/cm$^2$/nm&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Calibrated sample (OceanView)&#39;</span><span class="p">);</span>
+<span class="n">ocean_view_cal</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$\mu$J/count&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;OceanView calibration file&#39;</span><span class="p">)</span>
+<span class="n">lamp_file</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Wavelength&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;uJ/cm2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Known output of HL-2000-CAL (CC)&#39;</span><span class="p">)</span>
+<span class="n">lamp_preview</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;$\mu$W/cm$^2$/nm&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Calibrated sample (OceanView)&#39;</span><span class="p">);</span>
+
 
 <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">]:</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Pixel wavelength (nm)&#39;</span><span class="p">)</span>
@@ -864,7 +865,7 @@ I_p = (S_p - D_p) * C_p / (T * A * dL_p)
 </div>
 <p>Here’s how to perform the irradiance calibration without using OceanView.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[82]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -873,6 +874,11 @@ I_p = (S_p - D_p) * C_p / (T * A * dL_p)
 
 <span class="kn">from</span> <span class="nn">pyplr.oceanops</span> <span class="kn">import</span> <span class="n">OceanOptics</span>
 
+
+<span class="c1"># Load the HL-2000-CAL lamp calibration data for fibre optic probe</span>
+<span class="n">lamp_file</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;../../data/jazcal/030410313_CC.LMP&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">lamp_file</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Wavelength&#39;</span><span class="p">,</span> <span class="s1">&#39;uJ/cm2&#39;</span><span class="p">]</span>
+<span class="n">lamp_file</span> <span class="o">=</span> <span class="n">lamp_file</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># Connect to JAZ</span>
@@ -908,7 +914,7 @@ I_p = (S_p - D_p) * C_p / (T * A * dL_p)
 
     <span class="c1"># Calculate scaling parameters</span>
     <span class="n">integration_time</span> <span class="o">=</span> <span class="n">reference_info</span><span class="p">[</span><span class="s1">&#39;integration_time&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1e6</span>  <span class="c1"># Microseconds to seconds</span>
-    <span class="n">fibre_diameter</span> <span class="o">=</span> <span class="mi">400</span> <span class="o">/</span> <span class="mf">1e4</span>  <span class="c1"># Microns to cm</span>
+    <span class="n">fibre_diameter</span> <span class="o">=</span> <span class="mi">3900</span> <span class="o">/</span> <span class="mf">1e4</span>  <span class="c1"># Microns to cm</span>
     <span class="n">collection_area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">fibre_diameter</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># cm2</span>
     <span class="n">wavelength_spread</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>  <span class="c1"># How many nanometers each pixel represents</span>
         <span class="p">[(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
@@ -960,11 +966,11 @@ Hit enter to obtain reference measurement:
 &gt; Correcting for dark counts: False
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.001 seconds
-        &gt; Maximum reported value: 7205
-        &gt; Integration time: 0.00773 seconds
-        &gt; Maximum reported value: 43571
-        &gt; Integration time: 0.009883 seconds
-        &gt; Maximum reported value: 55026
+        &gt; Maximum reported value: 3406
+        &gt; Integration time: 0.016354 seconds
+        &gt; Maximum reported value: 29330
+        &gt; Integration time: 0.031061 seconds
+        &gt; Maximum reported value: 53673
 &gt; Computing average of 3 scans
 &gt; Applying boxcar average (boxcar_width = 2)
 
@@ -994,8 +1000,8 @@ Now block all light and hit enter to obtain dark counts:
 &gt; Obtaining sample...
 &gt; Correcting for dark counts: False
 &gt; Correcting for nonlinearity: True
-        &gt; Integration time: 0.010005 seconds
-        &gt; Maximum reported value: 1720
+        &gt; Integration time: 0.032236 seconds
+        &gt; Maximum reported value: 1795
 &gt; Computing average of 3 scans
 &gt; Applying boxcar average (boxcar_width = 2)
 
@@ -1019,7 +1025,7 @@ Now block all light and hit enter to obtain dark counts:
 </div>
 <p>Let’s compare the new calibration with the one from Ocean View and focus on the visible wavelengths.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.inset_locator</span> <span class="kn">import</span> <span class="p">(</span>
@@ -1028,7 +1034,7 @@ Now block all light and hit enter to obtain dark counts:
 <span class="p">)</span>
 
 
-<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">tight_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Plot OceanView calibration</span>
 <span class="n">ocean_view_cal</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;OceanView calibration&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1042,23 +1048,23 @@ Now block all light and hit enter to obtain dark counts:
 
 <span class="k">for</span> <span class="n">axins</span> <span class="ow">in</span> <span class="p">[</span><span class="n">axins1</span><span class="p">,</span> <span class="n">axins2</span><span class="p">]:</span>
     <span class="n">axins</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">380</span><span class="p">,</span> <span class="mi">780</span><span class="p">)</span>
-    <span class="n">axins</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">.002e-8</span><span class="p">,</span> <span class="mf">.02e-8</span><span class="p">)</span>
+    <span class="n">axins</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">.000005</span><span class="p">))</span>
     <span class="n">axins</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
     <span class="n">axins</span><span class="o">.</span><span class="n">minorticks_on</span><span class="p">()</span>
     <span class="n">axins</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">axins</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;both&#39;</span><span class="p">)</span>
 
-
+<span class="n">yaxlims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">.00015</span><span class="p">,</span> <span class="mf">.0001</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">axins</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">],</span> <span class="p">[</span><span class="n">axins1</span><span class="p">,</span> <span class="n">axins2</span><span class="p">]):</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mf">2.5e-8</span><span class="p">,</span> <span class="mf">1.5e-8</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">yaxlims</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$\mu$J/count&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Pixel wavelength&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">indicate_inset_zoom</span><span class="p">(</span>
         <span class="n">axins</span><span class="p">,</span>
         <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
-        <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis_transform</span><span class="p">()</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">transFigure</span>
     <span class="p">)</span>
-<br/></pre></div>
+<br/><br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -1071,7 +1077,7 @@ Now block all light and hit enter to obtain dark counts:
 <p>The insets show, according to each calibration file, the <span class="math notranslate nohighlight">\(\mu J/count\)</span> ratio for all pixels that represent visible wavelengths. It’s the same shape! The slight difference in magnitude could be related to adjustments to the sampling optic between calibrations (i.e., I swapped the fiber at one point to calibrate with the long fiber optic cable). Also, the set screw on the light source was jammed for a while, which stopped the probe being inserted to maximum depth.</p>
 <p>The final test… apply the original formula to the reference measurement using each calibration file.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[86]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># This calibration</span>
@@ -1100,10 +1106,10 @@ Now block all light and hit enter to obtain dark counts:
 
 <span class="n">ov_calibration_spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;OceanView calibration&#39;</span><span class="p">)</span>
 <span class="n">this_calibration_spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;This calibration&#39;</span><span class="p">)</span>
-<span class="n">lamp_file</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Wavelength&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;uJ/cm2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Known output of HL-2000-CAL&#39;</span><span class="p">)</span>
+<span class="n">lamp_file</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Wavelength&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;uJ/cm2&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Known output of HL-2000-CAL (CC)&#39;</span><span class="p">)</span>
 
 <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$\mu W$/cm$^2$/nm&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$\mu$W/cm$^2$/nm&#39;</span><span class="p">)</span>
 <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Calibrated reference spectrum</span><span class="se">\n</span><span class="s1">(HL-2000-CAL)&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
@@ -1124,7 +1130,7 @@ Now block all light and hit enter to obtain dark counts:
 <section id="Putting-it-all-together">
 <h2>Putting it all together<a class="headerlink" href="#Putting-it-all-together" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[92]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
@@ -1153,20 +1159,21 @@ Now block all light and hit enter to obtain dark counts:
 
     <span class="c1"># Visualise</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">calibrated_wls</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">calibrated_wls</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Daylight spectrum&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength (nm)&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">65553</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 
     <span class="n">twinx</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
-    <span class="n">twinx</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">calibrated_wls</span><span class="p">,</span> <span class="n">irrad_spd</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;darkblue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Irradiance&#39;</span><span class="p">)</span>
+    <span class="n">twinx</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">calibrated_wls</span><span class="p">,</span> <span class="n">irrad_spd</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Irradiance&#39;</span><span class="p">)</span>
     <span class="n">twinx</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Absolute spectral irradiance</span><span class="se">\n</span><span class="s1"> ($\mu$W/cm$^2$/nm)&#39;</span><span class="p">)</span>
-    <span class="n">twinx</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.4</span><span class="p">))</span>
-    <span class="n">twinx</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;darkblue&#39;</span><span class="p">)</span>
-    <span class="n">twinx</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;darkblue&#39;</span><span class="p">)</span>
+    <span class="n">twinx</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">5.</span><span class="p">))</span>
+    <span class="n">twinx</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;tab:red&#39;</span><span class="p">)</span>
+    <span class="n">twinx</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">)</span>
 
 <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt; Measurement terminated  by user&#39;</span><span class="p">)</span>
@@ -1185,9 +1192,11 @@ Now block all light and hit enter to obtain dark counts:
 &gt; Correcting for dark counts: True
 &gt; Correcting for nonlinearity: True
         &gt; Integration time: 0.001 seconds
-        &gt; Maximum reported value: 6529
-        &gt; Integration time: 0.00853 seconds
-        &gt; Maximum reported value: 54151
+        &gt; Maximum reported value: 512
+        &gt; Integration time: 0.108777 seconds
+        &gt; Maximum reported value: 42813
+        &gt; Integration time: 0.141532 seconds
+        &gt; Maximum reported value: 55145
 &gt; Computing average of 3 scans
 &gt; Applying boxcar average (boxcar_width = 3)
 

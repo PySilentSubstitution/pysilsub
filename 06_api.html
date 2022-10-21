@@ -78,6 +78,56 @@ old, field size of 10 degrees).</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver.adjust_lms">
+<span class="sig-name descname"><span class="pre">adjust_lms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver.adjust_lms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust LMS spectral sensetivities for age and field size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>age</strong> (<em>int</em>) – Observer age.</p></li>
+<li><p><strong>field_size</strong> (<em>int</em>) – Field size of the stimulus.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>lms_bar_norm</strong> – Adjusted LMS spectral sensitivites.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver.adjust_melanopsin">
+<span class="sig-name descname"><span class="pre">adjust_melanopsin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver.adjust_melanopsin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust melanopsin action spectrum for observer age.</p>
+<p>After CIE:, we use a different lens density spectrum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_mel</strong> – Melanopic action spectrum adjusted for age.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver.adjust_rhodopsin">
+<span class="sig-name descname"><span class="pre">adjust_rhodopsin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver.adjust_rhodopsin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust rhodopsin action spectrum for observer age.</p>
+<p>After CIE:, we use a different lens density spectrum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_rod</strong> – Rhodopic action spectrum adjusted for age.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1308,15 +1358,36 @@ functions.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.CIE.get_CIES026">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIES026</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIES026" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the CIES026 photoreceptor action spectra.</p>
+<dt class="sig sig-object py" id="pysilsub.CIE.get_CIES026_action_spectra">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIES026_action_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIES026_action_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get CIES026 photoreceptor action spectra.</p>
+<p>This table contains data for the photoreceptor action spectra of a
+standard 32-year-old observer and a 10-degree field size, for wavelengths
+from 380 nm to 780 nm. Values are zero where data are presently unavailable
+at those wavelengths. The rhodopic action spectrum values are reproduced
+from ISO 23539/CIE S 010 without modifications. The S-cone opic action
+spectrum is provided for 390 nm to 615 nm, and the M- and L-cone-opic
+action spectra are provided for 390 nm to 780 nm, all reproduced from
+(CIE, 2006). By definition, the S-, M- and L-cone-opic action spectra take
+a maximum value of exactly 1 at 447.9 nm, 541.3 nm and 568.6 nm
+respectively. The melanopic action spectrum is reproduced from the
+underlying model in the Toolbox from (CIE, 2015), interpolated (cubic
+spline) from 5 nm to 1 nm resolution, and rounded to the nearest six
+significant figures for consistency with the cone fundamentals in (CIE,
+2006).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Further information on the CIES026 standard is available
+<a class="reference external" href="https://cie.co.at/publications/cie-system-metrology-optical-radiation-iprgc-influenced-responses-light-0">here</a>.</p>
+<p>The tabulated action spectra can be downloaded in excel format from
+<a class="reference external" href="http:/files.cie.co.at/S026_Table2_Data.xlsx">here</a>.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>binwidth</strong> (<em>int</em>) – Desired width of the wavelength bins in nanometers. The default is <cite>1</cite>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>action spectra</strong> – CIES026 spectral sensitivities for sc, mc, lc, rh, and mel.</p>
+<dd class="field-even"><p><strong>action_spectra</strong> – CIES026 action spectra for <em>sc</em>, <em>mc</em>, <em>lc</em>, <em>rh</em>, and <em>mel</em>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
@@ -1412,6 +1483,26 @@ tabulated values by 0.86207.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.CIE.get_CIE_203_2012_lens_density">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE_203_2012_lens_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE_203_2012_lens_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lens density function from CIE 203:2012 (used for melanopsin).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>age</strong> (<em>int</em>) – Age of observer.</p></li>
+<li><p><strong>wls</strong> (<em>array_like</em>) – Wavelength range.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Estimated lens density.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
 </dd>
 </dl>
 </dd></dl>
