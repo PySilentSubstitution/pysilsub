@@ -675,10 +675,10 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         """
         contrast = self.get_photoreceptor_contrasts(x0)
-        if self._target_contrast == [np.inf]:
+        if np.inf in self._target_contrast:
             function_value = -sum(contrast[self.modulate])
 
-        elif self._target_contrast == [-np.inf]:
+        elif -np.inf in self._target_contrast:
             function_value = sum(contrast[self.modulate])
         else:
             # Target contrast is specified, aim for target contrast
@@ -741,10 +741,10 @@ class SilentSubstitutionProblem(StimulationDevice):
         else:
             bounds = self.bounds
 
-        if self._target_contrast == [np.inf]:
+        if np.inf in self._target_contrast:
             print("> Aiming to maximise contrast.")
 
-        elif self._target_contrast == [-np.inf]:
+        elif -np.inf in self._target_contrast:
             print("> Aiming to minimize contrast.")
 
         constraints = [
