@@ -637,6 +637,7 @@ class StimulationDevice:
             # don't use an int.
             primary_input = primary_input * self.primary_resolutions[primary]
 
+        # TODO: these could go in a dispatch table
         f = interpolate.interp1d(
             x=self.calibration.loc[primary].index.values,
             y=self.calibration.loc[primary],
@@ -806,7 +807,7 @@ class StimulationDevice:
         def _xyY_objective_function(x0: list[float]):
             aopic = self.predict_multiprimary_aopic(x0)
             return sum(
-                pow(requested_LMS - aopic[["L", "M", "S"]].to_numpy(), 2)
+                pow(requested_LMS - aopic[["lc", "mc", "sc"]].to_numpy(), 2)
             )
 
         # Bounds
@@ -848,7 +849,7 @@ class StimulationDevice:
 
         # TODO: refactor this
         solution_lms = self.predict_multiprimary_aopic(result.x)[
-            ["L", "M", "S"]
+            ["lc", "mc", "sc"]
         ].values
         solution_xyY = colorfuncs.LMS_to_xyY(solution_lms)
         print(f"Requested LMS: {requested_LMS}")

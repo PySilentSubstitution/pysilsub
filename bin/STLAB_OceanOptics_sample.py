@@ -29,7 +29,8 @@ USE_OCEAN_OPTICS = True
 if USE_OCEAN_OPTICS:
     EXTERNAL_PREFIX = f"{STLAB_PREFIX}_oo"
     CALIBRATED_WAVELENGTHS = pd.read_csv(
-        '../data/jaz/Ar_calibrated_wls.csv', squeeze=True)
+        "../data/jazcal/Ar_calibrated_wls.csv"
+    ).squeeze()
 
 
 try:
@@ -43,30 +44,27 @@ try:
         external_kwargs = {
             "correct_nonlinearity": True,
             "correct_dark_counts": True,
-            "boxcar_width": 2,
-            "scans_to_average": 2,
+            "boxcar_width": 0,
+            "scans_to_average": 3,
         }
-
-
 
     # Specify LEDs and intensities to be sampled. In this case, each
     # channel at its maximum setting. For a more complete profiling,
     # uncomment the lines below. This will sample each channel accross the
     # range of intensities in steps of 65.
-    #leds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    #intensities = [4095]
+    # leds = [0, 1, 2]#, 3, 4, 5, 6, 7, 8, 9]
+    # intensities = [4095]
 
-    leds = [0, 1, 2, 3, 4, 5, 6 ,7 ,8 , 9]
+    leds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     intensities = [i for i in range(0, 4096, 65)]
-    
+
     start = perf_counter()
-    # Sample 
+    # Sample
     d.sample(
         leds=leds, intensities=intensities, randomise=True, **external_kwargs
     )
     end = perf_counter()
-    print(f'> Measurment sequence completed in {end-start:2f} s')
-
+    print(f"> Measurment sequence completed in {end-start:2f} s")
 
     # Save results to csv in current working directory
     d.make_dfs()

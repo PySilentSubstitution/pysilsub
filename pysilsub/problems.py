@@ -57,9 +57,9 @@ class SilentSubstitutionProblem(StimulationDevice):
         # contrast while ignoring rods and silencing M-cones, L-cones
         # and melanopsin.
         problem = SSP.from_package_data('STLAB_York')
-        problem.ignore = ['R']
-        problem.modulate = ['S']
-        problem.minimize = ['M', 'L', 'I']
+        problem.ignore = ['rh']
+        problem.modulate = ['sc']
+        problem.minimize = ['mc', 'lc', 'mel']
         problem.background = [.5] * problem.nprimaries
         problem.target_contrast = .2
         solution = problem.linalg_solve()
@@ -71,9 +71,9 @@ class SilentSubstitutionProblem(StimulationDevice):
         # melanopsin contrast while ignoring rods and silencing the
         # cones.
         problem = SSP.from_package_data('STLAB_York')
-        problem.ignore = ['R']
-        problem.modulate = ['I']
-        problem.minimize = ['S', 'M', 'L']
+        problem.ignore = ['rh']
+        problem.modulate = ['mel']
+        problem.minimize = ['sc', 'mc', 'lc']
         problem.background = None
         problem.target_contrast = None
         solution = problem.optim_solve()
@@ -275,15 +275,15 @@ class SilentSubstitutionProblem(StimulationDevice):
         Setting the *ignore* property internally conditions the silent
         substitution problem such that the specified photoreceptor(s) will be
         ignored by the solvers (enabling them to find more contrast). In most
-        cases *ignore* will be set to ['R'], because it is considered safe
+        cases *ignore* will be set to ['rh'], because it is considered safe
         practice to ignore rods when stimuli are in the photopic range
         (>300 cd/m2)::
 
-            problem.ignore = ['R']
+            problem.ignore = ['rh']
 
         But you could also choose to ignore rods and melanopsin::
 
-            problem.ignore = ['R', 'I']
+            problem.ignore = ['rh', 'mel']
 
         In the event that you don't want to ignore any photoreceptors, you must
         still pass::
@@ -326,7 +326,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         substitution problem such that contrast on the target photoreceptors
         will be minimized. For example::
 
-            problem.minimize = ['S', 'M', 'L']
+            problem.minimize = ['sc', 'mc', 'lc']
 
         Would minimize contrast on the cone photoreceptors.
 
@@ -368,11 +368,11 @@ class SilentSubstitutionProblem(StimulationDevice):
         substitution problem so the solvers know which photoreceptor(s) should
         be targeted with contrast. For example, to modulate melanopsin::
 
-            problem.modulate = ['I']
+            problem.modulate = ['mel']
 
         It is also possible to modulate multiple photoreceptors::
 
-            problem.modulate = ['S', 'M', 'L']
+            problem.modulate = ['sc', 'mc', 'lc']
 
         Setting the *modulate* property is an essential step for conditioning a
         silent substitution problem.
@@ -421,9 +421,9 @@ class SilentSubstitutionProblem(StimulationDevice):
         then it is assumed *target_contrast* should be the same for each
         photoreceptor)::
 
-            problem.ignore = ['R']
-            problem.minimize = ['I']
-            problem.modulate = ['S', 'M', 'L']
+            problem.ignore = ['rh']
+            problem.minimize = ['mel']
+            problem.modulate = ['sc', 'mc', 'lc']
             problem.target_contrast = [-.5, .5, .5]
 
         The above example defines a problem that will ignore rods and aim for

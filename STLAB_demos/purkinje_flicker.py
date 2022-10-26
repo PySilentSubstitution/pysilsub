@@ -20,9 +20,9 @@ from pysilsub.problems import SilentSubstitutionProblem as SSP
 
 ssp = SSP.from_json("/Users/jtm545/Projects/PySilSub/data/STLAB_1_York.json")
 
-ssp.ignore = ["R"]
-ssp.minimize = ["L", "S", "M"]
-ssp.modulate = ["I"]
+ssp.ignore = ["rh"]
+ssp.minimize = ["lc", "sc", "mc"]
+ssp.modulate = ["mel"]
 ssp.target_contrast = "max"
 ssp.print_problem()
 

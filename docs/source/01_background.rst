@@ -19,3 +19,4 @@ In vision science, the method of silent substitution has contributed to our unde
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+

@@ -33,10 +33,11 @@ release = '0.0.13'
 extensions = ["nbsphinx", "sphinx.ext.napoleon", "sphinx.ext.autodoc"]
 
 # Show docs in order of definition
-autodoc_class_signature = 'both'
+autodoc_class_signature = 'separated'
 autodoc_member_order = 'bysource'
+autodoc_typehints_description_target = 'all'
 #autodoc_typehints_format = 'short'
-#autodoc_typehints = 'both'
+autodoc_typehints = 'description'
 #autodoc_type_aliases = {
 #    'PrimaryInput': 'pysilsub.devices.PrimaryInput',
 #    'PrimaryWeights': 'pysilsub.devices.PrimaryWeights',

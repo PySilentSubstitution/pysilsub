@@ -11,7 +11,6 @@ Obtained from http://www.cvrl.org/
 """
 
 
-
 import importlib_resources
 import numpy as np
 import numpy.typing as npt
@@ -60,8 +59,31 @@ def get_CIE_1931_2_deg_CMF(binwidth: int = 1) -> pd.DataFrame:
     return cmf.iloc[::binwidth, :]
 
 
-def get_CIES026(binwidth: int = 1):
-    """Get the CIES026 photoreceptor action spectra.
+def get_CIES026_action_spectra(binwidth: int = 1):
+    """Get CIES026 photoreceptor action spectra.
+
+    This table contains data for the photoreceptor action spectra of a
+    standard 32-year-old observer and a 10-degree field size, for wavelengths
+    from 380 nm to 780 nm. Values are zero where data are presently unavailable
+    at those wavelengths. The rhodopic action spectrum values are reproduced
+    from ISO 23539/CIE S 010 without modifications. The S-cone opic action
+    spectrum is provided for 390 nm to 615 nm, and the M- and L-cone-opic
+    action spectra are provided for 390 nm to 780 nm, all reproduced from
+    (CIE, 2006). By definition, the S-, M- and L-cone-opic action spectra take
+    a maximum value of exactly 1 at 447.9 nm, 541.3 nm and 568.6 nm
+    respectively. The melanopic action spectrum is reproduced from the
+    underlying model in the Toolbox from (CIE, 2015), interpolated (cubic
+    spline) from 5 nm to 1 nm resolution, and rounded to the nearest six
+    significant figures for consistency with the cone fundamentals in (CIE,
+    2006).
+
+    Note
+    ----
+    Further information on the CIES026 standard is available
+    `here <https://cie.co.at/publications/cie-system-metrology-optical-radiation-iprgc-influenced-responses-light-0>`_.
+
+    The tabulated action spectra can be downloaded in excel format from
+    `here <http:/files.cie.co.at/S026_Table2_Data.xlsx>`_.
 
     Parameters
     ----------
@@ -70,8 +92,8 @@ def get_CIES026(binwidth: int = 1):
 
     Returns
     -------
-    action spectra : pd.DataFrame
-        CIES026 spectral sensitivities for s, m, l, rods, and melanopsin.
+    action_spectra : pd.DataFrame
+        CIES026 action spectra for *sc*, *mc*, *lc*, *rh*, and *mel*.
 
     """
     fpath = PKG / "data" / "CIES026.csv"
@@ -192,11 +214,42 @@ def get_CIEPO06_optical_density() -> pd.DataFrame:
     return pd.read_csv(fpath, index_col="Wavelength")
 
 
+def get_CIE_203_2012_lens_density(age, wls):
+    """Lens density function from CIE 203:2012 (used for melanopsin).
+
+    Parameters
+    ----------
+    age : int
+        Age of observer.
+    wls : array_like
+        Wavelength range.
+
+    Returns
+    -------
+    np.array
+        Estimated lens density.
+
+    """
+    return (
+        (0.3 + 0.000031 * (age**2)) * (400 / wls) ** 4
+        + (14.19 * 10.68) * np.exp(-((0.057 * (wls - 273)) ** 2))
+        + (1.05 - 0.000063 * (age**2))
+        * 2.13
+        * np.exp(-((0.029 * (wls - 370)) ** 2))
+        + (0.059 + 0.000186 * (age**2))
+        * 11.95
+        * np.exp(-((0.021 * (wls - 325)) ** 2))
+        + (0.016 + 0.000132 * (age**2))
+        * 1.43
+        * np.exp(-((0.008 * (wls - 325)) ** 2) + 0.17)
+    )
+
+
 def get_CIEPO06_macula_density() -> pd.Series:
     """Optical density D_macula of the macular pigment."""
 
     fpath = PKG / "data" / "CIEPO06_macula_density.csv"
-    return pd.read_csv(fpath, index_col="Wavelength")
+    return pd.read_csv(fpath, index_col="Wavelength").squeeze("columns")
 
 
 def get_CIE_A_lms() -> pd.DataFrame:
