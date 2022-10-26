@@ -688,8 +688,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         return function_value
 
     def silencing_constraint(self, x0: PrimaryWeights) -> float:
-        """Calculates contrast error for minimized photoreceptor(s) in
-        accordance with the problem definition.
+        """Calculate contrast error for minimized photoreceptor(s).
 
         Parameters
         ----------
