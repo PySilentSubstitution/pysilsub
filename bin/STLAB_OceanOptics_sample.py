@@ -19,8 +19,8 @@ from pyplr.stlabsampler import SpectraTuneLabSampler
 from pyplr.oceanops import OceanOptics
 
 SAVE_TO = "../data/STLAB/"
-STLAB_PREFIX = "STLAB_2"
-STLAB_ADDRESS = 2
+STLAB_PREFIX = "STLAB_1"
+STLAB_ADDRESS = 1
 if not op.exists(SAVE_TO):
     os.mkdir(SAVE_TO)
 
@@ -43,20 +43,22 @@ try:
         d.external = oo
         external_kwargs = {
             "correct_nonlinearity": True,
-            "correct_dark_counts": True,
+            "correct_dark_counts": False,
             "boxcar_width": 0,
-            "scans_to_average": 3,
+            "scans_to_average": 1,
+            "ignore_pixels": [960, 45, 624, 1493, 478, 1256, 1054, 676, 1517, 1467],
+            "collect_dark_spectra": True
         }
 
     # Specify LEDs and intensities to be sampled. In this case, each
     # channel at its maximum setting. For a more complete profiling,
     # uncomment the lines below. This will sample each channel accross the
     # range of intensities in steps of 65.
-    # leds = [0, 1, 2]#, 3, 4, 5, 6, 7, 8, 9]
-    # intensities = [4095]
+    #leds = [0, 1, 2]#, 3, 4, 5, 6, 7, 8, 9]
+    #intensities = [4095]
 
     leds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    intensities = [i for i in range(0, 4096, 65)]
+    intensities = [i for i in range(65, 4096, 65)]
 
     start = perf_counter()
     # Sample

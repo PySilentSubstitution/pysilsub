@@ -18,7 +18,7 @@ from pyplr.oceanops import OceanOptics
 
 SAMPLING_OPTIC = "cc"  # 'cc' or 'fib'
 FIBER_DIAMETER = 3900  # 400 for bare UV-VIS fiber, 3900 for cosine corrector
-OUT_DIR = "../data/jazcal"
+OUT_DIR = "../data/jazcal/"
 OUT_FNAME = f"jtm_jaz_{SAMPLING_OPTIC}_{FIBER_DIAMETER}_irradcal"
 
 # Load the HL-2000-CAL lamp calibration data for fibre optic probe
@@ -43,7 +43,7 @@ try:
     input("Hit enter to obtain reference measurement:")
     reference_counts, reference_info = oo.sample(
         correct_nonlinearity=True,
-        correct_dark_counts=True,
+        correct_dark_counts=False,
         scans_to_average=3,
         boxcar_width=2,
         wavelengths=CAL_WLS,  # Plug in calibrated wavelengths
@@ -55,7 +55,7 @@ try:
     input("Now block all light and hit enter to obtain dark counts:")
     dark_counts, dark_info = oo.sample(
         correct_nonlinearity=True,
-        correct_dark_counts=True,
+        correct_dark_counts=False,
         integration_time=reference_info["integration_time"],
         scans_to_average=3,
         boxcar_width=2,
@@ -109,7 +109,7 @@ try:
         [resampled_lamp_data, reference_counts, calibration, irrad_reference],
         axis=1,
     )
-    calibration_file.to_csv(op.join(OUT_DIR, OUT_FNAME, ".csv"))
+    calibration_file.to_csv(op.join(OUT_DIR, OUT_FNAME + ".csv"))
 
     #%% Plot reference
     fig, (ax0, ax1, ax2) = plt.subplots(1, 3, figsize=(12, 3))
@@ -132,7 +132,7 @@ try:
     ax0.set_ylabel("$\mu$J/count")
     ax0.set_xlabel("Pixel wavelength")
     ax0.indicate_inset_zoom(
-        axins, edgecolor="black", transform=ax0.get_xaxis_transform()
+        axins, edgecolor="black", transform=fig.transFigure#ax0.get_xaxis_transform()
     )
 
     # Plot reference counts
@@ -163,7 +163,7 @@ try:
     ax2.legend()
     plt.tight_layout()
 
-    fig.savefig(op.join(OUT_DIR, OUT_FNAME, ".png"))
+    fig.savefig(op.join(OUT_DIR, OUT_FNAME + ".png"))
 
 
 # %%

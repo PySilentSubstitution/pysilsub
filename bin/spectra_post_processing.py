@@ -24,31 +24,46 @@ cal = pd.read_csv("../data/STLAB/jtm_jaz_cc_3900_irradcal.csv")
 lamp = pd.read_table("../data/jazcal/030410313_CC.LMP", header=None)
 
 spectra = pd.read_csv(
-    "../data/STLAB/STLAB_2_oo_spectra.csv", index_col=["Primary", "Setting"]
-).sort_index()
-wls = spectra.columns.astype("float64").values
-spectra.columns = wls
-# spectra[spectra < 0] = 0
+    "../data/STLAB/STLAB_1_oo_spectra.csv"
+)
+
+dark = (
+    spectra.loc[spectra.Measurement=='dark']
+    .drop('Measurement', axis=1)
+    .set_index(["Primary", "Setting"])
+)
+light = (
+    spectra.loc[spectra.Measurement=='light']
+    .drop('Measurement', axis=1)
+    .set_index(["Primary", "Setting"])
+)
+wls = light.columns.astype("float64").values
+light.columns = wls
+dark.columns = wls
+light = light.sub(dark)
+# Hot pixels to nan
+light.iloc[:, [960, 45, 624, 1493, 478, 1256, 1054, 676, 1517, 1467]] = np.nan
+light = light.interpolate(method='cubic', axis=1)
+light[light < 0] = 0
+light = light.sort_index()
 
 info = pd.read_csv(
-    "../data/STLAB/STLAB_2_oo_info.csv", index_col=["Primary", "Setting"]
-).sort_index()
-
+    "../data/STLAB/STLAB_1_oo_info.csv", index_col=["Primary", "Setting"]
+)
+info = info.loc[info.Measurement=='light'].sort_index()
 
 # Hot pixels
-hot_px = spectra.loc[(slice(None), 0), :].mean()
-hot_px = hot_px.loc[hot_px > hot_px.mean() + hot_px.std() * 2].index
-spectra[hot_px] = np.nan
-spectra = spectra.interpolate(axis="columns")
+# hot_px = spectra.loc[(slice(None), 0), :].mean()
+# hot_px = hot_px.loc[hot_px > hot_px.mean() + hot_px.std() * 2].index
+# spectra[hot_px] = np.nan
+# spectra = spectra.interpolate(axis="columns")
 
 # Boxcar smoothing
-spectra = spectra.apply(
-    lambda x: smooth_spectrum_boxcar(x, 2), axis=1, result_type="expand"
+light = light.apply(
+    lambda x: smooth_spectrum_boxcar(x, 8), axis=1, result_type="expand"
 )
-spectra.columns = wls
+light.columns = wls
 
-# Dark spectrum
-dark_spectrum = spectra.loc[(slice(None), 0), :].mean()
 
 # Post processing
 fiber_diameter = 3900  # Microns
@@ -65,7 +80,7 @@ wavelength_spread = np.hstack(
 
 
 def irradiance_calibration(s):
-    return s.sub(dark_spectrum) * (
+    return s * (
         cal["[uJ/count]"].values
         / (
             (
@@ -77,7 +92,9 @@ def irradiance_calibration(s):
     )
 
 
-abs_irrad_specs = spectra.apply(lambda s: irradiance_calibration(s), axis=1)
+abs_irrad_specs = light.apply(lambda s: irradiance_calibration(s), axis=1)
+abs_irrad_dark = dark.apply(lambda s: irradiance_calibration(s), axis=1)
+
 
 new_wls = range(380, 781, 1)
 
@@ -88,7 +105,21 @@ new = abs_irrad_specs.apply(
 )
 new.columns = new_wls
 new[new < 0] = 0
-new.to_csv("../data/STLAB/STLAB_2_oo_irrad_spectra.csv")
+
+new_dark = abs_irrad_dark.apply(
+    lambda s: interpolate.interp1d(s.index, s)(new_wls),
+    axis=1,
+    result_type="expand",
+)
+new_dark.columns = new_wls
+new_dark[new_dark < 0] = 0
+
+zeros = pd.DataFrame({(k, 0): np.zeros(401) for k in range(10)}).T
+zeros.index.names =['Primary', 'Setting']
+zeros.columns = new_wls
+new = pd.concat([new, zeros]).sort_index()
+
+new.to_csv("../data/STLAB/STLAB_1_oo_irrad_spectra.csv")
 
 
 d = StimulationDevice(
@@ -96,7 +127,7 @@ d = StimulationDevice(
     primary_resolutions=[4095] * 10,
     primary_colors=get_led_colors(),
     calibration_wavelengths=[380, 781, 1],
-    name="STLAB_2",
+    name="STLAB_1",
     config={"calibration_units": "$\mu$W/m$^2$/nm"},
 )
 
