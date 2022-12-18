@@ -325,7 +325,7 @@ al. (2014)</a> and to the one used in (CIE, 2006).</p>
 <section id="My-implementation">
 <h2>My implementation<a class="headerlink" href="#My-implementation" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -390,7 +390,7 @@ al. (2014)</a> and to the one used in (CIE, 2006).</p>
 <section id="Spectral-correction-of-standard-observer-melopsin-action-spectrum">
 <h2>Spectral correction of standard observer melopsin action spectrum<a class="headerlink" href="#Spectral-correction-of-standard-observer-melopsin-action-spectrum" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">standard_observer</span> <span class="o">=</span> <span class="n">StandardColorimetricObserver</span><span class="p">()</span>
@@ -446,7 +446,7 @@ D_{\tau, media}(\lambda) = (0.15 + 0.000031 \cdot a^2) \cdot (400/(\lambda))4\\
 + (0.016 + 0.000 132 \cdot a2) \cdot 1.43 \cdot exp( – {[0.008 \cdot (\lambda – 325)]2 }) + 0.06
 \end{multline*}</span></p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="k">def</span> <span class="nf">get_CIE_203_2012_lens_density</span><span class="p">(</span><span class="n">age</span><span class="p">,</span> <span class="n">wls</span><span class="p">):</span>
@@ -553,6 +553,95 @@ D_{\tau, media}(\lambda) = (0.15 + 0.000031 \cdot a^2) \cdot (400/(\lambda))4\\
 </div>
 </div>
 <div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">standard_observer</span> <span class="o">=</span> <span class="n">StandardColorimetricObserver</span><span class="p">()</span>
+<span class="n">wls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">mel</span> <span class="o">=</span> <span class="n">standard_observer</span><span class="o">.</span><span class="n">action_spectra</span><span class="o">.</span><span class="n">mel</span>
+<span class="n">uncmel</span> <span class="o">=</span> <span class="n">mel</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="n">get_CIE_203_2012_lens_density</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">wls</span><span class="p">))</span><span class="o">*</span><span class="mi">1</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+
+<span class="n">colors</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Blues</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">corrections</span><span class="p">)))</span>
+<span class="n">corrected_mel</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">age</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ages</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+    <span class="n">ld</span> <span class="o">=</span> <span class="n">get_CIE_203_2012_lens_density</span><span class="p">(</span><span class="n">age</span><span class="p">,</span> <span class="n">wls</span><span class="p">)</span>  <span class="c1"># density</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="n">ld</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span>  <span class="c1"># transmittance</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="n">uncmel</span> <span class="o">*</span> <span class="n">c</span>  <span class="c1"># Apply spectral correction</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>  <span class="c1"># Normalise</span>
+    <span class="n">new</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">age</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">corrected_mel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wls</span><span class="p">,</span> <span class="n">mel</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;standard observer (32)&#39;</span><span class="p">)</span>
+<span class="c1">#ax.plot(wls, uncmel, c=&#39;k&#39;, ls=&#39;:&#39;, label=&#39;standard observer (32)&#39;)</span>
+
+<span class="n">nomogram</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;~/Code/test.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">nomogram</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">nomogram</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Govardovskii nomogram&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Age&#39;</span><span class="p">)</span>
+
+<span class="n">lmax</span> <span class="o">=</span> <span class="p">[</span><span class="n">wls</span><span class="p">[</span><span class="n">cm</span><span class="o">.</span><span class="n">argmax</span><span class="p">()]</span> <span class="k">for</span> <span class="n">cm</span> <span class="ow">in</span> <span class="n">corrected_mel</span><span class="p">]</span>
+<span class="n">ylocs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ages</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ylocs</span><span class="p">,</span> <span class="n">lmax</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/mel_spectral_correction_12_0.png" src="_images/mel_spectral_correction_12_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">standard_observer</span> <span class="o">=</span> <span class="n">StandardColorimetricObserver</span><span class="p">()</span>
+
+<span class="n">mel</span> <span class="o">=</span> <span class="n">standard_observer</span><span class="o">.</span><span class="n">action_spectra</span><span class="o">.</span><span class="n">mel</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+
+<span class="n">colors</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Blues</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">corrections</span><span class="p">)))</span>
+<span class="n">corrected_mel</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">age</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ages</span><span class="p">,</span> <span class="n">corrections</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="n">mel</span> <span class="o">*</span> <span class="n">c</span> <span class="c1"># (10**-np.exp(-c))  # Apply spectral correction</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>  <span class="c1"># Normalise</span>
+    <span class="n">new</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">age</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">corrected_mel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wls</span><span class="p">,</span> <span class="n">mel</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;standard observer (32)&#39;</span><span class="p">)</span>
+<span class="n">nomogram</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;~/Code/test.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">nomogram</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">nomogram</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Govardovskii nomogram&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Age&#39;</span><span class="p">)</span>
+
+<span class="n">lmax</span> <span class="o">=</span> <span class="p">[</span><span class="n">wls</span><span class="p">[</span><span class="n">cm</span><span class="o">.</span><span class="n">argmax</span><span class="p">()]</span> <span class="k">for</span> <span class="n">cm</span> <span class="ow">in</span> <span class="n">corrected_mel</span><span class="p">]</span>
+<span class="n">ylocs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ages</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ylocs</span><span class="p">,</span> <span class="n">lmax</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/mel_spectral_correction_13_0.png" src="_images/mel_spectral_correction_13_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
@@ -586,7 +675,7 @@ D_{\tau, media}(\lambda) = (0.15 + 0.000031 \cdot a^2) \cdot (400/(\lambda))4\\
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/mel_spectral_correction_12_0.png" src="_images/mel_spectral_correction_12_0.png" />
+<img alt="_images/mel_spectral_correction_14_0.png" src="_images/mel_spectral_correction_14_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">

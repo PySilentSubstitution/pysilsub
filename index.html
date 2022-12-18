@@ -44,24 +44,44 @@ calibration data are available.</p>
 a sister project offering a Python framework for researching the pupillary
 light reflex with the Pupil Core eye tracking platform.</p>
 <p>With <em>PySilSub</em>, solutions to silent substitution problems are found with linear
-algebra and numerical optimisation via a configurable, intuitive interface:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.problems</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
+algebra and numerical optimisation via a configurable, intuitive interface.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 1 - Target melanopsin with 100% contrast (no background</span>
+<span class="c1"># specified), whilst ignoring rods and minimizing cone contrast,</span>
+<span class="c1"># for a 42-year-old observer and field size of 10 degrees. Solved</span>
+<span class="c1"># with numerical optimization.</span>
+
+<span class="kn">from</span> <span class="nn">pysilsub.problems</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
+<span class="kn">from</span> <span class="nn">pysilsub.observers</span> <span class="kn">import</span> <span class="n">IndividualColorimetricObserver</span> <span class="k">as</span> <span class="n">ICO</span>
 
 <span class="n">problem</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_1_York&#39;</span><span class="p">)</span>  <span class="c1"># Load example data</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>  <span class="c1"># Ignore rod photoreceptors</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]</span>  <span class="c1"># Minimise cone contrast</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">]</span>  <span class="c1"># Target melanopsin</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.5</span>  <span class="c1"># With 50% contrast</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">observer</span> <span class="o">=</span> <span class="n">ICO</span><span class="p">(</span><span class="n">age</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">field_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Assign custom observer model</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>  <span class="c1"># Ignore rod photoreceptors</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>  <span class="c1"># Minimise cone contrast</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>  <span class="c1"># Target melanopsin</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># With 100% contrast</span>
 <span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">()</span>  <span class="c1"># Solve with optimisation</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Plot the solution</span>
 </pre></div>
 </div>
-<img alt="Plot of result" src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/optim_result.svg" /><p>There are many other features and use cases covered, so check out the code and read the docs.</p>
-<p>The package also includes 6 example datasets for various multiprimary systems, so you can
-run the above code after a simple pip install:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pysilsub
+<img alt="Plot of result" src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg" /><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 2 - Target S-cones with 45% contrast against a specified</span>
+<span class="c1"># background spectrum (all primaries, half max) whilst ignoring rods</span>
+<span class="c1"># and minimizing contrast on L/M cones and melanopsin, assuming</span>
+<span class="c1"># 32-year-old observer and 10-degree field size. Solved with linear</span>
+<span class="c1"># algebra.</span>
+
+<span class="kn">from</span> <span class="nn">pysilsub.problems</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
+
+<span class="n">problem</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_1_York&#39;</span><span class="p">)</span>  <span class="c1"># Load example data</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">nprimaries</span>  <span class="c1"># Specify background spectrum</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>  <span class="c1"># Ignore rod photoreceptors</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>  <span class="c1"># Minimise cone contrast</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>  <span class="c1"># Target melanopsin</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.45</span>  <span class="c1"># With 45% contrast</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">()</span>  <span class="c1"># Solve with optimisation</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>  <span class="c1"># Plot the solution</span>
 </pre></div>
 </div>
+<img alt="Plot of result" src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg" /><p>There are many other features and use cases covered, so check out the code, read the docs, and run <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pysilsub</span></code> to try out the examples above.</p>
 <section id="important-note">
 <h2>Important note<a class="headerlink" href="#important-note" title="Permalink to this heading">¶</a></h2>
 <p>This is a test release and should not be used for production.</p>
