@@ -17,12 +17,14 @@ a sister project offering a Python framework for researching the pupillary
 light reflex with the Pupil Core eye tracking platform.
 
 With *PySilSub*, solutions to silent substitution problems are found with linear 
-algebra and numerical optimisation via a configurable, intuitive interface:
+algebra and numerical optimisation via a configurable, intuitive interface.
 
 .. code:: python
-   # Example 1 - Target melanopsin with 100% contrast (no background specified),
-   # whilst ignoring rods and minimizing cone contrast, for a 42-year-old observer
-   # and field size of 10 degrees. Solved with numerical optimization.
+
+   # Example 1 - Target melanopsin with 100% contrast (no background 
+   # specified), whilst ignoring rods and minimizing cone contrast, 
+   # for a 42-year-old observer and field size of 10 degrees. Solved
+   # with numerical optimization.
 
    from pysilsub.problems import SilentSubstitutionProblem as SSP
    from pysilsub.observers import IndividualColorimetricObserver as ICO
@@ -36,15 +38,17 @@ algebra and numerical optimisation via a configurable, intuitive interface:
    solution = problem.optim_solve()  # Solve with optimisation
    fig = problem.plot_solution(solution.x)  # Plot the solution
 
-.. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg
+.. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg
    :alt: Plot of result
 
 
 .. code:: python
+
    # Example 2 - Target S-cones with 45% contrast against a specified 
    # background spectrum (all primaries, half max) whilst ignoring rods 
    # and minimizing contrast on L/M cones and melanopsin, assuming 
-   # 32-year-old observer and 10-degree field size. Solved with linear algebra.
+   # 32-year-old observer and 10-degree field size. Solved with linear 
+   # algebra.
 
    from pysilsub.problems import SilentSubstitutionProblem as SSP
 
@@ -57,17 +61,11 @@ algebra and numerical optimisation via a configurable, intuitive interface:
    solution = problem.linalg_solve()  # Solve with optimisation
    fig = problem.plot_solution(solution)  # Plot the solution
 
-.. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg
+.. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg
    :alt: Plot of result
    
-There are many other features and use cases covered, so check out the code and read the docs.
+There are many other features and use cases covered, so check out the code, read the docs, and run :code:`pip install pysilsub` to try out the examples above.
 
-The package also includes 6 example datasets for various multiprimary systems, so you can
-run the above code after a simple pip install:
-
-.. code:: bash
-
-   pip install pysilsub
 
 Important note
 --------------
