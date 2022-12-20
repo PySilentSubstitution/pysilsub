@@ -321,9 +321,9 @@ zero. In all cases, <span class="math notranslate nohighlight">\(x\)</span> is a
 <span class="n">ssp</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s1">&#39;../../data/STLAB_1_York.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># Define problem</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.1</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
