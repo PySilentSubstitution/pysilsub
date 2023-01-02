@@ -163,6 +163,12 @@ class TestStimulationDevice(unittest.TestCase):
         result = self.device.s2w(MULTIPRIMARY_INPUT_CASES["int"])
         self.assertEqual(result, MULTIPRIMARY_INPUT_CASES["float"], msg)
 
+    def test_package_data(self):
+        options = self.device.show_package_data()
+        for opt in options:
+            temp = self.device.from_package_data(opt)
+            self.assertIsInstance(temp, StimulationDevice)
+
 
 if __name__ == "__main__":
     unittest.main()

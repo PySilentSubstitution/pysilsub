@@ -10,8 +10,12 @@ import json
 
 
 # Configure device
-RESOLUTIONS = [4095] * 10
-COLORS = [
+CALIBRATION = (
+    "/Users/jtm545/Projects/PySilSub/pysilsub/data/STLAB_Oxford.csv"
+)
+CALIBRATION_WAVELENGTHS = [380, 781, 1]
+PRIMARY_RESOLUTIONS = [4095] * 10
+PRIMARY_COLORS = [
     "blueviolet",
     "royalblue",
     "darkblue",
@@ -23,13 +27,10 @@ COLORS = [
     "red",
     "darkred",
 ]
-CALIBRATION_FPATH = (
-    "/Users/jtm545/Projects/PyPlr/data/STLAB_Oxford/S1_corrected_oo_spectra.csv"
-)
+
 CALIBRATION_UNITS = "W/m$^2$/S/nm"
-NAME = "STLAB_1 (sphere)"
-JSON_NAME = "STLAB_1_Oxford"
-WAVELENGTHS = [380, 781, 1]
+NAME = "STLAB (sphere)"
+JSON_NAME = "STLAB_Oxford"
 NOTES = (
     "STLAB_1 (sphere) is a Ganzfeld stimulation system. Spectral "
     + "measurements were obtained at the corneal plane with an "
@@ -45,17 +46,17 @@ NOTES = (
 def device_config():
 
     config = {
-        "calibration_fpath": CALIBRATION_FPATH,
-        "calibration_units": CALIBRATION_UNITS,
+        "calibration": CALIBRATION,
+        "calibration_wavelengths": CALIBRATION_WAVELENGTHS,
+        "primary_resolutions": PRIMARY_RESOLUTIONS,
+        "primary_colors": PRIMARY_COLORS,
         "name": NAME,
+        "calibration_units": CALIBRATION_UNITS,
         "json_name": JSON_NAME,
-        "wavelengths": WAVELENGTHS,
-        "colors": COLORS,
-        "resolutions": RESOLUTIONS,
         "notes": NOTES,
     }
 
-    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"), indent=4)
+    json.dump(config, open(f"../pysilsub/data/{JSON_NAME}.json", "w"), indent=4)
 
 
 if __name__ == "__main__":

@@ -9,46 +9,52 @@ Welcome to PySilentSubstitution!
 
 *PySilSub* is a Python software for performing the method of silent substitution with any multiprimary stimulation system for which accurate calibration data are available. Solutions are found with linear algebra and numerical optimisation via a flexible, intuitive interface:
 
-```mermaid
-graph TD;
-  A-->B
-```
-
 ```Python
-from pysilsub.problem import SilentSubstitutionProblem as SSP
+# Example 1 - Target melanopsin with 100% contrast (no background 
+# specified), whilst ignoring rods and minimizing cone contrast, 
+# for a 42-year-old observer and field size of 10 degrees. Solved
+# with numerical optimization.
+
+from pysilsub.problems import SilentSubstitutionProblem as SSP
+from pysilsub.observers import IndividualColorimetricObserver as ICO
 
 problem = SSP.from_package_data('STLAB_1_York')  # Load example data
-problem.ignore = ['R']  # Ignore rod photoreceptors
-problem.minimize = ['S', 'M', 'L']  # Minimise cone contrast
-problem.modulate = ['I']  # Target melnopsin
-problem.target_contrast = .3  # With 30% contrast 
+problem.observer = ICO(age=42, field_size=10)  # Assign custom observer model
+problem.ignore = ['rh']  # Ignore rod photoreceptors
+problem.minimize = ['sc', 'mc', 'lc']  # Minimise cone contrast
+problem.modulate = ['mel']  # Target melanopsin
+problem.target_contrast = 1.0  # With 100% contrast 
 solution = problem.optim_solve()  # Solve with optimisation
-fig = problem.plot_solution(solution)  # Plot the solution
+fig = problem.plot_solution(solution.x)  # Plot the solution
 ```
 
-![Plot of result](./img/ss_example.svg)
+<img src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg" alt="Example 1" />
 
 Another example: 
 
 ```Python
-problem.background = [.5] * problem.nprimaries  # Half-max all channels
-problem.ignore = ['R']  # Ignore rod photoreceptors
-problem.minimize = ['M', 'L', 'I']  # Minimise L-cone, M-cone, and melanopsin
-problem.modulate = ['S']  # Target S-cones
-solution = problem.linalg_solve()  # Solve with linear algebra
-fig = problem.plot_solution(solution.x)  # Plot the solution
+# Example 2 - Target S-cones with 45% contrast against a specified 
+# background spectrum (all primaries, half max) whilst ignoring rods 
+# and minimizing contrast on L/M cones and melanopsin, assuming 
+# 32-year-old observer and 10-degree field size. Solved with linear 
+# algebra.
+
+from pysilsub.problems import SilentSubstitutionProblem as SSP
+
+problem = SSP.from_package_data('STLAB_1_York')  # Load example data
+problem.background = [.5] * problem.nprimaries  # Specify background spectrum
+problem.ignore = ['rh']  # Ignore rod photoreceptors
+problem.minimize = ['sc', 'mc', 'lc']  # Minimise cone contrast
+problem.modulate = ['mel']  # Target melanopsin
+problem.target_contrast = .45  # With 45% contrast 
+solution = problem.linalg_solve()  # Solve with optimisation
+fig = problem.plot_solution(solution)  # Plot the solution
 ```
+
+<img src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg" alt="Example 2" />
 
 There are many other features and use cases covered. The package also includes 6 example datasets for various multiprimary systems, so you can run the above code after a simple pip install:
 
 ```bash
 pip install pysilsub
 ```
-
-For further information, take a look at the GitHub repository and documentation pages. 
-
-Important note
---------------
-
-This is a test release and should not be used for production.
-

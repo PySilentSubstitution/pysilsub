@@ -628,6 +628,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         print(contrasts.round(6))
 
     # TODO: Catch error when background is not set
+    # TODO: When background is set, do we need michelson?
     def get_photoreceptor_contrasts(
         self, x0: PrimaryWeights, contrast_statistic: str = "simple"
     ) -> pd.Series:
@@ -680,6 +681,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         elif -np.inf in self._target_contrast:
             function_value = sum(contrast[self.modulate])
+
         else:
             # Target contrast is specified, aim for target contrast
             function_value = sum(
@@ -705,6 +707,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         return sum(pow(contrast[self.minimize].values, 2))
 
     # TODO: Release the KWARGS
+    # TODO: contrast is coming out at half
     def optim_solve(
         self, global_search: bool = False, **kwargs
     ) -> optimize.OptimizeResult:
@@ -752,7 +755,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         if not global_search:  # Local minimization
 
-            default_options = {"iprint": 2, "disp": True}
+            default_options = {"iprint": 2, "disp": True, 'ftol':1e-08}
             options = kwargs.pop("options", default_options)
 
             print("> Performing local optimization with SLSQP.")
@@ -778,7 +781,7 @@ class SilentSubstitutionProblem(StimulationDevice):
                 "method": "SLSQP",
                 "constraints": constraints,
                 "bounds": bounds,
-                "options": {"iprint": 2, "disp": True},
+                "options": {"iprint": 2, "disp": False},
             }
             minimizer_kwargs = kwargs.pop(
                 "minimizer_kwargs", default_minimizer_kwargs
@@ -884,6 +887,7 @@ class SilentSubstitutionProblem(StimulationDevice):
                 "Solution is out of gamut, lower target contrast."
             )
 
+    # TODO: CMFs should come from observers
     def plot_solution(self, solution):
         """Plot the silent substitution solution.
 

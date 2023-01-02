@@ -277,3 +277,8 @@ class IndividualColorimetricObserver(_Observer):
         # (10**-np.exp(-correction_function))
         new_rod = new_rod.div(new_rod.max())  # Normalise
         return new_rod
+
+
+class Rodent:
+    def __init__():
+        pass

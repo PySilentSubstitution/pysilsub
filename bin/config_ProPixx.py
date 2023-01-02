@@ -10,13 +10,13 @@ import json
 
 
 # Configure device
-RESOLUTIONS = [255] * 3
-COLORS = ["red", "green", "blue"]
-CALIBRATION_FPATH = "/Users/jtm545/Projects/PySilSub/data/ProPixx.csv"
+CALIBRATION = "/Users/jtm545/Projects/PySilSub/pysilsub/data/ProPixx.csv"
+CALIBRATION_WAVELENGTHS = [380, 781, 1]
+PRIMARY_RESOLUTIONS = [255] * 3
+PRIMARY_COLORS = ["red", "green", "blue"]
 CALIBRATION_UNITS = "Counts/s/nm"
 NAME = "ProPixx Projector"
 JSON_NAME = "ProPixx"
-WAVELENGTHS = [380, 781, 1]
 NOTES = (
     "VPixx ProPixx projector at the York Neuroimaging Center. Spectra were "
     "measured with an OceanOptics Jaz spectrometer using a long fiber optic "
@@ -27,17 +27,17 @@ NOTES = (
 def device_config():
 
     config = {
-        "calibration_fpath": CALIBRATION_FPATH,
-        "calibration_units": CALIBRATION_UNITS,
+        "calibration": CALIBRATION,
+        "calibration_wavelengths": CALIBRATION_WAVELENGTHS,
+        "primary_resolutions": PRIMARY_RESOLUTIONS,
+        "primary_colors": PRIMARY_COLORS,
         "name": NAME,
+        "calibration_units": CALIBRATION_UNITS,
         "json_name": JSON_NAME,
-        "wavelengths": WAVELENGTHS,
-        "colors": COLORS,
-        "resolutions": RESOLUTIONS,
         "notes": NOTES,
     }
 
-    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"), indent=4)
+    json.dump(config, open(f"../pysilsub/data/{JSON_NAME}.json", "w"), indent=4)
 
 
 if __name__ == "__main__":

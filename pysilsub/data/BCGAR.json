@@ -1,19 +1,9 @@
 {
-    "calibration_fpath": "./data/BCGAR.csv",
-    "calibration_units": "W/m$^2$/nm",
-    "name": "BCGAR (8-bit, linear)",
-    "json_name": "BCGAR",
+    "calibration": "/Users/jtm545/Projects/PySilSub/pysilsub/data/BCGAR.csv",
     "calibration_wavelengths": [
         380,
         781,
         1
-    ],
-    "primary_colors": [
-        "blue",
-        "cyan",
-        "green",
-        "orange",
-        "red"
     ],
     "primary_resolutions": [
         255,
@@ -22,5 +12,15 @@
         255,
         255
     ],
+    "primary_colors": [
+        "blue",
+        "cyan",
+        "green",
+        "orange",
+        "red"
+    ],
+    "name": "BCGAR (8-bit, linear)",
+    "calibration_units": "$\\mu$W/m$^2$/nm",
+    "json_name": "BCGAR",
     "notes": "An artificial 8-bit linear calibration based on the maximum output of 5 STLAB channels."
 }

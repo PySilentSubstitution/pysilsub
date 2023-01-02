@@ -15,16 +15,14 @@ import json
 import seaborn as sns
 
 # Configure device
-RESOLUTIONS = [256] * 56
-COLORS = list(sns.color_palette("Spectral", n_colors=56))[::-1]
+CALIBRATION = "/Users/jtm545/Projects/PySilSub/pysilsub/data/OneLight.csv"
+CALIBRATION_WAVELENGTHS = [380, 781, 2]
+PRIMARY_RESOLUTIONS = [256] * 56
+PRIMARY_COLORS = list(sns.color_palette("Spectral", n_colors=56))[::-1]
 # Absolute file path to permenant location of calibration file
-CALIBRATION_FPATH = (
-    "/Users/jtm545/Projects/PySilSub/data/oneLight_artifical.csv"
-)
 CALIBRATION_UNITS = "W/$m^2$/s/nm"
 NAME = "OneLight"
 JSON_NAME = "OneLight"
-WAVELENGTHS = [380, 781, 2]
 NOTES = (
     "OneLight VISX Spectra, digital light synthesis engine used in Spitschan "
     + "et al. papers. Highly linear with 52 narrow-band (16 nm FWHM) "
@@ -49,17 +47,18 @@ def device_config():
     """
 
     config = {
-        "calibration_fpath": CALIBRATION_FPATH,
-        "calibration_units": CALIBRATION_UNITS,
+        "calibration": CALIBRATION,
+        "calibration_wavelengths": CALIBRATION_WAVELENGTHS,
+        "primary_resolutions": PRIMARY_RESOLUTIONS,
+        "primary_colors": PRIMARY_COLORS,
         "name": NAME,
+        "calibration_units": CALIBRATION_UNITS,
         "json_name": JSON_NAME,
-        "wavelengths": WAVELENGTHS,
-        "colors": COLORS,
-        "resolutions": RESOLUTIONS,
         "notes": NOTES,
     }
 
-    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"), indent=4)
+    json.dump(config, open(f"../pysilsub/data/{JSON_NAME}.json", "w"), indent=4)
+
 
 
 if __name__ == "__main__":

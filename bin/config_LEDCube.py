@@ -15,39 +15,31 @@ import json
 import seaborn as sns
 
 # Configure device
-RESOLUTIONS = [1023] * 14
-COLORS = list(sns.color_palette("dark", n_colors=14))[::-1]
-# Absolute file path to permenant location of calibration file
-CALIBRATION_FPATH = "/Users/jtm545/Projects/PySilSub/data/LEDCube.csv"
+CALIBRATION = "/Users/jtm545/Projects/PySilSub/pysilsub/data/LEDCube.csv"
+CALIBRATION_WAVELENGTHS = [380, 781, 1]
+PRIMARY_RESOLUTIONS = [1023] * 14
+PRIMARY_COLORS = list(sns.color_palette("Spectral", n_colors=14))[::-1]
 CALIBRATION_UNITS = "W/$m^2$/s/nm"
 NAME = "LEDCube"
 JSON_NAME = "LEDCube"
-WAVELENGTHS = [380, 781, 1]
-NOTES = "12 channel light source of unknown origin."
+NOTES = ("12 channel light source of unknown origin. Has 10 narrowband "
+         "primaries and 3 broadband double-peak LEDs. Assumed linear.")
 
 
 def device_config():
-    """Create JSON file with configuration parameters for StimulationDevice.
-
-
-    Returns
-    -------
-    None.
-
-    """
 
     config = {
-        "calibration_fpath": CALIBRATION_FPATH,
-        "calibration_units": CALIBRATION_UNITS,
+        "calibration": CALIBRATION,
+        "calibration_wavelengths": CALIBRATION_WAVELENGTHS,
+        "primary_resolutions": PRIMARY_RESOLUTIONS,
+        "primary_colors": PRIMARY_COLORS,
         "name": NAME,
+        "calibration_units": CALIBRATION_UNITS,
         "json_name": JSON_NAME,
-        "wavelengths": WAVELENGTHS,
-        "colors": COLORS,
-        "resolutions": RESOLUTIONS,
         "notes": NOTES,
     }
 
-    json.dumps(config, open(f"../data/{JSON_NAME}.json", "w"))
+    json.dump(config, open(f"../pysilsub/data/{JSON_NAME}.json", "w"), indent=4)
 
 
 if __name__ == "__main__":

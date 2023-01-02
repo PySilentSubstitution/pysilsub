@@ -10,7 +10,7 @@ import json
 
 
 # Configure device
-CALIBRATION = "/Users/jtm545/Projects/PySilSub/data/STLAB/STLAB_1_oo_irrad_spectra.csv"
+CALIBRATION = "/Users/jtm545/Projects/PySilSub/pysilsub/data/STLAB_1_York.csv"
 CALIBRATION_WAVELENGTHS = [380, 781, 1]
 PRIMARY_RESOLUTIONS = [4095] * 10
 PRIMARY_COLORS = [
@@ -62,7 +62,7 @@ def device_config():
         "notes": NOTES,
     }
 
-    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"), indent=4)
+    json.dump(config, open(f"../pysilsub/data/{JSON_NAME}.json", "w"), indent=4)
 
 
 if __name__ == "__main__":

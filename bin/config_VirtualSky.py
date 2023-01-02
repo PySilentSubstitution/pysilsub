@@ -13,13 +13,13 @@ Module to configure StimulationDevice.
 import json
 
 # Configure device
-RESOLUTIONS = [260] * 4  # Fictitious
-COLORS = ["blue", "green", "red", "darkgrey"]
-CALIBRATION_FPATH = "/Users/jtm545/Projects/PySilSub/data/VirtualSky.csv"
+CALIBRATION = "/Users/jtm545/Projects/PySilSub/data/VirtualSky.csv"
+CALIBRATION_WAVELENGTHS = [380, 781, 1]
+PRIMARY_RESOLUTIONS = [260] * 4  # Fictitious
+PRIMARY_COLORS = ["blue", "green", "red", "darkgrey"]
 CALIBRATION_UNITS = "W/m2/s/nm"
 NAME = "VirtualSky (BGRW projector)"
 JSON_NAME = "VirtualSky"
-WAVELENGTHS = [380, 781, 1]
 NOTES = (
     "The device is a BGRW projector with a likely 8-bit native "
     + "resolution. Though the data have been wrangled and given a "
@@ -40,17 +40,17 @@ def device_config():
     """
 
     config = {
-        "calibration_fpath": CALIBRATION_FPATH,
+        "calibration": CALIBRATION,
+        "calibration_wavelengths": CALIBRATION_WAVELENGTHS,
+        "primary_resolutions": PRIMARY_RESOLUTIONS,
+        "primary_colors": PRIMARY_COLORS,
         "calibration_units": CALIBRATION_UNITS,
         "name": NAME,
         "json_name": JSON_NAME,
-        "wavelengths": WAVELENGTHS,
-        "colors": COLORS,
-        "resolutions": RESOLUTIONS,
         "notes": NOTES,
     }
 
-    json.dump(config, open(f"../data/{JSON_NAME}.json", "w"))
+    json.dump(config, open(f"../pysilsub/data/{JSON_NAME}.json", "w"), indent=4)
 
 
 if __name__ == "__main__":

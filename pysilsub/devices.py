@@ -103,8 +103,8 @@ class StimulationDevice:
             model (age=32, field_size=10), but can pass a custom observer
             model.
         name : str, optional
-            Name of the device or stimulation system, e.g., ``8-bit BCGAR
-            photostimulator``. The default name is `Stimulation Device`.
+            Name of the device or stimulation system, e.g., `8-bit BCGAR
+            photostimulator`. The default name is `Stimulation Device`.
         config : dict, optional
             Additional information from the config file. The default is
             ``None``.
@@ -253,10 +253,8 @@ class StimulationDevice:
             f for f in os.listdir(pkg / "data") if f.endswith(".json")
         ]
 
-        for f in available:
-            if not verbose:
-                print(f.strip(".json"))
-            else:
+        if verbose:
+            for f in available:
                 config = json.load(open(pkg / "data" / f, "r"))
                 print(f'{"*"*60}\n{config["name"]:*^60s}\n{"*"*60}')
                 pprint(config)
@@ -954,12 +952,16 @@ class StimulationDevice:
             # Interpolate for full lookup table
             gamma_table.append(new_x)
 
-        self.gamma = (
+        gamma_table = (
             pd.DataFrame(gamma_table, columns=settings)
             .reindex(columns=range(0, max(self.primary_resolutions) + 1))
             .interpolate("linear", axis=1)
             .astype("int")
         )
+        
+        # TODO temp fix, make generic
+        gamma_table = gamma_table.clip(0, 4095)
+        self.gamma = gamma_table
 
         return None
 
@@ -995,7 +997,7 @@ class StimulationDevice:
             g = g / g.max()
             y = y / y.max()
 
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(3,3))
             ax.plot(x, y, c=self.primary_colors[primary], label="Measured")
             ax.plot(x, x, c="k", ls=":", label="Ideal")
             ax.plot(x, g, c="k", label="Reverse fit")
