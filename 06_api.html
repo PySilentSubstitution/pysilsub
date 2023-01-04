@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>API Documentation &#8212; PySilSub 0.0.13 documentation</title>
+    <title>API Documentation &#8212; PySilSub 0.0.14 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -18,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Project notes" href="07_project_notes.html" />
-    <link rel="prev" title="Linear algebra" href="05b_linear_algebra.html" />
+    <link rel="prev" title="Rodent silent substitution" href="05c_custom_observer.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -177,8 +177,8 @@ Alternatively, pass a sequence of RGB values.</p></li>
 , in which case defaults to the CIE standard colorimetric observer
 model (age=32, field_size=10), but can pass a custom observer
 model.</p></li>
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the device or stimulation system, e.g., <code class="docutils literal notranslate"><span class="pre">8-bit</span> <span class="pre">BCGAR</span>
-<span class="pre">photostimulator</span></code>. The default name is <cite>Stimulation Device</cite>.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the device or stimulation system, e.g., <cite>8-bit BCGAR
+photostimulator</cite>. The default name is <cite>Stimulation Device</cite>.</p></li>
 <li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – Additional information from the config file. The default is
 <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
@@ -1074,9 +1074,108 @@ alternatively the Moore-Penrose pseudo-inverse.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.get_solution_spds">
+<span class="sig-name descname"><span class="pre">get_solution_spds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.get_solution_spds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get predicted spds for solution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bg_spd</strong> (<em>TYPE</em>) – Chromaticity coordinates of background spectrum.</p></li>
+<li><p><strong>mod_spd</strong> (<em>TYPE</em>) – Chromaticity coordinates of modulation spectrum.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_solution_spds">
+<span class="sig-name descname"><span class="pre">plot_solution_spds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_solution_spds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the solution spds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p></li>
+<li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – Axes on which to  plot. The default is None.</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – Passed to <cite>pd.Series.plot()</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ax</strong> – Axes on which the data are plotted.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt.Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.get_solution_xy">
+<span class="sig-name descname"><span class="pre">get_solution_xy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.get_solution_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get xy chromaticity coordinates for solution spectra.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bg_xy</strong> (<em>TYPE</em>) – Chromaticity coordinates of background spectrum.</p></li>
+<li><p><strong>mod_xy</strong> (<em>TYPE</em>) – Chromaticity coordinates of modulation spectrum.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_solution_xy">
+<span class="sig-name descname"><span class="pre">plot_solution_xy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_solution_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot solution chromaticity coordinates on CIE horseshoe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p></li>
+<li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – Axes on which to  plot. The default is None.</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – Passed to <cite>pd.Series.scatter()</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ax</strong> – Axes on which the data are plotted.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt.Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_solution_aopic">
+<span class="sig-name descname"><span class="pre">plot_solution_aopic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_solution_aopic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot barchart of alphaopic irradiances .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p></li>
+<li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – Axes on which to  plot. The default is None.</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – Passed to <cite>sns.barplot()</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ax</strong> – Axes on which the data are plotted.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt.Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_solution">
 <span class="sig-name descname"><span class="pre">plot_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_solution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the silent substitution solution.</p>
+<dd><p>Plot solution spds, xy chromaticities and alphaopic irradiances.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p>
@@ -1093,7 +1192,7 @@ alternatively the Moore-Penrose pseudo-inverse.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation">
 <span class="sig-name descname"><span class="pre">plot_contrast_modulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sonmething here</p>
+<dd><p>Sonmething here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>solutions</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
@@ -1108,9 +1207,9 @@ alternatively the Moore-Penrose pseudo-inverse.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.animate_solution">
-<span class="sig-name descname"><span class="pre">animate_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.animate_solution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Something here</p>
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.animate_solutions">
+<span class="sig-name descname"><span class="pre">animate_solutions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.animate_solutions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Something here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1611,7 +1710,7 @@ of known genotype. Vision Research, 40, 1711-1737.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="05b_linear_algebra.html" title="previous chapter">Linear algebra</a></li>
+      <li>Previous: <a href="05c_custom_observer.html" title="previous chapter">Rodent silent substitution</a></li>
       <li>Next: <a href="07_project_notes.html" title="next chapter">Project notes</a></li>
   </ul></li>
 </ul>

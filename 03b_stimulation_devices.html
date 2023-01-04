@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Stimulation devices &#8212; PySilSub 0.0.13 documentation</title>
+    <title>Stimulation devices &#8212; PySilSub 0.0.14 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -299,7 +299,7 @@ div.rendered_html tbody tr:hover {
 see <a class="reference external" href="https://iovs.arvojournals.org/article.aspx?articleid=2200107">Shapiro, 2002</a>; <a class="reference external" href="https://doi.org/10.1007/s10633-008-9159-0">Kremers et al., 2009</a>).</p>
 <p>The primaries should be independantly addressable, additive, and ideally stable over time with a linear gamma function. Peak wavelength and bandwidth are key considerations that will ultimately define the gamut and available contrast (<a class="reference external" href="https://doi.org/10.1364/josaa.420373">Evéquoz et al., 2021</a>), and the light source will also need to be integrated into an optical setup for stimulus delivery—usually either a Ganzfeld (e.g., <a class="reference external" href="https://doi.org/10.3758/s13428-021-01759-3">Martin et al., 2021</a>)
 or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167/15.1.27">Cao et al., 2015</a>).</p>
-<p><a class="reference external" href="https://doi.org/10.3390/photonics7040121">Conus and Geiser (2020)</a> reviewed stimulation devices from a range of silent substitution studies and found that in most cases the device had 4 or 5 primaries and was built from scratch using LEDs, optical bench components, and microprocessors, such as Arduino, for pulse width modulation control of intensity. Only a few devices were commercially bought.</p>
+<p><a class="reference external" href="https://doi.org/10.3390/photonics7040121">Conus and Geiser (2020)</a> reviewed stimulation devices from a range of silent substitution studies and found that, in most cases, the device had 4 or 5 primaries and was built from scratch using LEDs, optical bench components, and microprocessors, such as Arduino, for pulse width modulation control of intensity. Only a few devices were commercially bought.</p>
 <p>Whatever the device and setup, one must obtain accurate calibration measurements with a spectrometer to characterise the output. If you have a <a class="reference external" href="https://www.jeti.com/">JETI</a> or <a class="reference external" href="https://www.oceaninsight.com/">OceanOptics</a> spectrometer, <a class="reference external" href="https://github.com/PyPlr/cvd_pupillometry">PyPlr</a> has some Python interfaces that may help you obtain the spectral measurements.</p>
 <p>Once you have these measurements, you are ready to use <em>PySilSub</em>.</p>
 <section id="pysilsub.devices.StimulationDevice">
@@ -312,17 +312,18 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.devices</span> <span class="kn">import</span> <span class="n">StimulationDevice</span>
 
 <span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="p">(</span>
-    <span class="n">calibration</span><span class="o">=</span><span class="s1">&#39;../../data/S2_corrected_oo_spectra.csv&#39;</span><span class="p">,</span>
-    <span class="n">wavelengths</span><span class="o">=</span><span class="p">[</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="n">resolutions</span><span class="o">=</span><span class="p">[</span><span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">],</span>
-    <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;blueviolet&#39;</span><span class="p">,</span> <span class="s1">&#39;royalblue&#39;</span><span class="p">,</span> <span class="s1">&#39;darkblue&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;lime&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;darkred&#39;</span><span class="p">],</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SpectraTuneLab&#39;</span>
+    <span class="n">calibration</span><span class="o">=</span><span class="s1">&#39;../../pysilsub/data/STLAB_1_York.csv&#39;</span><span class="p">,</span>
+    <span class="n">calibration_wavelengths</span><span class="o">=</span><span class="p">[</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">primary_resolutions</span><span class="o">=</span><span class="p">[</span><span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">,</span> <span class="mi">4095</span><span class="p">],</span>
+    <span class="n">primary_colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;blueviolet&#39;</span><span class="p">,</span> <span class="s1">&#39;royalblue&#39;</span><span class="p">,</span> <span class="s1">&#39;darkblue&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;lime&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;darkred&#39;</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SpectraTuneLab&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">calibration_units</span><span class="o">=</span><span class="s1">&#39;$\mu$W/m$^2$/nm&#39;</span><span class="p">)</span>
 <span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>
 <p>The above example is for a commercial 10-primary device with 12-bit resolution (<a class="reference external" href="https://ledmotive.com/store/spectratune-lab/">STLAB: Ledmotive Technologies LLC</a>), which means the input is specified with values between 0 and 4095.</p>
-<p>The calibration file is a CSV with accurate spectral measurements of the individual primaries. The first row contains column headers <em>Primary</em> and <em>Setting</em>, and numbers to describe the wavelength sampling of the measurements. The remaining rows each contain a spectral measurement and corresponding values for <em>Primary</em> and <em>Setting</em> to identify it.</p>
+<p>The calibration file is a CSV with accurate spectral measurements of the individual primaries. The first row contains column headers <em>Primary</em> and <em>Setting</em>, and numbers to describe the wavelength sampling of the measurements. The remaining rows each contain a spectral measurement and corresponding values for <em>Primary</em> and <em>Setting</em> for identification.</p>
 <p>Note that one must also include a dark measurement where LEDs are turned off (i.e., Setting = 0) to account for ambient light in an experimental setup.</p>
 <p>The calibration data look like this:</p>
 <div class="nbinput docutils container">
@@ -411,7 +412,7 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
       <th>0</th>
       <td>0.000000</td>
       <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.000000e+00</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
@@ -421,111 +422,111 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
       <td>0.000000</td>
       <td>...</td>
       <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
       <td>0.000000e+00</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000011</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.000000e+00</td>
+      <td>0.000000e+00</td>
+      <td>0.000000e+00</td>
+      <td>0.000000e+00</td>
     </tr>
     <tr>
       <th>65</th>
+      <td>0.000008</td>
+      <td>0.000009</td>
+      <td>9.745215e-06</td>
+      <td>0.000009</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.000005</td>
       <td>...</td>
-      <td>0.000000</td>
-      <td>0.000000e+00</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.000009</td>
+      <td>0.000008</td>
+      <td>0.000011</td>
+      <td>0.000011</td>
+      <td>0.000011</td>
+      <td>4.776394e-06</td>
+      <td>3.671169e-06</td>
+      <td>8.690441e-07</td>
+      <td>2.504634e-07</td>
+      <td>2.539856e-07</td>
     </tr>
     <tr>
       <th>130</th>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.000010</td>
+      <td>0.000011</td>
+      <td>1.202408e-05</td>
+      <td>0.000014</td>
+      <td>0.000022</td>
+      <td>0.000016</td>
+      <td>0.000013</td>
+      <td>0.000012</td>
+      <td>0.000014</td>
+      <td>0.000013</td>
       <td>...</td>
+      <td>0.000003</td>
+      <td>0.000003</td>
+      <td>0.000003</td>
+      <td>0.000002</td>
       <td>0.000000</td>
       <td>0.000000e+00</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.000000e+00</td>
+      <td>4.140402e-06</td>
+      <td>4.181861e-06</td>
+      <td>4.240670e-06</td>
     </tr>
     <tr>
       <th>195</th>
-      <td>0.000026</td>
-      <td>0.000017</td>
-      <td>0.000041</td>
-      <td>0.000015</td>
-      <td>0.000036</td>
-      <td>0.000039</td>
-      <td>0.000022</td>
-      <td>0.000032</td>
-      <td>0.000026</td>
-      <td>0.000021</td>
+      <td>0.000004</td>
+      <td>0.000004</td>
+      <td>6.014049e-07</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
       <td>...</td>
-      <td>0.000022</td>
-      <td>5.120000e-07</td>
-      <td>0.000008</td>
-      <td>0.000009</td>
-      <td>0.000000</td>
-      <td>0.000015</td>
+      <td>0.000012</td>
       <td>0.000013</td>
-      <td>0.000000</td>
-      <td>0.000018</td>
-      <td>0.000000</td>
+      <td>0.000013</td>
+      <td>0.000014</td>
+      <td>0.000014</td>
+      <td>7.684585e-07</td>
+      <td>7.781628e-07</td>
+      <td>1.842077e-07</td>
+      <td>0.000000e+00</td>
+      <td>0.000000e+00</td>
     </tr>
     <tr>
       <th>260</th>
-      <td>0.000141</td>
-      <td>0.000147</td>
-      <td>0.000168</td>
-      <td>0.000170</td>
-      <td>0.000155</td>
-      <td>0.000144</td>
-      <td>0.000154</td>
-      <td>0.000121</td>
-      <td>0.000167</td>
-      <td>0.000169</td>
+      <td>0.000023</td>
+      <td>0.000012</td>
+      <td>0.000000e+00</td>
+      <td>0.000004</td>
+      <td>0.000007</td>
+      <td>0.000012</td>
+      <td>0.000011</td>
+      <td>0.000016</td>
+      <td>0.000040</td>
+      <td>0.000049</td>
       <td>...</td>
-      <td>0.000088</td>
-      <td>7.300000e-05</td>
-      <td>0.000088</td>
-      <td>0.000081</td>
-      <td>0.000071</td>
-      <td>0.000086</td>
-      <td>0.000086</td>
-      <td>0.000010</td>
-      <td>0.000100</td>
-      <td>0.000078</td>
+      <td>0.000007</td>
+      <td>0.000006</td>
+      <td>0.000006</td>
+      <td>0.000006</td>
+      <td>0.000012</td>
+      <td>1.513954e-05</td>
+      <td>1.252247e-05</td>
+      <td>1.269276e-05</td>
+      <td>1.281985e-05</td>
+      <td>7.991981e-06</td>
     </tr>
     <tr>
       <th>...</th>
@@ -555,130 +556,130 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
     <tr>
       <th rowspan="5" valign="top">9</th>
       <th>3835</th>
-      <td>0.003609</td>
-      <td>0.004056</td>
-      <td>0.003476</td>
-      <td>0.003724</td>
-      <td>0.002943</td>
-      <td>0.003147</td>
-      <td>0.003482</td>
-      <td>0.002543</td>
-      <td>0.003630</td>
-      <td>0.004153</td>
+      <td>0.001902</td>
+      <td>0.001782</td>
+      <td>1.386320e-03</td>
+      <td>0.001362</td>
+      <td>0.001630</td>
+      <td>0.001647</td>
+      <td>0.001160</td>
+      <td>0.001866</td>
+      <td>0.002541</td>
+      <td>0.002595</td>
       <td>...</td>
-      <td>0.002318</td>
-      <td>2.590713e-03</td>
-      <td>0.002629</td>
-      <td>0.002536</td>
-      <td>0.002962</td>
-      <td>0.002583</td>
-      <td>0.002606</td>
-      <td>0.002213</td>
-      <td>0.002467</td>
-      <td>0.002924</td>
+      <td>0.000592</td>
+      <td>0.000573</td>
+      <td>0.000521</td>
+      <td>0.000807</td>
+      <td>0.000618</td>
+      <td>6.720443e-04</td>
+      <td>7.648245e-04</td>
+      <td>7.677751e-04</td>
+      <td>9.100419e-04</td>
+      <td>8.549128e-04</td>
     </tr>
     <tr>
       <th>3900</th>
-      <td>0.003415</td>
-      <td>0.003666</td>
-      <td>0.003451</td>
-      <td>0.003724</td>
-      <td>0.002873</td>
-      <td>0.003021</td>
-      <td>0.003112</td>
-      <td>0.002289</td>
-      <td>0.003514</td>
-      <td>0.004000</td>
+      <td>0.001471</td>
+      <td>0.001634</td>
+      <td>2.300030e-03</td>
+      <td>0.002383</td>
+      <td>0.002145</td>
+      <td>0.001927</td>
+      <td>0.001556</td>
+      <td>0.001704</td>
+      <td>0.001555</td>
+      <td>0.001717</td>
       <td>...</td>
-      <td>0.002279</td>
-      <td>2.669694e-03</td>
-      <td>0.002370</td>
-      <td>0.002300</td>
-      <td>0.002815</td>
-      <td>0.002574</td>
-      <td>0.002412</td>
-      <td>0.002107</td>
-      <td>0.002590</td>
-      <td>0.002938</td>
+      <td>0.000697</td>
+      <td>0.000772</td>
+      <td>0.000568</td>
+      <td>0.000602</td>
+      <td>0.000595</td>
+      <td>5.869208e-04</td>
+      <td>6.342476e-04</td>
+      <td>6.455188e-04</td>
+      <td>6.345751e-04</td>
+      <td>7.664858e-04</td>
     </tr>
     <tr>
       <th>3965</th>
-      <td>0.003560</td>
-      <td>0.003867</td>
-      <td>0.003539</td>
-      <td>0.003874</td>
-      <td>0.003191</td>
-      <td>0.003165</td>
-      <td>0.003544</td>
-      <td>0.002428</td>
-      <td>0.003695</td>
-      <td>0.004005</td>
+      <td>0.002061</td>
+      <td>0.002297</td>
+      <td>2.212991e-03</td>
+      <td>0.002499</td>
+      <td>0.002516</td>
+      <td>0.002555</td>
+      <td>0.001571</td>
+      <td>0.001244</td>
+      <td>0.001204</td>
+      <td>0.001470</td>
       <td>...</td>
-      <td>0.002134</td>
-      <td>2.682856e-03</td>
-      <td>0.002604</td>
-      <td>0.002552</td>
-      <td>0.002775</td>
-      <td>0.002638</td>
-      <td>0.002748</td>
-      <td>0.002137</td>
-      <td>0.002676</td>
-      <td>0.002664</td>
+      <td>0.001060</td>
+      <td>0.000784</td>
+      <td>0.000770</td>
+      <td>0.000743</td>
+      <td>0.000430</td>
+      <td>4.897906e-04</td>
+      <td>5.161750e-04</td>
+      <td>7.753686e-04</td>
+      <td>8.782367e-04</td>
+      <td>1.083818e-03</td>
     </tr>
     <tr>
       <th>4030</th>
-      <td>0.003738</td>
-      <td>0.003652</td>
-      <td>0.003557</td>
-      <td>0.003737</td>
-      <td>0.002973</td>
-      <td>0.003205</td>
-      <td>0.003420</td>
-      <td>0.002227</td>
-      <td>0.003520</td>
-      <td>0.003932</td>
+      <td>0.001751</td>
+      <td>0.001866</td>
+      <td>1.807109e-03</td>
+      <td>0.001662</td>
+      <td>0.001164</td>
+      <td>0.001096</td>
+      <td>0.000952</td>
+      <td>0.001110</td>
+      <td>0.001482</td>
+      <td>0.000940</td>
       <td>...</td>
-      <td>0.002444</td>
-      <td>2.647269e-03</td>
-      <td>0.002541</td>
-      <td>0.002408</td>
-      <td>0.002702</td>
-      <td>0.002547</td>
-      <td>0.002385</td>
-      <td>0.002038</td>
-      <td>0.002477</td>
-      <td>0.002837</td>
+      <td>0.000766</td>
+      <td>0.000729</td>
+      <td>0.000841</td>
+      <td>0.000865</td>
+      <td>0.000874</td>
+      <td>6.683831e-04</td>
+      <td>6.569512e-04</td>
+      <td>5.133820e-04</td>
+      <td>6.889034e-04</td>
+      <td>7.533813e-04</td>
     </tr>
     <tr>
       <th>4095</th>
-      <td>0.003459</td>
-      <td>0.004063</td>
-      <td>0.003610</td>
-      <td>0.004071</td>
-      <td>0.003099</td>
-      <td>0.003373</td>
-      <td>0.003231</td>
-      <td>0.002468</td>
-      <td>0.003654</td>
-      <td>0.004141</td>
+      <td>0.000900</td>
+      <td>0.001126</td>
+      <td>1.366911e-03</td>
+      <td>0.001139</td>
+      <td>0.001264</td>
+      <td>0.001266</td>
+      <td>0.001387</td>
+      <td>0.001376</td>
+      <td>0.001575</td>
+      <td>0.001608</td>
       <td>...</td>
-      <td>0.002274</td>
-      <td>2.544598e-03</td>
-      <td>0.002587</td>
-      <td>0.002493</td>
-      <td>0.002923</td>
-      <td>0.002699</td>
-      <td>0.002592</td>
-      <td>0.002177</td>
-      <td>0.002471</td>
-      <td>0.002698</td>
+      <td>0.000870</td>
+      <td>0.000711</td>
+      <td>0.000722</td>
+      <td>0.000771</td>
+      <td>0.000855</td>
+      <td>9.470399e-04</td>
+      <td>9.109968e-04</td>
+      <td>1.216197e-03</td>
+      <td>1.373307e-03</td>
+      <td>1.450729e-03</td>
     </tr>
   </tbody>
 </table>
 <p>640 rows × 401 columns</p>
 </div></div>
 </div>
-<p>If a device is known to be perfectly linear it would suffice to include measurements for each primary at only the minimum and maximum setting. But digital light devices are rarely linear, so to ensure an accurate device model one should include multiple measurements for each primary accross the input range. In this case there are 64 measurements per primary, evenly spaced accross the input range.</p>
+<p>If a device is known to be perfectly linear it would suffice to include measurements for each primary at only the minimum and maximum setting. But digital light devices are rarely linear, so to ensure an accurate device model one should include multiple measurements for each primary across the input range. In this case there are 64 measurements for each of the 10 primaries, evenly spaced across the input range.</p>
 <p>Now that we have instantiated <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code>, lets see what it can do.</p>
 </section>
 <section id="Visualising-calibration-data">
@@ -704,7 +705,7 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -718,7 +719,7 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
 </section>
 <section id="Dealing-with-non-linearity">
 <h2>Dealing with non-linearity<a class="headerlink" href="#Dealing-with-non-linearity" title="Permalink to this heading">¶</a></h2>
-<p>Digital light-producing devices tend not to have a linear relationship between requested input and spectral output. On standard computer monitors this is often referred to as a gamma function, and often you will hear of a computer monitor being gamma corrected or linearized, which typically involves fitting a function to the data and reversing the function to find the input values needed to achieve linear output.</p>
+<p>Digital light-producing devices tend not to have a linear relationship between requested input and spectral output. On standard computer monitors this is often referred to as a <em>gamma function</em>, and often you will hear of a computer monitor being gamma corrected or linearized, which typically involves reversing a function fitted to the data to find the input values needed to achieve linear output.</p>
 <p><code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> includes a <code class="docutils literal notranslate"><span class="pre">.do_gamma()</span></code> method that characterises the linearity of each device primary with reverse <a class="reference external" href="https://en.wikipedia.org/wiki/Beta_distribution">beta cumulative distribution function</a> or polynomial curve fits. The interpolated results are saved in a lookup table that contains, for each requested input value, the actual value required to produce linear output.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -778,243 +779,243 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
   <tbody>
     <tr>
       <th>0</th>
-      <td>25</td>
-      <td>25</td>
-      <td>26</td>
-      <td>27</td>
-      <td>28</td>
-      <td>28</td>
-      <td>29</td>
-      <td>30</td>
+      <td>31</td>
       <td>31</td>
       <td>32</td>
+      <td>32</td>
+      <td>33</td>
+      <td>34</td>
+      <td>34</td>
+      <td>35</td>
+      <td>35</td>
+      <td>36</td>
       <td>...</td>
-      <td>4045</td>
-      <td>4047</td>
-      <td>4049</td>
-      <td>4051</td>
-      <td>4053</td>
-      <td>4055</td>
-      <td>4057</td>
-      <td>4059</td>
-      <td>4061</td>
-      <td>4064</td>
+      <td>4082</td>
+      <td>4084</td>
+      <td>4085</td>
+      <td>4087</td>
+      <td>4089</td>
+      <td>4090</td>
+      <td>4092</td>
+      <td>4093</td>
+      <td>4095</td>
+      <td>4095</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>13</td>
+      <td>8</td>
+      <td>8</td>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
       <td>13</td>
       <td>14</td>
       <td>15</td>
       <td>16</td>
-      <td>17</td>
-      <td>17</td>
-      <td>18</td>
-      <td>19</td>
-      <td>20</td>
       <td>...</td>
-      <td>4003</td>
-      <td>4005</td>
-      <td>4007</td>
-      <td>4009</td>
-      <td>4011</td>
-      <td>4013</td>
-      <td>4015</td>
-      <td>4017</td>
-      <td>4019</td>
-      <td>4021</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>28</td>
-      <td>28</td>
-      <td>29</td>
-      <td>29</td>
-      <td>30</td>
-      <td>31</td>
-      <td>31</td>
-      <td>32</td>
-      <td>33</td>
-      <td>33</td>
-      <td>...</td>
-      <td>4027</td>
-      <td>4028</td>
-      <td>4030</td>
       <td>4031</td>
       <td>4033</td>
-      <td>4034</td>
-      <td>4036</td>
+      <td>4035</td>
       <td>4037</td>
       <td>4039</td>
       <td>4041</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>30</td>
-      <td>30</td>
-      <td>31</td>
-      <td>32</td>
-      <td>33</td>
-      <td>33</td>
-      <td>34</td>
-      <td>35</td>
-      <td>36</td>
-      <td>36</td>
-      <td>...</td>
-      <td>4013</td>
-      <td>4015</td>
-      <td>4016</td>
-      <td>4018</td>
-      <td>4019</td>
-      <td>4021</td>
-      <td>4022</td>
-      <td>4024</td>
-      <td>4025</td>
-      <td>4027</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>28</td>
-      <td>28</td>
-      <td>29</td>
-      <td>30</td>
-      <td>31</td>
-      <td>32</td>
-      <td>33</td>
-      <td>34</td>
-      <td>35</td>
-      <td>36</td>
-      <td>...</td>
-      <td>4039</td>
-      <td>4040</td>
-      <td>4041</td>
-      <td>4042</td>
       <td>4043</td>
-      <td>4044</td>
       <td>4045</td>
-      <td>4046</td>
       <td>4047</td>
       <td>4049</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>48</td>
-      <td>49</td>
-      <td>50</td>
-      <td>52</td>
-      <td>53</td>
-      <td>55</td>
-      <td>56</td>
-      <td>57</td>
-      <td>59</td>
-      <td>60</td>
+      <th>2</th>
+      <td>29</td>
+      <td>29</td>
+      <td>30</td>
+      <td>31</td>
+      <td>31</td>
+      <td>32</td>
+      <td>33</td>
+      <td>33</td>
+      <td>34</td>
+      <td>35</td>
       <td>...</td>
-      <td>4050</td>
-      <td>4050</td>
-      <td>4051</td>
-      <td>4051</td>
-      <td>4052</td>
-      <td>4052</td>
-      <td>4053</td>
-      <td>4053</td>
-      <td>4054</td>
-      <td>4055</td>
+      <td>4082</td>
+      <td>4083</td>
+      <td>4083</td>
+      <td>4084</td>
+      <td>4084</td>
+      <td>4085</td>
+      <td>4085</td>
+      <td>4086</td>
+      <td>4086</td>
+      <td>4087</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>43</td>
+      <td>43</td>
+      <td>44</td>
+      <td>44</td>
+      <td>45</td>
+      <td>46</td>
+      <td>46</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>...</td>
+      <td>4007</td>
+      <td>4008</td>
+      <td>4010</td>
+      <td>4011</td>
+      <td>4013</td>
+      <td>4014</td>
+      <td>4015</td>
+      <td>4017</td>
+      <td>4018</td>
+      <td>4020</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>32</td>
+      <td>33</td>
+      <td>34</td>
+      <td>36</td>
+      <td>37</td>
+      <td>39</td>
+      <td>40</td>
+      <td>42</td>
+      <td>43</td>
+      <td>44</td>
+      <td>...</td>
+      <td>4061</td>
+      <td>4062</td>
+      <td>4062</td>
+      <td>4063</td>
+      <td>4064</td>
+      <td>4065</td>
+      <td>4065</td>
+      <td>4066</td>
+      <td>4067</td>
+      <td>4068</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>34</td>
+      <td>35</td>
+      <td>36</td>
+      <td>38</td>
+      <td>39</td>
+      <td>41</td>
+      <td>42</td>
+      <td>44</td>
+      <td>45</td>
+      <td>47</td>
+      <td>...</td>
+      <td>4075</td>
+      <td>4076</td>
+      <td>4076</td>
+      <td>4077</td>
+      <td>4077</td>
+      <td>4078</td>
+      <td>4079</td>
+      <td>4079</td>
+      <td>4080</td>
+      <td>4081</td>
     </tr>
     <tr>
       <th>6</th>
+      <td>40</td>
+      <td>41</td>
+      <td>42</td>
+      <td>44</td>
       <td>45</td>
-      <td>46</td>
       <td>47</td>
+      <td>48</td>
       <td>49</td>
-      <td>50</td>
       <td>51</td>
-      <td>53</td>
-      <td>54</td>
-      <td>55</td>
-      <td>57</td>
+      <td>52</td>
       <td>...</td>
+      <td>4051</td>
       <td>4052</td>
-      <td>4053</td>
+      <td>4052</td>
       <td>4053</td>
       <td>4054</td>
       <td>4055</td>
-      <td>4056</td>
+      <td>4055</td>
       <td>4056</td>
       <td>4057</td>
       <td>4058</td>
-      <td>4059</td>
     </tr>
     <tr>
       <th>7</th>
+      <td>69</td>
+      <td>70</td>
+      <td>72</td>
+      <td>74</td>
       <td>76</td>
       <td>78</td>
       <td>80</td>
       <td>82</td>
       <td>84</td>
       <td>86</td>
-      <td>88</td>
-      <td>90</td>
-      <td>92</td>
-      <td>94</td>
       <td>...</td>
+      <td>4064</td>
+      <td>4064</td>
+      <td>4065</td>
+      <td>4065</td>
+      <td>4066</td>
       <td>4066</td>
       <td>4067</td>
       <td>4067</td>
       <td>4068</td>
-      <td>4068</td>
       <td>4069</td>
-      <td>4069</td>
-      <td>4070</td>
-      <td>4070</td>
-      <td>4071</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>25</td>
-      <td>25</td>
-      <td>26</td>
-      <td>26</td>
-      <td>27</td>
-      <td>28</td>
-      <td>28</td>
-      <td>29</td>
-      <td>29</td>
-      <td>30</td>
-      <td>...</td>
-      <td>4023</td>
-      <td>4025</td>
-      <td>4028</td>
-      <td>4030</td>
-      <td>4033</td>
-      <td>4035</td>
-      <td>4037</td>
-      <td>4040</td>
-      <td>4042</td>
-      <td>4045</td>
-    </tr>
-    <tr>
-      <th>9</th>
+      <td>20</td>
+      <td>20</td>
+      <td>21</td>
+      <td>21</td>
+      <td>22</td>
       <td>23</td>
       <td>23</td>
       <td>24</td>
       <td>25</td>
-      <td>26</td>
-      <td>27</td>
-      <td>28</td>
-      <td>29</td>
-      <td>30</td>
-      <td>31</td>
+      <td>25</td>
       <td>...</td>
-      <td>4044</td>
-      <td>4045</td>
-      <td>4047</td>
-      <td>4048</td>
-      <td>4050</td>
-      <td>4051</td>
-      <td>4053</td>
-      <td>4054</td>
-      <td>4056</td>
-      <td>4058</td>
+      <td>4005</td>
+      <td>4007</td>
+      <td>4010</td>
+      <td>4012</td>
+      <td>4015</td>
+      <td>4017</td>
+      <td>4020</td>
+      <td>4022</td>
+      <td>4025</td>
+      <td>4028</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>35</td>
+      <td>35</td>
+      <td>36</td>
+      <td>37</td>
+      <td>37</td>
+      <td>38</td>
+      <td>39</td>
+      <td>39</td>
+      <td>40</td>
+      <td>41</td>
+      <td>...</td>
+      <td>4017</td>
+      <td>4019</td>
+      <td>4020</td>
+      <td>4021</td>
+      <td>4022</td>
+      <td>4024</td>
+      <td>4025</td>
+      <td>4026</td>
+      <td>4027</td>
+      <td>4029</td>
     </tr>
   </tbody>
 </table>
@@ -1105,7 +1106,7 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
 <h2>Predicting spectral output<a class="headerlink" href="#Predicting-spectral-output" title="Permalink to this heading">¶</a></h2>
 <p>The spectral output for a chosen primary at a given setting can be predicted with the <code class="docutils literal notranslate"><span class="pre">.predict_primary_spd(...)</span></code> method. This method simply interpolates between the measured spectra provided in the calibration data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">primary_spd</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_primary_spd</span><span class="p">(</span>
@@ -1114,7 +1115,7 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Primary 2 (half power)&#39;</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">primary_spd</span><span class="p">)</span>
-<span class="n">primary_spd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$/nm&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+<span class="n">primary_spd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$/nm&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">primary_colors</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -1124,17 +1125,17 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Wavelength
-380    0.000947
-381    0.000917
-382    0.000914
-383    0.000926
-384    0.000836
+380    0.000356
+381    0.000329
+382    0.000395
+383    0.000438
+384    0.000370
          ...
-776    0.000570
-777    0.000551
-778    0.000449
-779    0.000583
-780    0.000615
+776    0.000138
+777    0.000124
+778    0.000126
+779    0.000112
+780    0.000138
 Name: Primary 2 (half power), Length: 401, dtype: float64
 </pre></div></div>
 </div>
@@ -1147,7 +1148,7 @@ Name: Primary 2 (half power), Length: 401, dtype: float64
 </div>
 <p>One can also predict the spectral output for a combination of primaries and settings with <code class="docutils literal notranslate"><span class="pre">.predict_multiprimary_spd(...)</span></code>. This method calls the previous method for each primary/setting pair and sums the spectral power distributions.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">all_primaries_half_max</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">device</span><span class="o">.</span><span class="n">nprimaries</span>
@@ -1174,17 +1175,17 @@ Predicted spectral output for device settings:
  [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
 Wavelength
-380    0.012620
-381    0.013069
-382    0.012555
-383    0.013205
-384    0.010967
+380    0.007696
+381    0.008681
+382    0.009253
+383    0.009193
+384    0.008020
          ...
-776    0.010130
-777    0.009807
-778    0.008311
-779    0.009844
-780    0.010365
+776    0.007136
+777    0.007279
+778    0.007225
+779    0.006890
+780    0.006819
 Name: All channels at half max, Length: 401, dtype: float64
 </pre></div></div>
 </div>
@@ -1197,7 +1198,7 @@ Name: All channels at half max, Length: 401, dtype: float64
 </div>
 <p>One can calculate <em>a</em>-opic irradiance with the <code class="docutils literal notranslate"><span class="pre">.predict_multiprimary_aopic(...)</span></code> method, which weights a predicted spectrum by the action spectrum for each photoreceptor.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">half_max_aopic</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">predict_multiprimary_aopic</span><span class="p">(</span>
@@ -1207,7 +1208,7 @@ Name: All channels at half max, Length: 401, dtype: float64
 
 <span class="n">half_max_aopic</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">aopic_colors</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+    <span class="n">color</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">photoreceptor_colors</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
     <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -1224,12 +1225,11 @@ Name: All channels at half max, Length: 401, dtype: float64
 Predicted a-opic irradiance for device settings:
  [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
-Photoreceptor
-S    12.991635
-M    22.831240
-L    27.040596
-R    22.658747
-I    20.783028
+sc     22.985857
+mc     40.273954
+lc     49.544002
+rh     38.653506
+mel    34.985300
 Name: Half max $a$-opic, dtype: float64
 </pre></div></div>
 </div>
@@ -1245,7 +1245,7 @@ Name: Half max $a$-opic, dtype: float64
 <h2>Settings vs. weights<a class="headerlink" href="#Settings-vs. weights" title="Permalink to this heading">¶</a></h2>
 <p>When predicting device output, one can use device settings in the native resolution or floating point weights between 0-1. The latter are used internally for convenience and precision, but one can convert back and forth between settings and weights with the <code class="docutils literal notranslate"><span class="pre">.s2w(...)</span></code> and <code class="docutils literal notranslate"><span class="pre">.w2s(...)</span></code> methods.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">settings</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2047</span><span class="p">]</span> <span class="o">*</span> <span class="n">device</span><span class="o">.</span><span class="n">nprimaries</span>
@@ -1254,7 +1254,7 @@ Name: Half max $a$-opic, dtype: float64
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1263,7 +1263,7 @@ Name: Half max $a$-opic, dtype: float64
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert settings to weights</span>
@@ -1273,7 +1273,7 @@ Name: Half max $a$-opic, dtype: float64
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1291,7 +1291,7 @@ Name: Half max $a$-opic, dtype: float64
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert back to settings</span>
@@ -1301,7 +1301,7 @@ Name: Half max $a$-opic, dtype: float64
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1314,11 +1314,11 @@ Name: Half max $a$-opic, dtype: float64
 <h2>Finding a target spectrum<a class="headerlink" href="#Finding-a-target-spectrum" title="Permalink to this heading">¶</a></h2>
 <p>If you need to find a spectrum with a specific chromaticity and luminance, you can use <code class="docutils literal notranslate"><span class="pre">.find_Settings_xyY(...)</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">target_xy</span><span class="o">=</span><span class="p">[</span><span class="mf">0.31271</span><span class="p">,</span> <span class="mf">0.32902</span><span class="p">]</span>
-<span class="n">target_luminance</span><span class="o">=</span><span class="mf">4000.</span>
+<span class="n">target_luminance</span><span class="o">=</span><span class="mf">6000.</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">find_settings_xyY</span><span class="p">(</span><span class="n">target_xy</span><span class="p">,</span> <span class="n">target_luminance</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1328,10 +1328,14 @@ Name: Half max $a$-opic, dtype: float64
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-basinhopping step 0: f 2.05565e-08
-basinhopping step 1: f 3.44155e-07 trial_f 3.44155e-07 accepted 1  lowest_f 2.05565e-08
-Requested LMS: [ 5.8249364   5.20702626  2.97043309]
-Solution LMS: [ 5.82484388  5.20700114  2.97032649]
+basinhopping step 0: f 3.01885e-07
+basinhopping step 1: f 1.43306e-07 trial_f 1.43306e-07 accepted 1  lowest_f 1.43306e-07
+found new global minimum on step 1 with function value 1.43306e-07
+Requested LMS: L    8.737379
+M    7.810517
+S    4.455637
+dtype: float64
+Solution LMS: [ 8.73775119  7.8105516   4.45569629]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -1343,7 +1347,7 @@ Solution LMS: [ 5.82484388  5.20700114  2.97032649]
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">.find_settings_xyY(...)</span></code> returns an <code class="docutils literal notranslate"><span class="pre">OptimisationResult</span></code> from <code class="docutils literal notranslate"><span class="pre">SciPy</span></code>. To have your device produce this spectrum, you will need to convert the result to the native resolution before plugging them in.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">settings</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
@@ -1352,12 +1356,12 @@ Solution LMS: [ 5.82484388  5.20700114  2.97032649]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[55, 352, 0, 1290, 859, 1112, 43, 60, 2619, 1329]
+[11, 663, 142, 198, 367, 1449, 59, 427, 649, 519]
 </pre></div></div>
 </div>
 </section>
@@ -1365,105 +1369,72 @@ Solution LMS: [ 5.82484388  5.20700114  2.97032649]
 <h2>Making a configuration file<a class="headerlink" href="#Making-a-configuration-file" title="Permalink to this heading">¶</a></h2>
 <p>When working with different devices or calibration files it may be more convenient to instantiate <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> from a json configuration file using the <code class="docutils literal notranslate"><span class="pre">.from_json(...)</span></code> constructor. Here is an example configuration script to generate a json file with the required arguments.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 
 
-<span class="c1"># Required arguments</span>
-<span class="n">CALIBRATION_FPATH</span> <span class="o">=</span> <span class="s2">&quot;/Users/jtm545/Projects/PySilSub/data/S2_corrected_oo_spectra.csv&quot;</span>
-<span class="n">WAVELENGTHS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="n">RESOLUTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4095</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
-<span class="n">COLORS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;blueviolet&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;royalblue&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;darkblue&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cyan&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;green&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;lime&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;orange&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;red&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;darkred&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-
-<span class="c1"># Non required arguments</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;STLAB_1 (binocular, left eye)&quot;</span>
+<span class="c1"># Configure device</span>
+<span class="n">CALIBRATION</span> <span class="o">=</span> <span class="s2">&quot;/Users/jtm545/Projects/PySilSub/pysilsub/data/ProPixx.csv&quot;</span>
+<span class="n">CALIBRATION_WAVELENGTHS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">PRIMARY_RESOLUTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
+<span class="n">PRIMARY_COLORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">]</span>
 <span class="n">CALIBRATION_UNITS</span> <span class="o">=</span> <span class="s2">&quot;Counts/s/nm&quot;</span>
-<span class="n">CALIBRATION_DATE</span> <span class="o">=</span> <span class="s2">&quot;14/07/2022&quot;</span>
-
-<span class="c1"># Used for file name</span>
-<span class="n">JSON_NAME</span> <span class="o">=</span> <span class="s2">&quot;STLAB_1_York&quot;</span>
-
-<span class="c1"># Additional info</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;ProPixx Projector&quot;</span>
+<span class="n">JSON_NAME</span> <span class="o">=</span> <span class="s2">&quot;ProPixx&quot;</span>
 <span class="n">NOTES</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;STLAB_1 is used in the psychology department &quot;</span>
-    <span class="o">+</span> <span class="s2">&quot;at the University of York to stimulate the left eye in a &quot;</span>
-    <span class="o">+</span> <span class="s2">&quot;binocular stimulation setup for the BakerWadeBBSRC project. For &quot;</span>
-    <span class="o">+</span> <span class="s2">&quot;this setup, light is transported from STLAB via liquid light &quot;</span>
-    <span class="o">+</span> <span class="s2">&quot;guides and diffused by discs of white diffuser glass, which are &quot;</span>
-    <span class="o">+</span> <span class="s2">&quot;fused into a single image courtesy of a VR headset. Measurements &quot;</span>
-    <span class="o">+</span> <span class="s2">&quot;taken with an OceanOptics JAZ spectrometer through the VR goggles.&quot;</span>
+    <span class="s2">&quot;VPixx ProPixx projector at the York Neuroimaging Center. Spectra were &quot;</span>
+    <span class="s2">&quot;measured with an OceanOptics Jaz spectrometer using a long fiber optic &quot;</span>
+    <span class="s2">&quot;cable.&quot;</span>
 <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">device_config</span><span class="p">():</span>
 
     <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;calibration_fpath&quot;</span><span class="p">:</span> <span class="n">CALIBRATION_FPATH</span><span class="p">,</span>
-        <span class="s2">&quot;wavelengths&quot;</span><span class="p">:</span> <span class="n">WAVELENGTHS</span><span class="p">,</span>
-        <span class="s2">&quot;resolutions&quot;</span><span class="p">:</span> <span class="n">RESOLUTIONS</span><span class="p">,</span>
-        <span class="s2">&quot;colors&quot;</span><span class="p">:</span> <span class="n">COLORS</span><span class="p">,</span>
+        <span class="s2">&quot;calibration&quot;</span><span class="p">:</span> <span class="n">CALIBRATION</span><span class="p">,</span>
+        <span class="s2">&quot;calibration_wavelengths&quot;</span><span class="p">:</span> <span class="n">CALIBRATION_WAVELENGTHS</span><span class="p">,</span>
+        <span class="s2">&quot;primary_resolutions&quot;</span><span class="p">:</span> <span class="n">PRIMARY_RESOLUTIONS</span><span class="p">,</span>
+        <span class="s2">&quot;primary_colors&quot;</span><span class="p">:</span> <span class="n">PRIMARY_COLORS</span><span class="p">,</span>
         <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">NAME</span><span class="p">,</span>
         <span class="s2">&quot;calibration_units&quot;</span><span class="p">:</span> <span class="n">CALIBRATION_UNITS</span><span class="p">,</span>
-        <span class="s2">&quot;calibration_date&quot;</span><span class="p">:</span> <span class="n">CALIBRATION_DATE</span><span class="p">,</span>
         <span class="s2">&quot;json_name&quot;</span><span class="p">:</span> <span class="n">JSON_NAME</span><span class="p">,</span>
         <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="n">NOTES</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;../../data/</span><span class="si">{</span><span class="n">JSON_NAME</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;../../pysilsub/data/</span><span class="si">{</span><span class="n">JSON_NAME</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">device_config</span><span class="p">()</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <p>Now we can instantiate from the json file.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s1">&#39;../../data/STLAB_1_York.json&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s1">&#39;../../pysilsub/data/ProPixx.json&#39;</span><span class="p">)</span>
 <span class="n">device</span><span class="o">.</span><span class="n">config</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;calibration_fpath&#39;: &#39;/Users/jtm545/Projects/PySilSub/data/S2_corrected_oo_spectra.csv&#39;,
- &#39;wavelengths&#39;: [380, 781, 1],
- &#39;resolutions&#39;: [4095, 4095, 4095, 4095, 4095, 4095, 4095, 4095, 4095, 4095],
- &#39;colors&#39;: [&#39;blueviolet&#39;,
-  &#39;royalblue&#39;,
-  &#39;darkblue&#39;,
-  &#39;blue&#39;,
-  &#39;cyan&#39;,
-  &#39;green&#39;,
-  &#39;lime&#39;,
-  &#39;orange&#39;,
-  &#39;red&#39;,
-  &#39;darkred&#39;],
- &#39;name&#39;: &#39;STLAB_1 (binocular, left eye)&#39;,
+{&#39;calibration&#39;: &#39;/Users/jtm545/Projects/PySilSub/pysilsub/data/ProPixx.csv&#39;,
+ &#39;calibration_wavelengths&#39;: [380, 781, 1],
+ &#39;primary_resolutions&#39;: [255, 255, 255],
+ &#39;primary_colors&#39;: [&#39;red&#39;, &#39;green&#39;, &#39;blue&#39;],
+ &#39;name&#39;: &#39;ProPixx Projector&#39;,
  &#39;calibration_units&#39;: &#39;Counts/s/nm&#39;,
- &#39;calibration_date&#39;: &#39;14/07/2022&#39;,
- &#39;json_name&#39;: &#39;STLAB_1_York&#39;,
- &#39;notes&#39;: &#39;STLAB_1 is used in the psychology department at the University of York to stimulate the left eye in a binocular stimulation setup for the BakerWadeBBSRC project. For this setup, light is transported from STLAB via liquid light guides and diffused by discs of white diffuser glass, which are fused into a single image courtesy of a VR headset. Measurements taken with an OceanOptics JAZ spectrometer through the VR goggles.&#39;}
+ &#39;json_name&#39;: &#39;ProPixx&#39;,
+ &#39;notes&#39;: &#39;VPixx ProPixx projector at the York Neuroimaging Center. Spectra were measured with an OceanOptics Jaz spectrometer using a long fiber optic cable.&#39;}
 </pre></div></div>
 </div>
 </section>
@@ -1471,36 +1442,38 @@ Solution LMS: [ 5.82484388  5.20700114  2.97032649]
 <h2>Package data<a class="headerlink" href="#Package-data" title="Permalink to this heading">¶</a></h2>
 <p><em>PySilSub</em> comes with calibration and configuration data for various multiprimary stimulation systems. This means you can experiment with the package without having to calibrate and configure your own system.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">available</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">show_package_data</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">available</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-STLAB_2_York
-OneLight
-LEDCube
-ProPixx
-BCGAR
-VirtualSky
-STLAB_Oxford
-STLAB_1_York
+[&#39;STLAB_2_York&#39;,
+ &#39;OneLight&#39;,
+ &#39;LEDCube&#39;,
+ &#39;ProPixx&#39;,
+ &#39;BCGAR&#39;,
+ &#39;VirtualSky&#39;,
+ &#39;STLAB_Oxford&#39;,
+ &#39;STLAB_1_York&#39;]
 </pre></div></div>
 </div>
 <p>One can easily create a <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> from example package data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 
-<span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;ProPixx&#39;</span><span class="p">)</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;VirtualSky&#39;</span><span class="p">)</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_calibration_spds_and_gamut</span><span class="p">()</span>
 <span class="n">pprint</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
@@ -1511,16 +1484,18 @@ STLAB_1_York
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;calibration_fpath&#39;: &#39;./data/ProPixx.csv&#39;,
- &#39;calibration_units&#39;: &#39;Counts/s/nm&#39;,
- &#39;colors&#39;: [&#39;red&#39;, &#39;green&#39;, &#39;blue&#39;],
- &#39;json_name&#39;: &#39;ProPixx&#39;,
- &#39;name&#39;: &#39;ProPixx Projector&#39;,
- &#39;notes&#39;: &#39;VPixx ProPixx projector at the York Neuroimaging Center. Spectra &#39;
-          &#39;were measured with an OceanOptics Jaz spectrometer using a long &#39;
-          &#39;fiber optic cable.&#39;,
- &#39;resolutions&#39;: [255, 255, 255],
- &#39;wavelengths&#39;: [380, 781, 1]}
+{&#39;calibration&#39;: &#39;./data/VirtualSky.csv&#39;,
+ &#39;calibration_units&#39;: &#39;W/m2/s/nm&#39;,
+ &#39;calibration_wavelengths&#39;: [380, 781, 1],
+ &#39;json_name&#39;: &#39;VirtualSky&#39;,
+ &#39;name&#39;: &#39;VirtualSky (BGRW projector)&#39;,
+ &#39;notes&#39;: &#39;The device is a BGRW projector with a likely 8-bit native &#39;
+          &#39;resolution. Though the data have been wrangled and given a &#39;
+          &#39;fictitious resolution, the spectral measurements are taken from the &#39;
+          &#39;device accross its native resolution. This is included as an &#39;
+          &#39;example of a 4-primary system.&#39;,
+ &#39;primary_colors&#39;: [&#39;blue&#39;, &#39;green&#39;, &#39;red&#39;, &#39;darkgrey&#39;],
+ &#39;primary_resolutions&#39;: [260, 260, 260, 260]}
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">

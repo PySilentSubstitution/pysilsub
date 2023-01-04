@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Numerical optimization &#8212; PySilSub 0.0.13 documentation</title>
+    <title>Numerical optimization &#8212; PySilSub 0.0.14 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -312,24 +312,23 @@ zero. In all cases, <span class="math notranslate nohighlight">\(x\)</span> is a
 <section id="Basic-example">
 <h2>Basic example<a class="headerlink" href="#Basic-example" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.problems</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
 
 <span class="c1"># Instantiate the problem class</span>
-<span class="n">ssp</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s1">&#39;../../data/STLAB_1_York.json&#39;</span><span class="p">)</span>
+<span class="n">ssp</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_1_York&#39;</span><span class="p">)</span>
 
 <span class="c1"># Define problem</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.1</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.5</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
 
 <span class="c1"># Find solution</span>
-<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">()</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:{</span><span class="s1">&#39;disp&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">}})</span>
 
 <span class="c1"># Plot solution</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
@@ -345,19 +344,17 @@ zero. In all cases, <span class="math notranslate nohighlight">\(x\)</span> is a
 *************** Silent Substitution Problem ****************
 ************************************************************
 Device: STLAB_1 (binocular, left eye)
-Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
-Ignoring: [&#39;R&#39;]
-Minimising: [&#39;M&#39;, &#39;L&#39;, &#39;I&#39;]
-Modulating: [&#39;S&#39;]
-Target contrast: 0.1
+Observer: StandardColorimetricObserver(age=32, field_size=10)
+Ignoring: [&#39;rh&#39;]
+Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
+Modulating: [&#39;mel&#39;]
+Target contrast: [ 0.5]
+Background: None
 
 
+~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
+&gt; No background specified, will optimise background.
 &gt; Performing local optimization with SLSQP.
-Optimization terminated successfully    (Exit mode 0)
-            Current function value: 7.700106698215687e-10
-            Iterations: 22
-            Function evaluations: 248
-            Gradient evaluations: 22
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -368,10 +365,11 @@ Optimization terminated successfully    (Exit mode 0)
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">print_photoreceptor_contrasts</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Look at the actual contrast values</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">print_photoreceptor_contrasts</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -380,28 +378,27 @@ Optimization terminated successfully    (Exit mode 0)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Photoreceptor
-S    0.099972
-M   -0.000093
-L    0.000482
-R   -0.007610
-I    0.000208
+sc     0.000195
+mc     0.000471
+lc    -0.000134
+rh     0.319336
+mel    0.499450
 dtype: float64
 </pre></div></div>
 </div>
 </section>
 <section id="Maximising-contrast">
 <h2>Maximising contrast<a class="headerlink" href="#Maximising-contrast" title="Permalink to this heading">¶</a></h2>
-<p>If you want <code class="docutils literal notranslate"><span class="pre">.optim_solve(...)</span></code> to maximise contrast rather than aim for a target value, don’t set the <code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> property, or set it back to its default value, <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>If you want <code class="docutils literal notranslate"><span class="pre">.optim_solve(...)</span></code> to maximise contrast rather than aim for a target value, you can set the <code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> property to <code class="docutils literal notranslate"><span class="pre">'max'</span></code> or <code class="docutils literal notranslate"><span class="pre">'min'</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="s1">&#39;max&#39;</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
 
 <span class="c1"># Find solution</span>
-<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">()</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:{</span><span class="s1">&#39;disp&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">}})</span>
 
 <span class="c1"># Plot solution</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
@@ -417,20 +414,18 @@ dtype: float64
 *************** Silent Substitution Problem ****************
 ************************************************************
 Device: STLAB_1 (binocular, left eye)
-Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
-Ignoring: [&#39;R&#39;]
-Minimising: [&#39;M&#39;, &#39;L&#39;, &#39;I&#39;]
-Modulating: [&#39;S&#39;]
-Target contrast: None
+Observer: StandardColorimetricObserver(age=32, field_size=10)
+Ignoring: [&#39;rh&#39;]
+Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
+Modulating: [&#39;mel&#39;]
+Target contrast: [inf]
+Background: None
 
 
-&gt; No target contrast specified, will aim to maximise.
+~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
+&gt; No background specified, will optimise background.
+&gt; Aiming to maximise contrast.
 &gt; Performing local optimization with SLSQP.
-Iteration limit reached    (Exit mode 9)
-            Current function value: -0.31814951481598563
-            Iterations: 100
-            Function evaluations: 1182
-            Gradient evaluations: 100
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -441,7 +436,7 @@ Iteration limit reached    (Exit mode 9)
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">print_photoreceptor_contrasts</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
@@ -453,26 +448,25 @@ Iteration limit reached    (Exit mode 9)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Photoreceptor
-S    0.318150
-M   -0.000010
-L    0.000005
-R   -0.019018
-I    0.000004
+sc     0.000038
+mc     0.000024
+lc     0.000004
+rh     0.555998
+mel    0.969204
 dtype: float64
 </pre></div></div>
 </div>
-<section id="Optimising-the-background">
-<h3>Optimising the background<a class="headerlink" href="#Optimising-the-background" title="Permalink to this heading">¶</a></h3>
-<p>It often makes sense to stick with a specific background spectrum, particularly if you plan on targeting different photoreceptors in the same experiment. But when you specify a background spectrum, <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code> will only optimize the modulation spectrum. This is a big constraint on the optimisation and is why in this case we only got about 21% contrast on melanopsin.</p>
-<p>If you don’t care what the background spectrum is, set the <code class="docutils literal notranslate"><span class="pre">background</span></code> property to <code class="docutils literal notranslate"><span class="pre">None</span></code>. <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code> will now also optimise the background and should be able to find more contrast.</p>
+<section id="Specifying-a-background-spectrum">
+<h3>Specifying a background spectrum<a class="headerlink" href="#Specifying-a-background-spectrum" title="Permalink to this heading">¶</a></h3>
+<p>Note that in the above examples, both the background and modulation spectra were optimised. However, It often makes sense to stick with a specific background spectrum, particularly if you plan on targeting different photoreceptors in the same experiment. If you specify a background spectrum, <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code> will only optimize the modulation spectrum.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>  <span class="c1"># All primaries, half-max</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="s1">&#39;max&#39;</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
-<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">()</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:{</span><span class="s1">&#39;disp&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">}})</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -486,21 +480,17 @@ dtype: float64
 *************** Silent Substitution Problem ****************
 ************************************************************
 Device: STLAB_1 (binocular, left eye)
-Background: None
-Ignoring: [&#39;R&#39;]
-Minimising: [&#39;M&#39;, &#39;L&#39;, &#39;I&#39;]
-Modulating: [&#39;S&#39;]
-Target contrast: None
+Observer: StandardColorimetricObserver(age=32, field_size=10)
+Ignoring: [&#39;rh&#39;]
+Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
+Modulating: [&#39;mel&#39;]
+Target contrast: [inf]
+Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
 
-&gt; No background specified, will optimise background.
-&gt; No target contrast specified, will aim to maximise.
+~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
+&gt; Aiming to maximise contrast.
 &gt; Performing local optimization with SLSQP.
-Iteration limit reached    (Exit mode 9)
-            Current function value: -7.472442908299183
-            Iterations: 100
-            Function evaluations: 2200
-            Gradient evaluations: 99
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -510,9 +500,8 @@ Iteration limit reached    (Exit mode 9)
 <img alt="_images/05a_numerical_optimisation_8_1.png" src="_images/05a_numerical_optimisation_8_1.png" />
 </div>
 </div>
-<p>747% contrast!</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">print_photoreceptor_contrasts</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
@@ -524,15 +513,15 @@ Iteration limit reached    (Exit mode 9)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Photoreceptor
-S    7.472443
-M   -0.002748
-L    0.002035
-R   -0.055404
-I    0.002057
+sc     0.000012
+mc     0.000004
+lc    -0.000014
+rh     0.104227
+mel    0.147923
 dtype: float64
 </pre></div></div>
 </div>
+<p>Note that pinning a background spectrum is a big constraint on the optimisation and is why in this case we only got about 14% contrast on melanopsin.</p>
 </section>
 </section>
 <section id="Local-vs. global-optimisation">
@@ -541,10 +530,12 @@ dtype: float64
 <p>Due to the random nature of the starting point in the function landscape, the minimum it finds is unlikely to be the global minimum.</p>
 <p>If you have enough time, you can tell <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code> to search for the global minimum, in which case it will use <em>Scipy’s</em> <code class="docutils literal notranslate"><span class="pre">basinhopping</span></code> algorithm to perform a series of local searches, each with a different starting point.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="n">global_search</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="n">global_search</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -554,31 +545,43 @@ dtype: float64
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+************************************************************
+*************** Silent Substitution Problem ****************
+************************************************************
+Device: STLAB_1 (binocular, left eye)
+Observer: StandardColorimetricObserver(age=32, field_size=10)
+Ignoring: [&#39;rh&#39;]
+Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
+Modulating: [&#39;mel&#39;]
+Target contrast: [inf]
+Background: None
+
+
+~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
 &gt; No background specified, will optimise background.
-&gt; No target contrast specified, will aim to maximise.
+&gt; Aiming to maximise contrast.
 &gt; Performing global optimization with basinhopping and SLSQP
 warning: basinhopping: local minimization failure
-basinhopping step 0: f -6.61984
+basinhopping step 0: f -0.838032
+basinhopping step 1: f -0.576571 trial_f -0.576571 accepted 1  lowest_f -0.838032
 warning: basinhopping: local minimization failure
-basinhopping step 1: f -9.38603 trial_f -9.38603 accepted 1  lowest_f -9.38603
-found new global minimum on step 1 with function value -9.38603
+basinhopping step 2: f -0.840987 trial_f -0.840987 accepted 1  lowest_f -0.840987
+found new global minimum on step 2 with function value -0.840987
 warning: basinhopping: local minimization failure
-basinhopping step 2: f -9.38603 trial_f -7.3331 accepted 0  lowest_f -9.38603
+basinhopping step 3: f -0.840987 trial_f -0.668947 accepted 0  lowest_f -0.840987
+basinhopping step 4: f -0.87087 trial_f -0.87087 accepted 1  lowest_f -0.87087
+found new global minimum on step 4 with function value -0.87087
+basinhopping step 5: f -0.965084 trial_f -0.965084 accepted 1  lowest_f -0.965084
+found new global minimum on step 5 with function value -0.965084
 warning: basinhopping: local minimization failure
-basinhopping step 3: f -9.38603 trial_f -6.74886 accepted 0  lowest_f -9.38603
-basinhopping step 4: f -9.38603 trial_f -4.72474 accepted 0  lowest_f -9.38603
+basinhopping step 6: f -0.895994 trial_f -0.895994 accepted 1  lowest_f -0.965084
+basinhopping step 7: f -2.3168 trial_f -2.3168 accepted 1  lowest_f -2.3168
+found new global minimum on step 7 with function value -2.3168
 warning: basinhopping: local minimization failure
-basinhopping step 5: f -9.38603 trial_f -2.68885 accepted 0  lowest_f -9.38603
+basinhopping step 8: f -1.79194 trial_f -1.79194 accepted 1  lowest_f -2.3168
+basinhopping step 9: f -1.56116 trial_f -1.56116 accepted 1  lowest_f -2.3168
 warning: basinhopping: local minimization failure
-basinhopping step 6: f -9.38603 trial_f -0.990906 accepted 0  lowest_f -9.38603
-warning: basinhopping: local minimization failure
-basinhopping step 7: f -9.38603 trial_f -6.04105 accepted 0  lowest_f -9.38603
-warning: basinhopping: local minimization failure
-basinhopping step 8: f -9.38603 trial_f -3.74292 accepted 0  lowest_f -9.38603
-warning: basinhopping: local minimization failure
-basinhopping step 9: f -9.38603 trial_f -7.46262 accepted 0  lowest_f -9.38603
-warning: basinhopping: local minimization failure
-basinhopping step 10: f -8.67393 trial_f -8.67393 accepted 1  lowest_f -9.38603
+basinhopping step 10: f -1.68585 trial_f -1.68585 accepted 1  lowest_f -2.3168
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -588,37 +591,26 @@ basinhopping step 10: f -8.67393 trial_f -8.67393 accepted 1  lowest_f -9.38603
 <img alt="_images/05a_numerical_optimisation_12_1.png" src="_images/05a_numerical_optimisation_12_1.png" />
 </div>
 </div>
-</section>
-<section id="Using-an-external-optimiser">
-<h2>Using an external optimiser<a class="headerlink" href="#Using-an-external-optimiser" title="Permalink to this heading">¶</a></h2>
-<p>For example, ipopt is a fast nonlinear optimizer.</p>
-<p><em>‘Ipopt (Interior Point OPTimizer, pronounced eye-pea-Opt) is a software package for large-scale nonlinear optimization. cyipopt is a python wrapper around Ipopt. It enables using Ipopt from the comfort of the great Python scripting language. Ipopt is available from the COIN-OR initiative, under the Eclipse Public License (EPL).’</em></p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># from cyipopt import minimize_ipopt</span>
-
-<span class="c1"># # Define problem</span>
-<span class="c1"># ssp.ignore = [&#39;R&#39;]</span>
-<span class="c1"># ssp.modulate = [&#39;I&#39;]</span>
-<span class="c1"># ssp.minimize = [&#39;S&#39;, &#39;M&#39;, &#39;L&#39;]</span>
-<span class="c1"># ssp.background = [.5] * ssp.nprimaries</span>
-<span class="c1"># ssp.target_contrast = None</span>
-<span class="c1"># ssp.print_problem()</span>
-
-<span class="c1"># # Set up optimisation</span>
-<span class="c1"># result = minimize_ipopt(</span>
-<span class="c1">#     fun=ssp.objective_function,</span>
-<span class="c1">#     x0=ssp.initial_guess_x0(),</span>
-<span class="c1">#     args=(),</span>
-<span class="c1">#     bounds=ss.bounds,</span>
-<span class="c1">#     constraints=constraints,</span>
-<span class="c1">#     tol=1e-5,</span>
-<span class="c1">#     options={b&quot;print_level&quot;: 5, b&quot;constr_viol_tol&quot;: 1e-5},</span>
-<span class="c1"># )</span>
-<br/></pre></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">print_photoreceptor_contrasts</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+sc     0.000000
+mc    -0.000111
+lc    -0.000000
+rh     1.208343
+mel    2.316797
+dtype: float64
+</pre></div></div>
 </div>
 </section>
 </section>
@@ -660,6 +652,7 @@ basinhopping step 10: f -8.67393 trial_f -8.67393 accepted 1  lowest_f -9.38603
 <li class="toctree-l1 current"><a class="reference internal" href="05_examples.html">Examples</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Numerical optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05b_linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05c_custom_observer.html">Rodent silent substitution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>

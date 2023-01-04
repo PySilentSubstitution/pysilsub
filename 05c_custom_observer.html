@@ -1,0 +1,687 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Rodent silent substitution &#8212; PySilSub 0.0.14 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Documentation" href="06_api.html" />
+    <link rel="prev" title="Linear algebra" href="05b_linear_algebra.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<section id="Rodent-silent-substitution">
+<h1>Rodent silent substitution<a class="headerlink" href="#Rodent-silent-substitution" title="Permalink to this heading">¶</a></h1>
+<p>Silent substitution has been applied to study the effects of melanopic stimulation on circadian responses in mice (e.g., <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1111/jpi.12735">Mouland et al., 2021</a>). This example demonstrates how to create a custom <code class="docutils literal notranslate"><span class="pre">Rodent</span></code> observer class and prepare cone-silent melanopsin modulations for a BGRW projector. Let’s assume that the device will project onto a pane of diffusive material above a chamber containing the mouse. Note that the the following workflow
+may be applied for any custom observer whose action spectra are available.</p>
+<p>These action spectra were obtained from the Rodent Toolbox (<a class="reference external" href="https://www.cell.com/trends/neurosciences/fulltext/S0166-2236(13)00197-5">Lucas et al., 2014</a>). Note that mice do not possess a third cone, and that the spectral sensitivities peak at different locations in the visual spectrum in comparison to humans. In particular, S-cone sensitivity is shifted leftwards towards the near-UV portion of the spectrum and there is increased overlap of the M-cone, melanopic and rhodopic action spectra.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">problems</span><span class="p">,</span> <span class="n">observers</span>
+
+<span class="c1"># Load the rodent action spectra</span>
+<span class="n">rodent_action_spectra</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s1">&#39;../../pysilsub/data/rodent_action_spectra.csv&#39;</span><span class="p">,</span>
+    <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;Wavelength&#39;</span>
+<span class="p">)</span>
+<span class="n">rodent_action_spectra</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>sc</th>
+      <th>mel</th>
+      <th>rh</th>
+      <th>mc</th>
+    </tr>
+    <tr>
+      <th>Wavelength</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>300</th>
+      <td>0.004086</td>
+      <td>0.000754</td>
+      <td>0.000676</td>
+      <td>0.000577</td>
+    </tr>
+    <tr>
+      <th>301</th>
+      <td>0.005899</td>
+      <td>0.001042</td>
+      <td>0.000905</td>
+      <td>0.000804</td>
+    </tr>
+    <tr>
+      <th>302</th>
+      <td>0.008776</td>
+      <td>0.001530</td>
+      <td>0.001312</td>
+      <td>0.001195</td>
+    </tr>
+    <tr>
+      <th>303</th>
+      <td>0.012715</td>
+      <td>0.002220</td>
+      <td>0.001898</td>
+      <td>0.001749</td>
+    </tr>
+    <tr>
+      <th>304</th>
+      <td>0.017718</td>
+      <td>0.003110</td>
+      <td>0.002662</td>
+      <td>0.002467</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>776</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>777</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>778</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>779</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>780</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+<p>481 rows × 4 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create custom rodent model using the _Observer base class</span>
+<span class="k">class</span> <span class="nc">Rodent</span><span class="p">(</span><span class="n">observers</span><span class="o">.</span><span class="n">_Observer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<span class="c1"># Instantiate observer class</span>
+<span class="n">mouse</span> <span class="o">=</span> <span class="n">Rodent</span><span class="p">()</span>
+
+<span class="c1"># Assign rodent action spectra</span>
+<span class="n">mouse</span><span class="o">.</span><span class="n">action_spectra</span> <span class="o">=</span> <span class="n">rodent_action_spectra</span>
+
+<span class="c1"># Override list of photoreceptors and colors used for plotting</span>
+<span class="n">mouse</span><span class="o">.</span><span class="n">photoreceptors</span> <span class="o">=</span> <span class="n">mouse</span><span class="o">.</span><span class="n">action_spectra</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">mouse</span><span class="o">.</span><span class="n">photorecptor_colors</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;sc&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mel&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:cyan&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rh&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:grey&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mc&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:green&quot;</span>
+<span class="p">}</span>
+
+<span class="c1"># Plot action spectra</span>
+<span class="n">mouse</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/05c_custom_observer_2_0.png" src="_images/05c_custom_observer_2_0.png" />
+</div>
+</div>
+<p>Now that we have prepared the <code class="docutils literal notranslate"><span class="pre">Rodent</span></code> observer we need to set up the problem. Here, we will use example package data for a BGRW overhead projection system.</p>
+<p>The trick to making things go smoothly is to ensure that the calibration spectra of the stimulation device are sampled at the same wavelengths as the photoreceptor action spectra of the observer. The calibration spectra for the projector were originally sampled from 380-780 nm, so we need to reindex them in order to align the matrices.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load example data for BGRW projector</span>
+<span class="n">ssp</span> <span class="o">=</span> <span class="n">problems</span><span class="o">.</span><span class="n">SilentSubstitutionProblem</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;VirtualSky&#39;</span><span class="p">)</span>
+
+<span class="c1"># Align the matrices for spds and spectral sensitivities. This</span>
+<span class="c1"># just adds a bunch of zeros to the left of each calibration spectrum.</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">calibration</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">calibration</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Plot spds</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">plot_calibration_spds</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/05c_custom_observer_4_0.png" src="_images/05c_custom_observer_4_0.png" />
+</div>
+</div>
+<p>Now we can assign the <code class="docutils literal notranslate"><span class="pre">Rodent</span></code> as the observer, define the silent substitution problem, and look for a solution. Today, we just want to find a cone-silent melanopsin modulation whilst ignoring the influence of rods.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the problem</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">observer</span> <span class="o">=</span> <span class="n">mouse</span>  <span class="c1"># Plug in the custom mousey</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="s1">&#39;max&#39;</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
+
+<span class="c1"># Find solution</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:{</span><span class="s1">&#39;disp&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">}})</span>
+<span class="n">solution</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+************************************************************
+*************** Silent Substitution Problem ****************
+************************************************************
+Device: VirtualSky (BGRW projector)
+Observer: Rodent
+Ignoring: [&#39;rh&#39;]
+Minimising: [&#39;sc&#39;, &#39;mc&#39;]
+Modulating: [&#39;mel&#39;]
+Target contrast: [inf]
+Background: None
+
+
+~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
+&gt; No background specified, will optimise background.
+&gt; Aiming to maximise contrast.
+&gt; Performing local optimization with SLSQP.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+     fun: -0.9488359193152031
+     jac: array([ 3.05205397,  2.05814102,  0.01174828,  1.00223469, -2.24210011,
+       -0.25287153, -0.00437979, -0.31429621])
+ message: &#39;Optimization terminated successfully&#39;
+    nfev: 749
+     nit: 73
+    njev: 73
+  status: 0
+ success: True
+       x: array([  1.79404808e-01,   7.10524240e-01,   4.99980974e-01,
+         3.47728011e-01,   9.49999979e-01,   1.64788105e-16,
+         6.81788991e-14,   3.09659653e-17])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot solution</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution_spds</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution_aopic</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;W/m$^2$&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/05c_custom_observer_7_0.png" src="_images/05c_custom_observer_7_0.png" />
+</div>
+</div>
+<p>In general, silent substitution is challenging in mice because of the significant overlap of the M-cone, melanopic and rhodopic action spectra. Some studies have got around this problem by using red-cone knock-in mouse models (e.g., <a class="reference external" href="https://www.pnas.org/doi/10.1073/pnas.1505274112">Storchi et al., 2015</a>; <a class="reference external" href="https://www.cell.com/current-biology/fulltext/S0960-9822(14)01135-X">Allen et al., 2014</a>) where the spectral sensitivity of the M-cone is shifted rightward. A stimulation system with
+optimised LED wavelengths will also help with the spectral separation of the photopigments.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/photoreceptor_characters.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">PySilSub</a></h1>
+
+
+
+<p class="blurb">A Python software for performing the method of silent substitution.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=PySilentSubstitution&repo=pysilsub&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="05_examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="05a_numerical_optimisation.html">Numerical optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05b_linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Rodent silent substitution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="05_examples.html">Examples</a><ul>
+      <li>Previous: <a href="05b_linear_algebra.html" title="previous chapter">Linear algebra</a></li>
+      <li>Next: <a href="06_api.html" title="next chapter">API Documentation</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Joel T. Martin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/05c_custom_observer.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -66,6 +66,8 @@ algebra and numerical optimisation via a configurable, intuitive interface.
    
 There are many other features and use cases covered, so check out the code, read the docs, and run :code:`pip install pysilsub` to try out the examples above.
 
+If you are new to Python, `check out this tutorial <https://jtmbeta.github.io/CLLPython/>`_.
+
 
 Important note
 --------------
