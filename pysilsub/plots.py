@@ -56,3 +56,7 @@ def plot_aopic(background, modulation):
     )
     sns.barplot(data=df, x="Photoreceptor", y="aopic", hue="Spectrum", ax=ax)
     plt.show()
+
+
+
+    

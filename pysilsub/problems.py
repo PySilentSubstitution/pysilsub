@@ -19,6 +19,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib import animation
+from colour.plotting import plot_chromaticity_diagram_CIE1931
+
 
 from .devices import (
     StimulationDevice,
@@ -30,6 +32,7 @@ from .devices import (
 from .colorfuncs import spd_to_xyY
 from .plots import ss_solution_plot
 from .observers import _Observer
+from .CIE import get_CIE170_2_chromaticity_coordinates
 
 
 class SilSubProblemError(Exception):
@@ -559,6 +562,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         self._assert_problem_is_valid()
         print(f"{'*'*60}\n{' Silent Substitution Problem ':*^60s}\n{'*'*60}")
         print(f"Device: {self.name}")
+        print(f"Observer: {self.observer}")
         print(f"Ignoring: {self._ignore}")
         print(f"Minimising: {self._minimize}")
         print(f"Modulating: {self._modulate}")
@@ -736,6 +740,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             The result of the optimization.
 
         """
+        print(f'{" optim_solve ":~^60s}')
         self._assert_problem_is_valid()
         if self._background is None:
             bounds = self.bounds * 2
@@ -755,7 +760,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         if not global_search:  # Local minimization
 
-            default_options = {"iprint": 2, "disp": True, 'ftol':1e-08}
+            default_options = {"iprint": 2, "disp": True, "ftol": 1e-08}
             options = kwargs.pop("options", default_options)
 
             print("> Performing local optimization with SLSQP.")
@@ -887,35 +892,24 @@ class SilentSubstitutionProblem(StimulationDevice):
                 "Solution is out of gamut, lower target contrast."
             )
 
-    # TODO: CMFs should come from observers
-    def plot_solution(self, solution):
-        """Plot the silent substitution solution.
+    # Solutions and plotting
 
+    def get_solution_spds(self, solution):
+        """Get predicted spds for solution.
 
         Parameters
         ----------
         solution : array_like
             The solution returned by one of the solvers.
 
-
         Returns
         -------
-        fig : plt.Figure
+        bg_spd : TYPE
+            Chromaticity coordinates of background spectrum.
+        mod_spd : TYPE
+            Chromaticity coordinates of modulation spectrum.
 
         """
-        # get aopic
-        bg_ao, mod_ao = self.smlri_calculator(solution)
-        df_ao = (
-            pd.concat([bg_ao, mod_ao], axis=1)
-            .T.melt(
-                value_name="aopic",
-                var_name="Photoreceptor",
-                ignore_index=False,
-            )
-            .reset_index()
-            .rename(columns={"index": "Spectrum"})
-        )
-
         # get spds
         try:
             bg_spd = self.predict_multiprimary_spd(
@@ -932,6 +926,59 @@ class SilentSubstitutionProblem(StimulationDevice):
                 solution[self.nprimaries : self.nprimaries * 2],
                 name="Modulation",
             )
+        return bg_spd, mod_spd
+
+    def plot_solution_spds(self, solution, ax=None, **kwargs):
+        """Plot the solution spds.
+
+        Parameters
+        ----------
+        solution : array_like
+            The solution returned by one of the solvers.
+        ax : plt.Axes, optional
+            Axes on which to  plot. The default is None.
+        **kwargs : dict
+            Passed to `pd.Series.plot()`.
+
+        Returns
+        -------
+        ax : plt.Axes
+            Axes on which the data are plotted.
+        """
+        bg_spd, mod_spd = self.get_solution_spds(solution)
+
+        # Make plot
+        if ax is None:
+            ax = plt.gca()
+
+        # SPDs
+        bg_spd.plot(ax=ax, legend=True, **kwargs)
+        mod_spd.plot(ax=ax, legend=True, **kwargs)
+
+        units = self.config.get("calibration_units")
+        if units is None:
+            ax.set_ylabel("Power")
+        else:
+            ax.set_ylabel(units)
+
+        return ax
+
+    def get_solution_xy(self, solution):
+        """Get xy chromaticity coordinates for solution spectra.
+
+        Parameters
+        ----------
+        solution : array_like
+            The solution returned by one of the solvers.
+
+        Returns
+        -------
+        bg_xy : TYPE
+            Chromaticity coordinates of background spectrum.
+        mod_xy : TYPE
+            Chromaticity coordinates of modulation spectrum.
+        """
+        bg_spd, mod_spd = self.get_solution_spds(solution)
 
         # get xy
         bg_xy = spd_to_xyY(bg_spd, binwidth=self.calibration_wavelengths[2])[
@@ -940,21 +987,47 @@ class SilentSubstitutionProblem(StimulationDevice):
         mod_xy = spd_to_xyY(mod_spd, binwidth=self.calibration_wavelengths[2])[
             :2
         ]
+        return bg_xy, mod_xy
+
+    def plot_solution_xy(self, solution, ax=None, **kwargs):
+        """Plot solution chromaticity coordinates on CIE horseshoe.
+
+        Parameters
+        ----------
+        solution : array_like
+            The solution returned by one of the solvers.
+        ax : plt.Axes, optional
+            Axes on which to  plot. The default is None.
+        **kwargs : dict
+            Passed to `pd.Series.scatter()`.
+
+        Returns
+        -------
+        ax : plt.Axes
+            Axes on which the data are plotted.
+        """
+        # get xy
+        bg_xy, mod_xy = self.get_solution_xy(solution)
 
         # Make plot
-        fig, axs = ss_solution_plot()
+        if ax is None:
+            ax = plt.gca()
 
-        # SPDs
-        bg_spd.plot(ax=axs[0], legend=True)
-        mod_spd.plot(ax=axs[0], legend=True)
+        # Plot solution on horseshoe
+        plot_chromaticity_diagram_CIE1931(
+            axes=ax, title=False, standalone=False
+        )
 
-        try:
-            axs[0].set_ylabel(self.config.calibration_units)
-        except:
-            axs[0].set_ylabel("Power")
+        cie170_2 = get_CIE170_2_chromaticity_coordinates()
+        ax.plot(cie170_2["x"], cie170_2["y"], c="k", ls=":", label="CIE 170-2")
+        ax.legend()
+        ax.set(title="CIE 1931 horseshoe", xlim=(-0.1, 0.9), ylim=(-0.1, 0.9))
+
+        # Plot aopic irradiances
+        ax.set(xticklabels="")
 
         # Chromaticity
-        axs[1].scatter(
+        ax.scatter(
             x=bg_xy[0],
             y=bg_xy[1],
             s=100,
@@ -963,7 +1036,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             edgecolors="k",
             label="Background",
         )
-        axs[1].scatter(
+        ax.scatter(
             x=mod_xy[0],
             y=mod_xy[1],
             s=100,
@@ -971,20 +1044,83 @@ class SilentSubstitutionProblem(StimulationDevice):
             marker="x",
             label="Modulation",
         )
-        axs[1].legend()
+        ax.legend()
+        return ax
 
+    def plot_solution_aopic(self, solution, ax=None, **kwargs):
+        """Plot barchart of alphaopic irradiances .
+
+        Parameters
+        ----------
+        solution : array_like
+            The solution returned by one of the solvers.
+        ax : plt.Axes, optional
+            Axes on which to  plot. The default is None.
+        **kwargs : dict
+            Passed to `sns.barplot()`.
+
+        Returns
+        -------
+        ax : plt.Axes
+            Axes on which the data are plotted.
+        """
+        # Make plot
+        if ax is None:
+            ax = plt.gca()
+
+        # get aopic
+        bg_ao, mod_ao = self.smlri_calculator(solution)
+        df_ao = (
+            pd.concat([bg_ao, mod_ao], axis=1)
+            .T.melt(
+                value_name="aopic",
+                var_name="Photoreceptor",
+                ignore_index=False,
+            )
+            .reset_index()
+            .rename(columns={"index": "Spectrum"})
+        )
         # Aopic
         sns.barplot(
-            data=df_ao, x="Photoreceptor", y="aopic", hue="Spectrum", ax=axs[2]
+            data=df_ao,
+            x="Photoreceptor",
+            y="aopic",
+            hue="Spectrum",
+            ax=ax,
+            **kwargs,
         )
-        axs[2].set_ylabel("$a$-opic irradiance")
+        ax.set_ylabel("$a$-opic irradiance")
+        return ax
+
+    # TODO: CMFs should come from observers
+    def plot_solution(self, solution):
+        """Plot solution spds, xy chromaticities and alphaopic irradiances.
+
+        Parameters
+        ----------
+        solution : array_like
+            The solution returned by one of the solvers.
+
+        Returns
+        -------
+        fig : plt.Figure
+
+        """
+        # Make plot
+        fig, axs = plt.subplots(1, 3, figsize=(12, 4))
+
+        # SPDs
+        self.plot_solution_spds(solution, ax=axs[0])
+        # xy
+        self.plot_solution_xy(solution, ax=axs[1])
+        # Aopic
+        self.plot_solution_aopic(solution, ax=axs[2])
 
         return fig
 
     # TODO: Fix
     def plot_contrast_modulation(self, solutions):
-        """Sonmething here
-
+        """Sonmething here.
 
         Parameters
         ----------
@@ -1012,9 +1148,8 @@ class SilentSubstitutionProblem(StimulationDevice):
         plt.legend()
         return fig
 
-    def animate_solution(self, solutions, save_to=None):
-        """Something here
-
+    def animate_solutions(self, solutions, save_to=None):
+        """Something here.
 
         Parameters
         ----------
@@ -1027,9 +1162,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         -------
         TYPE
             DESCRIPTION.
-
         """
-
         fig = plt.figure()
         ax = plt.axes(xlim=(300, 800), ylim=(0, 2e06))
         ax.set_xlabel("Wavelength (nm)")
@@ -1043,13 +1176,13 @@ class SilentSubstitutionProblem(StimulationDevice):
         ax.legend()
 
         def init():
-            """Something"""
+            """Something."""
             for line in lines:
                 line.set_data([], [])
             return lines
 
         def animate(i):
-            """Something"""
+            """something."""
             primaries = self.predict_multiprimary_spd(
                 solutions[i], nosum=True
             ).T

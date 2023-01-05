@@ -1,1 +1,24 @@
-{"calibration": "./data/VirtualSky.csv", "calibration_units": "W/m2/s/nm", "name": "VirtualSky (BGRW projector)", "json_name": "VirtualSky", "calibration_wavelengths": [380, 781, 1], "primary_colors": ["blue", "green", "red", "darkgrey"], "primary_resolutions": [260, 260, 260, 260], "notes": "The device is a BGRW projector with a likely 8-bit native resolution. Though the data have been wrangled and given a fictitious resolution, the spectral measurements are taken from the device accross its native resolution. This is included as an example of a 4-primary system."}
+{
+    "calibration": "/Users/jtm545/Projects/PySilSub/pysilsub/data/VirtualSky.csv",
+    "calibration_wavelengths": [
+        380,
+        781,
+        1
+    ],
+    "primary_resolutions": [
+        260,
+        260,
+        260,
+        260
+    ],
+    "primary_colors": [
+        "blue",
+        "green",
+        "red",
+        "darkgrey"
+    ],
+    "calibration_units": "W/m$^2$/nm",
+    "name": "VirtualSky (BGRW projector)",
+    "json_name": "VirtualSky",
+    "notes": "The device is a BGRW projector with a likely 8-bit native resolution. Though the data have been wrangled and given a fictitious resolution, the spectral measurements are taken from the device accross its native resolution. This is included as an example of a 4-primary system."
+}

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-pysilsub.precep
-===============
+``pysilsub.precep``
+===================
 
 Convenience functions for accessing prereceptoral filter functions.
 
@@ -12,10 +12,250 @@ Obtained from http://www.cvrl.org/
 
 """
 
-from typing import Optional, Union
+from typing import Optional, Union, Sequence
 
 import numpy as np
 import pandas as pd
+import importlib_resources
+
+
+PKG = importlib_resources.files("pysilsub")
+
+
+def get_hemoglobin_absorptances():
+    """Obtain Prahl's estimates of hemoglobin absorptance spectra.
+
+    These are tabulated data included in the software. They are returned as
+    molar extinction coefficients (cm-1/M). The wavelength
+    spacing is 250-1000 in 2 nm bins.
+
+    T_oxy is the molar extinction of oxyhemoglobin.
+
+    T_deoxy is the molar extinction of deoxyhemoglobin.
+
+    Note
+    ----
+    `Link to source of tabulated data <https://omlc.org/spectra/hemoglobin/summary.html>`_
+
+    See `here <http://omlc.org/spectra/hemoglobin/>`_ for further information.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    data : pd.DataFrame
+        Hemoglobin data.
+
+    """
+    fpath = PKG / "data" / "Prahl_Hgb.csv"
+    data = pd.read_csv(fpath, index_col="Wavelength")
+    return data
+
+
+def get_retinal_hemoglobin_transmittance(
+    wavelengths: Sequence = [380, 781, 1],
+    vessel_oxygenation_fraction: float = 0.85,
+    vessel_overall_thickness_um: int = 5,
+) -> pd.Series:
+    """Get the hemoglobin transmittance spectrum for retinal vasculature.
+
+    Return the hemoglobin transmittance spectrum, given a fraction of
+    oxy/deoxy hemoglobin and an overall thickness of the blood layer.
+
+    Note
+    ----
+    64500 is the gram molecular weight of hemoglobin.
+
+    150 is the grams of Hgb per litre of whole blood.
+
+    Parameters
+    ----------
+    wavelengths : Sequence, optional
+        Start, stop, step of desired wavelengths. The default is [380, 781, 1].
+    vessel_oxygenation_fraction : float, optional
+        Estimate of the fraction of oxygenated blood in vessels. The default
+        is .85.
+    vessel_overall_thickness : int, optional
+        Estimate of the overal thickness of vessels in uM. The default is 5.
+
+    Returns
+    -------
+    hgb_transmittance : pd.DataFrame
+        Hemoglobin transmittance spectra (oxy/deoxy).
+
+    """
+    data = get_hemoglobin_absorptances()
+    absorptivity_per_cm_oxy_Prahl = (data.T_oxy * 150) / 64500
+    absorptivity_per_cm_deoxy_Prahl = (data.T_deoxy * 150) / 64500
+    um_to_cm = 1e-4
+    absorptance_oxy_Prahl = (
+        absorptivity_per_cm_oxy_Prahl * vessel_overall_thickness_um * um_to_cm
+    )
+    absorptance_deoxy_Prahl = (
+        absorptivity_per_cm_deoxy_Prahl
+        * vessel_overall_thickness_um
+        * um_to_cm
+    )
+    absorptance = (
+        vessel_oxygenation_fraction * absorptance_oxy_Prahl
+        + (1 - vessel_oxygenation_fraction) * absorptance_deoxy_Prahl
+    )
+    absorptance = absorptance.reindex(range(*wavelengths)).interpolate("cubic")
+    hgb_transmittance = 10 ** (-absorptance)
+
+    return hgb_transmittance
+
+
+def get_melanin_transmittance(wavelengths=[380, 781, 1]):
+    """Return melanin transmittance spectrum.
+
+    The skin melanin absorption coefficient can be described by the following
+    formula (eq. 2 in Bierman, Figuiero & Rea, 2011; and
+    http://omlc.org/spectra/melanin/mua.html)
+
+    Parameters
+    ----------
+    wavelengths : Sequence, optional
+        Start, stop, step of desired wavelengths. The default is [380, 781, 1].
+
+    Note
+    ----
+    This code was translated from the Silent Substution Toolbox for MATLAB.
+    See `here <https://github.com/spitschan/SilentSubstitutionToolbox/blob/master/HumanEyelidTransmittance/HumanEyelidTransmittanceBierman.m>`_
+    for more information.
+
+    Returns
+    -------
+    melanin_transmittance : pd.Series
+        Melanin transmittance spectrum.
+    """
+    # Melanin absorption
+    wls = np.arange(*wavelengths)
+    absorption_melanin = (1.70 * 10**12) * wls ** (-3.48)
+
+    # This needs to be scaled by 0.002059. This is not mentioned in the paper
+    # (personal communication with Bierman, Figueiro & Rea).
+    absorption_melanin = pd.Series(absorption_melanin, index=wls).mul(0.002059)
+
+    # Turn into transmittance
+    melanin_transmittance = np.exp(-absorption_melanin)
+
+    return melanin_transmittance
+
+
+def get_bilirubin_absorption():
+    """Return optical absorption spectrum of Bilirubin in chloroform.
+
+    Units are Molar Extinction (cm-1/M)
+
+    Note
+    ----
+    These tabulated data are from the Silent Substution Toolbox for MATLAB.
+    See `here <https://github.com/spitschan/SilentSubstitutionToolbox/blob/master/HumanEyelidTransmittance/xSrc/Prahl2012_BilurubinAbsorptionSpectrum.txt>`_
+    for more information.
+
+    Returns
+    -------
+    data : pd.Series
+        Bilirubin absorption spectrum.
+    """
+    fpath = PKG / "data" / "Prahl2012_bilurubin_absorption_spectrum.csv"
+    data = pd.read_csv(fpath, index_col="Wavelength")
+    return data
+
+
+def get_bilirubin_transmittance(wavelengths=[380, 781, 1]):
+    """Return bilirubin transmittance spectrum.
+
+    Parameters
+    ----------
+    wavelengths : Sequence, optional
+        Start, stop, step of desired wavelengths. The default is [380, 781, 1].
+
+    Note
+    ----
+    This function was translated from the Silent Substution Toolbox for MATLAB.
+    See `here <https://github.com/spitschan/SilentSubstitutionToolbox/blob/master/HumanEyelidTransmittance/HumanEyelidTransmittanceBierman.m#L77>`_
+    for more information.
+
+    Returns
+    -------
+    bilirubin_transmittance : pd.Series
+        Bilirubin transmittance spectrum.
+    """
+    bilirubin = get_bilirubin_absorption()
+
+    # These data need to be scaled by 2.0*10^-5.
+    absorption_bilirubin = bilirubin.mul(2.0 * 10**-5)
+
+    absorption_bilirubin = absorption_bilirubin.reindex(
+        range(*wavelengths)
+    ).interpolate("cubic")
+    bilirubin_transmittance = np.exp(-absorption_bilirubin)
+    return bilirubin_transmittance
+
+
+def get_eyelid_hemoglobin_transmittance(wavelengths=[380, 781, 1]):
+    """Get the hemoglobin transmittance spectrum for eyelid vasculature.
+
+    Parameters
+    ----------
+    wavelengths : Sequence, optional
+        Start, stop, step of desired wavelengths. The default is [380, 781, 1].
+
+    Returns
+    -------
+    hgb_transmittance : pd.DataFrame
+        Human eyelid Hgb transmittance spectra (oxy/deoxy).
+
+    """
+    hgb = get_hemoglobin_absorptances()
+    hgb = hgb.mul(2.0 * 10**-5)
+    hgb = hgb.reindex(range(*wavelengths)).interpolate("cubic")
+    hgb_transmittance = np.exp(-hgb)
+    return hgb_transmittance
+
+
+def get_eyelid_transmittance(wavelengths=[380, 781, 1]):
+    """Return transmittance spectrum of human eyelid.
+
+    Parameters
+    ----------
+    wavelengths : Sequence, optional
+        Start, stop, step of desired wavelengths. The default is [380, 781, 1].
+
+    Returns
+    -------
+    eyelid_transmittance : pd.Series
+        Transmittance spectrum of human eyelid.
+
+    """
+    # Construct the transmittance from the mean coefficients from the table
+    # in Bierman, Figueiro & Rea (2011)
+    w_deoxyhemoglobin = 0.739
+    w_oxyhemoglobin = 1.368
+    w_melanin = 2.643
+    log_trans_scatter = -0.825
+
+    # Get transmittance functions
+    hgb_transmittance = get_eyelid_hemoglobin_transmittance(wavelengths)
+    melanin_transmittance = get_melanin_transmittance(wavelengths)
+
+    # Put together
+    absorption_eyelid = (
+        w_deoxyhemoglobin * np.log(hgb_transmittance["T_deoxy"])
+        + w_oxyhemoglobin * np.log(hgb_transmittance["T_oxy"])
+        + w_melanin * np.log(melanin_transmittance)
+        + log_trans_scatter
+        + 0.1825505
+    )
+    # The constant 0.1825505 ~= log(1.2) corresponds to the best fitting scalar
+
+    # % Turn into transmittance
+    eyelid_transmittance = np.exp(absorption_eyelid)
+    return eyelid_transmittance
 
 
 def get_lens_density_spectra(

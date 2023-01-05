@@ -13,11 +13,11 @@ Module to configure StimulationDevice.
 import json
 
 # Configure device
-CALIBRATION = "/Users/jtm545/Projects/PySilSub/data/VirtualSky.csv"
+CALIBRATION = "/Users/jtm545/Projects/PySilSub/pysilsub/data/VirtualSky.csv"
 CALIBRATION_WAVELENGTHS = [380, 781, 1]
 PRIMARY_RESOLUTIONS = [260] * 4  # Fictitious
 PRIMARY_COLORS = ["blue", "green", "red", "darkgrey"]
-CALIBRATION_UNITS = "W/m2/s/nm"
+CALIBRATION_UNITS = "W/m$^2$/nm"
 NAME = "VirtualSky (BGRW projector)"
 JSON_NAME = "VirtualSky"
 NOTES = (

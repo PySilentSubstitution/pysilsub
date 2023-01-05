@@ -40,6 +40,7 @@ algebra and numerical optimisation via a configurable, intuitive interface.
 
 .. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg
    :alt: Plot of result
+   :class: no-scaled-link
 
 
 .. code:: python
@@ -63,7 +64,8 @@ algebra and numerical optimisation via a configurable, intuitive interface.
 
 .. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg
    :alt: Plot of result
-   
+   :class: no-scaled-link
+
 There are many other features and use cases covered, so check out the code, read the docs, and run :code:`pip install pysilsub` to try out the examples above.
 
 If you are new to Python, `check out this tutorial <https://jtmbeta.github.io/CLLPython/>`_.

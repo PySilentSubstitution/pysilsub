@@ -67,6 +67,12 @@ class _Observer:
     def __init__(self) -> None:
         self.action_spectra = None
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}"
+
+    def __str__(self):
+        return f"{self.__class__.__name__}"
+
     def plot_action_spectra(self, ax: plt.Axes = None, **kwargs) -> plt.Axes:
         """Plot photoreceptor action spectra for the observer.
 
@@ -118,6 +124,9 @@ class StandardColorimetricObserver(_Observer):
         self.lens_density_spectrum = get_CIEPO06_optical_density()["D_ocul"]
         self.macular_pigment_density_spectrum = get_CIEPO06_macula_density()
 
+    def __str__(self):
+        return f"{self.__class__.__name__}(age={self.age}, field_size={self.field_size})"
+
 
 class IndividualColorimetricObserver(_Observer):
     """Individual colorimetric observer model.
@@ -140,6 +149,9 @@ class IndividualColorimetricObserver(_Observer):
         )
         self.action_spectra["mel"] = self.adjust_melanopsin()
         self.action_spectra["rh"] = self.adjust_rhodopsin()
+
+    def __str__(self):
+        return f"{self.__class__.__name__}(age={self.age}, field_size={self.field_size})"
 
     # TODO: refactor
     def adjust_lms(self, age: int, field_size: int):
@@ -215,12 +227,12 @@ class IndividualColorimetricObserver(_Observer):
             # This is to get around a pandas bug where interpolate fails to
             # extrapolate data
             .interpolate(**interp_kwds)
-            .iloc[::-1]  
+            .iloc[::-1]
             .interpolate(**interp_kwds)
             .iloc[::-1]
             .clip(lower=0)  # Lose negative values
         )
-        
+
         # Normalized
         lms_bar_norm = lms_bar_norm.div(lms_bar_norm.max())
 
@@ -277,8 +289,3 @@ class IndividualColorimetricObserver(_Observer):
         # (10**-np.exp(-correction_function))
         new_rod = new_rod.div(new_rod.max())  # Normalise
         return new_rod
-
-
-class Rodent:
-    def __init__():
-        pass
