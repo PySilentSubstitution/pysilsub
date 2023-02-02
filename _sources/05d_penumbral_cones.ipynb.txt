@@ -260,7 +260,7 @@
    "id": "20996c65-dde5-40cb-9017-7bb3eee4cc64",
    "metadata": {},
    "source": [
-    "Look closely at the solution depicted above. The `mc*` and `lc*` stimuli have slightly higher contrast for the modulation spectrum, whereas the other photoreceptors (barring rods and melanopsin, which we ignored) are the same. Alternating between these spectra at 16 Hz should cause the observer to experience the entopic Purkinje tree percept. I experienced this myself at the the Vision Sciences Society conference in 2015&mdash;it was a sight to behold!"
+    "Look closely at the solution depicted above. The `mc*` and `lc*` stimuli have slightly higher contrast for the modulation spectrum, whereas the other photoreceptors (barring rods and melanopsin, which we ignored) are the same. Alternating between these spectra at 16 Hz should cause the observer to experience the entopic Purkinje tree percept. I experienced this myself at the the Vision Sciences Society conference in 2015&mdash;a sight to behold!"
    ]
   }
  ],
