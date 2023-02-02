@@ -18,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Project notes" href="07_project_notes.html" />
-    <link rel="prev" title="Rodent silent substitution" href="05c_custom_observer.html" />
+    <link rel="prev" title="Cones in the shadow of retinal blood vessels" href="05d_penumbral_cones.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,6 +40,14 @@
 <section id="pysilsub-observers">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers</span></code><a class="headerlink" href="#pysilsub-observers" title="Permalink to this heading">¶</a></h2>
 <p>Standard and individualistic colorimetric observer models.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="pysilsub.observers.ObserverError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.observers.</span></span><span class="sig-name descname"><span class="pre">ObserverError</span></span><a class="headerlink" href="#pysilsub.observers.ObserverError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic Python-exception-derived object.</p>
+<p>Raised programmatically by Observer class methods when arguments are
+incorrectly specified or when they do not agree with values of other.</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="pysilsub.observers.StandardColorimetricObserver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.observers.</span></span><span class="sig-name descname"><span class="pre">StandardColorimetricObserver</span></span><a class="headerlink" href="#pysilsub.observers.StandardColorimetricObserver" title="Permalink to this definition">¶</a></dt>
@@ -1586,6 +1594,23 @@ tabulated values by 0.86207.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.CIE.estimate_CIEPO06_lens_density">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">estimate_CIEPO06_lens_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.estimate_CIEPO06_lens_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate lens density spectrum for observer using CIEPO06.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>age</strong> (<em>int</em>) – Observer age..</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>correct_lomd</strong> – DESCRIPTION.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TYPE</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pysilsub.CIE.get_CIE_203_2012_lens_density">
 <span class="sig-prename descclassname"><span class="pre">pysilsub.CIE.</span></span><span class="sig-name descname"><span class="pre">get_CIE_203_2012_lens_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.CIE.get_CIE_203_2012_lens_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lens density function from CIE 203:2012 (used for melanopsin).</p>
@@ -1642,6 +1667,242 @@ of known genotype. Vision Research, 40, 1711-1737.</p>
 </dd></dl>
 
 </section>
+<span class="target" id="module-pysilsub.precep"></span><section id="pysilsub-precep">
+<h2><code class="docutils literal notranslate"><span class="pre">pysilsub.precep</span></code><a class="headerlink" href="#pysilsub-precep" title="Permalink to this heading">¶</a></h2>
+<p>Convenience functions for accessing prereceptoral filter functions.</p>
+<p>Obtained from <a class="reference external" href="http://www.cvrl.org/">http://www.cvrl.org/</a></p>
+<p>&#64;author: jtm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_hemoglobin_absorptances">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_hemoglobin_absorptances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_hemoglobin_absorptances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain Prahl’s estimates of hemoglobin absorptance spectra.</p>
+<p>These are tabulated data included in the software. They are returned as
+molar extinction coefficients (cm-1/M). The wavelength
+spacing is 250-1000 in 2 nm bins.</p>
+<p>T_oxy is the molar extinction of oxyhemoglobin.</p>
+<p>T_deoxy is the molar extinction of deoxyhemoglobin.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://omlc.org/spectra/hemoglobin/summary.html">Link to source of tabulated data</a></p>
+<p>See <a class="reference external" href="http://omlc.org/spectra/hemoglobin/">here</a> for further information.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – Hemoglobin data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_retinal_hemoglobin_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_retinal_hemoglobin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_oxygenation_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_overall_thickness_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_retinal_hemoglobin_transmittance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hemoglobin transmittance spectrum for retinal vasculature.</p>
+<p>Return the hemoglobin transmittance spectrum, given a fraction of
+oxy/deoxy hemoglobin and an overall thickness of the blood layer.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>64500 is the gram molecular weight of hemoglobin.</p>
+<p>150 is the grams of Hgb per litre of whole blood.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wavelengths</strong> (<em>Sequence</em><em>, </em><em>optional</em>) – Start, stop, step of desired wavelengths. The default is [380, 781, 1].</p></li>
+<li><p><strong>vessel_oxygenation_fraction</strong> (<em>float</em><em>, </em><em>optional</em>) – Estimate of the fraction of oxygenated blood in vessels. The default
+is .85.</p></li>
+<li><p><strong>vessel_overall_thickness</strong> (<em>int</em><em>, </em><em>optional</em>) – Estimate of the overal thickness of vessels in uM. The default is 5.</p></li>
+<li><p><strong>vessel_overall_thickness_um</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>hgb_transmittance</strong> – Hemoglobin transmittance spectra (oxy/deoxy).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_melanin_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_melanin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_melanin_transmittance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return melanin transmittance spectrum.</p>
+<p>The skin melanin absorption coefficient can be described by the following
+formula (eq. 2 in Bierman, Figuiero &amp; Rea, 2011; and
+<a class="reference external" href="http://omlc.org/spectra/melanin/mua.html">http://omlc.org/spectra/melanin/mua.html</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>wavelengths</strong> (<em>Sequence</em><em>, </em><em>optional</em>) – Start, stop, step of desired wavelengths. The default is [380, 781, 1].</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This code was translated from the Silent Substution Toolbox for MATLAB.
+See <a class="reference external" href="https://github.com/spitschan/SilentSubstitutionToolbox/blob/master/HumanEyelidTransmittance/HumanEyelidTransmittanceBierman.m">here</a>
+for more information.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>melanin_transmittance</strong> – Melanin transmittance spectrum.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_bilirubin_absorption">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_bilirubin_absorption</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_bilirubin_absorption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return optical absorption spectrum of Bilirubin in chloroform.</p>
+<p>Units are Molar Extinction (cm-1/M)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These tabulated data are from the Silent Substution Toolbox for MATLAB.
+See <a class="reference external" href="https://github.com/spitschan/SilentSubstitutionToolbox/blob/master/HumanEyelidTransmittance/xSrc/Prahl2012_BilurubinAbsorptionSpectrum.txt">here</a>
+for more information.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Bilirubin absorption spectrum.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_bilirubin_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_bilirubin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_bilirubin_transmittance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bilirubin transmittance spectrum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>wavelengths</strong> (<em>Sequence</em><em>, </em><em>optional</em>) – Start, stop, step of desired wavelengths. The default is [380, 781, 1].</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function was translated from the Silent Substution Toolbox for MATLAB.
+See <a class="reference external" href="https://github.com/spitschan/SilentSubstitutionToolbox/blob/master/HumanEyelidTransmittance/HumanEyelidTransmittanceBierman.m#L77">here</a>
+for more information.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bilirubin_transmittance</strong> – Bilirubin transmittance spectrum.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_eyelid_hemoglobin_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_eyelid_hemoglobin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_eyelid_hemoglobin_transmittance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hemoglobin transmittance spectrum for eyelid vasculature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>wavelengths</strong> (<em>Sequence</em><em>, </em><em>optional</em>) – Start, stop, step of desired wavelengths. The default is [380, 781, 1].</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>hgb_transmittance</strong> – Human eyelid Hgb transmittance spectra (oxy/deoxy).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_eyelid_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_eyelid_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_eyelid_transmittance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return transmittance spectrum of human eyelid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>wavelengths</strong> (<em>Sequence</em><em>, </em><em>optional</em>) – Start, stop, step of desired wavelengths. The default is [380, 781, 1].</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>eyelid_transmittance</strong> – Transmittance spectrum of human eyelid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_lens_density_spectra">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_lens_density_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_lens_density_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get lens density spectra.</p>
+<p>See the following refs for further information:</p>
+<dl class="simple">
+<dt>Stiles, W. S., &amp; Burch, J. M. (1959). NPL colour-matching investigation:</dt><dd><p>Final report (1958). Optica Acta, 6, 1-26.</p>
+</dd>
+<dt>Stockman, A., Sharpe, L. T., &amp; Fach, C. C. (1999). The spectral sensitivity</dt><dd><p>of the human short-wavelength cones. Vision Research, 39, 2901-2927.</p>
+</dd>
+<dt>Stockman, A., &amp; Sharpe, L. T. (2000). Spectral sensitivities of the middle-</dt><dd><p>and long-wavelength sensitive cones derived from measurements in
+observers of known genotype. Vision Research, 40, 1711-1737.</p>
+</dd>
+<dt>van Norren, D. &amp; Vos J.J. (1974) Spectral transmission of the human ocular</dt><dd><p>media Vision Research, 14, 1237-1244.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asdf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the results as a pandas DataFrame. The default is
+True.</p></li>
+<li><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Width of the wavelength bins in nanometers (must be <cite>1</cite> or <cite>5</cite>). The
+default is <cite>1</cite>.</p></li>
+<li><p><strong>trim_visible</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to trim the CMFs to 380-780 nm. The default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>density</strong> – Lens optical density as a function of wavelength.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray or pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.precep.get_macula_pigment_density_spectra">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_macula_pigment_density_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_macula_pigment_density_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get macula pigment density spectra.</p>
+<p>See the following refs for further information:</p>
+<dl class="simple">
+<dt>Bone, R. A., Landrum, J. T., &amp; Cains, A. (1992). Optical density spectra of</dt><dd><p>the macular pigment in vivo and in vitro. Vision Research, 32, 105-110.</p>
+</dd>
+<dt>Stockman, A., Sharpe, L. T., &amp; Fach, C. C. (1999). The spectral sensitivity</dt><dd><p>of the human short-wavelength cones. Vision Research, 39, 2901-2927.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asdf</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the results as a pandas DataFrame. The default is
+False.</p></li>
+<li><p><strong>binwidth</strong> (<em>int</em><em>, </em><em>optional</em>) – Width of the wavelength bins in nanometers (must be <cite>1</cite> or <cite>5</cite>). The
+default is <cite>1</cite>.</p></li>
+<li><p><strong>trim_visible</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to trim the CMFs to 380-780 nm. The default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>density</strong> – Macula pigment optical density as a function of wavelength.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray or pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <p class="rubric">Tables and indices</p>
 <hr class="docutils" />
 <ul class="simple">
@@ -1692,6 +1953,7 @@ of known genotype. Vision Research, 40, 1711-1737.</p>
 <li class="toctree-l2"><a class="reference internal" href="#pysilsub-problems"><code class="docutils literal notranslate"><span class="pre">pysilsub.problems</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysilsub-colorfuncs"><code class="docutils literal notranslate"><span class="pre">pysilsub.colorfuncs</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysilsub-cie"><code class="docutils literal notranslate"><span class="pre">pysilsub.CIE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pysilsub-precep"><code class="docutils literal notranslate"><span class="pre">pysilsub.precep</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
@@ -1710,7 +1972,7 @@ of known genotype. Vision Research, 40, 1711-1737.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="05c_custom_observer.html" title="previous chapter">Rodent silent substitution</a></li>
+      <li>Previous: <a href="05d_penumbral_cones.html" title="previous chapter">Cones in the shadow of retinal blood vessels</a></li>
       <li>Next: <a href="07_project_notes.html" title="next chapter">Project notes</a></li>
   </ul></li>
 </ul>

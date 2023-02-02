@@ -63,7 +63,7 @@ algebra and numerical optimisation via a configurable, intuitive interface.</p>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Plot the solution</span>
 </pre></div>
 </div>
-<img alt="Plot of result" src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg" /><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 2 - Target S-cones with 45% contrast against a specified</span>
+<img alt="Plot of result" class="no-scaled-link" src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg" /><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example 2 - Target S-cones with 45% contrast against a specified</span>
 <span class="c1"># background spectrum (all primaries, half max) whilst ignoring rods</span>
 <span class="c1"># and minimizing contrast on L/M cones and melanopsin, assuming</span>
 <span class="c1"># 32-year-old observer and 10-degree field size. Solved with linear</span>
@@ -77,11 +77,11 @@ algebra and numerical optimisation via a configurable, intuitive interface.</p>
 <span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>  <span class="c1"># Minimise cone contrast</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>  <span class="c1"># Target melanopsin</span>
 <span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.45</span>  <span class="c1"># With 45% contrast</span>
-<span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">()</span>  <span class="c1"># Solve with optimisation</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">()</span>  <span class="c1"># Solve with linear algebra</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>  <span class="c1"># Plot the solution</span>
 </pre></div>
 </div>
-<img alt="Plot of result" src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg" /><p>There are many other features and use cases covered, so check out the code, read the docs, and run <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pysilsub</span></code> to try out the examples above.</p>
+<img alt="Plot of result" class="no-scaled-link" src="https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg" /><p>There are many other features and use cases covered, so check out the code, read the docs, and run <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pysilsub</span></code> to try out the examples above.</p>
 <p>If you are new to Python, <a class="reference external" href="https://jtmbeta.github.io/CLLPython/">check out this tutorial</a>.</p>
 <section id="important-note">
 <h2>Important note<a class="headerlink" href="#important-note" title="Permalink to this heading">¶</a></h2>
@@ -106,6 +106,7 @@ algebra and numerical optimisation via a configurable, intuitive interface.</p>
 <li class="toctree-l2"><a class="reference internal" href="05a_numerical_optimisation.html">Numerical optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05b_linear_algebra.html">Linear algebra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05c_custom_observer.html">Rodent silent substitution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05d_penumbral_cones.html">Cones in the shadow of retinal blood vessels</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a><ul>
@@ -114,6 +115,7 @@ algebra and numerical optimisation via a configurable, intuitive interface.</p>
 <li class="toctree-l2"><a class="reference internal" href="06_api.html#pysilsub-problems"><code class="docutils literal notranslate"><span class="pre">pysilsub.problems</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="06_api.html#pysilsub-colorfuncs"><code class="docutils literal notranslate"><span class="pre">pysilsub.colorfuncs</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="06_api.html#pysilsub-cie"><code class="docutils literal notranslate"><span class="pre">pysilsub.CIE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_api.html#pysilsub-precep"><code class="docutils literal notranslate"><span class="pre">pysilsub.precep</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a><ul>
