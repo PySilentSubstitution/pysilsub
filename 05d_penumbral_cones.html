@@ -299,7 +299,7 @@ div.rendered_html tbody tr:hover {
 vessels, like when you go to the opticians and they shine that bright light in your eye, or when you move a candle leftwards and rightwards before your eye in a dark room whilst holding your gaze still.</p>
 <p>The stimulation device used by <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0124328">Spitschan et al., (2015)</a> had 56 narrowband primaries. We include a somewhat idealised version of the calibration spectra in <em>PySilSub</em>’s package data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">problems</span>
@@ -321,7 +321,7 @@ vessels, like when you go to the opticians and they shine that bright light in y
 <p>Now, to create action spectra for penumbral cones, we need an estimate of the retinal hemoglobin transmittance spectrum. This is easily obtained from <code class="docutils literal notranslate"><span class="pre">pysilsub.precep</span></code>, but to learn more about the theory behind the calculations, refer to <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0124328">Spitschan et al., (2015)</a>, then <a class="reference external" href="https://omlc.org/spectra/hemoglobin/">read this page</a>, and then <a class="reference external" href="https://github.com/PySilentSubstitution/pysilsub/blob/main/pysilsub/precep.py#L25">look at the
 code</a>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -359,7 +359,7 @@ code</a>.</p>
 <p>Above we can see that the absorptance spectra of oxy- and deoxy-hemoglobin differ. For an overall transmittance spectrum of retinal hemoglobin, we must factor in the thickness and oxygenation fraction of retinal blood vessels. The parameters used above are taken from <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0124328">Spitschan et al., (2015)</a>, but ultimately there is some guesswork involved here.</p>
 <p>Now that we have the transmittance spectrum for retinal hemoglobin we can create spectral sensitivity functions for penumbral cones. This is done by dividing the original action spectra for S-, M- and L-cones by the retinal HGb transmittance spectrum and then dividing each by the maximum value to renormalise.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">observers</span>
@@ -378,16 +378,13 @@ code</a>.</p>
 <span class="c1"># We add a &#39;*&#39; to denote the action spectra for penumbral cones.</span>
 <span class="n">observer</span><span class="o">.</span><span class="n">action_spectra</span> <span class="o">=</span> <span class="n">observer</span><span class="o">.</span><span class="n">action_spectra</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">penumbral_cones</span><span class="p">)</span>
 <span class="n">observer</span><span class="o">.</span><span class="n">photoreceptors</span> <span class="o">=</span> <span class="n">observer</span><span class="o">.</span><span class="n">action_spectra</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-<span class="n">observer</span><span class="o">.</span><span class="n">photoreceptor_colors</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;sc&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;mel&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:cyan&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;rh&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:grey&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;mc&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:green&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;lc&quot;</span><span class="p">:</span> <span class="s2">&quot;tab:red&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;sc*&quot;</span><span class="p">:</span> <span class="s2">&quot;darkblue&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;mc*&quot;</span><span class="p">:</span> <span class="s2">&quot;darkgreen&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;lc*&quot;</span><span class="p">:</span> <span class="s2">&quot;darkred&quot;</span>
-<span class="p">}</span>
+<span class="n">observer</span><span class="o">.</span><span class="n">photoreceptor_colors</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;sc*&quot;</span><span class="p">:</span> <span class="s2">&quot;darkblue&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mc*&quot;</span><span class="p">:</span> <span class="s2">&quot;darkgreen&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lc*&quot;</span><span class="p">:</span> <span class="s2">&quot;darkred&quot;</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 
 <span class="c1"># Plot action spectra</span>
 <span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>

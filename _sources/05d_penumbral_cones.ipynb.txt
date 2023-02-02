@@ -17,7 +17,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": 17,
    "id": "d72df9b9-4d9c-44cc-9c29-a6ac450d8f17",
    "metadata": {},
    "outputs": [
@@ -51,7 +51,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 19,
    "id": "164ec9c3-be4a-4161-b818-9086d11fc962",
    "metadata": {},
    "outputs": [
@@ -103,7 +103,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 20,
    "id": "dbab0ce1-12c0-467a-afb3-bcafa8b9e323",
    "metadata": {},
    "outputs": [
@@ -135,16 +135,13 @@
     "# We add a '*' to denote the action spectra for penumbral cones.\n",
     "observer.action_spectra = observer.action_spectra.join(penumbral_cones)\n",
     "observer.photoreceptors = observer.action_spectra.columns.tolist()\n",
-    "observer.photoreceptor_colors = {\n",
-    "    \"sc\": \"tab:blue\",\n",
-    "    \"mel\": \"tab:cyan\",\n",
-    "    \"rh\": \"tab:grey\",\n",
-    "    \"mc\": \"tab:green\",\n",
-    "    \"lc\": \"tab:red\",\n",
-    "    \"sc*\": \"darkblue\",\n",
-    "    \"mc*\": \"darkgreen\",\n",
-    "    \"lc*\": \"darkred\"       \n",
-    "}\n",
+    "observer.photoreceptor_colors.update(\n",
+    "    {\n",
+    "        \"sc*\": \"darkblue\",\n",
+    "        \"mc*\": \"darkgreen\",\n",
+    "        \"lc*\": \"darkred\"\n",
+    "    }\n",
+    ")\n",
     "\n",
     "# Plot action spectra\n",
     "observer.plot_action_spectra(figsize=(8, 3));"
