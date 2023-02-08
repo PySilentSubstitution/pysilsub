@@ -14,25 +14,20 @@ from typing import Any, Sequence
 
 import numpy as np
 import numpy.typing as npt
-from scipy import optimize
+import scipy
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib import animation
+import matplotlib as mpl
 from colour.plotting import plot_chromaticity_diagram_CIE1931
 
-
-from .devices import (
-    StimulationDevice,
-    PrimaryWeights,
-    DeviceInput,
-    PrimaryBounds,
-    PrimaryColors,
-)
-from .colorfuncs import spd_to_xyY
-from .plots import ss_solution_plot
-from .observers import _Observer
-from .CIE import get_CIE170_2_chromaticity_coordinates
+from . import devices
+from . import colorfuncs
+from . import plots
+from . import observers
+from . import CIE
+from . import waves
 
 
 class SilSubProblemError(Exception):
@@ -44,7 +39,7 @@ class SilSubProblemError(Exception):
     """
 
 
-class SilentSubstitutionProblem(StimulationDevice):
+class SilentSubstitutionProblem(devices.StimulationDevice):
     """Class to perform silent substitution with a stimulation device.
 
     The class inherits from ``pysilsub.device.StimulationDevice`` and is
@@ -90,8 +85,8 @@ class SilentSubstitutionProblem(StimulationDevice):
         calibration: str | pd.DataFrame,
         calibration_wavelengths: Sequence[int],
         primary_resolutions: Sequence[int],
-        primary_colors: PrimaryColors,
-        observer: str | _Observer = "CIE_standard_observer",
+        primary_colors: devices.PrimaryColors,
+        observer: str | observers._Observer = "CIE_standard_observer",
         name: str | None = None,
         config: dict[str, Any] | None = None,
     ) -> None:
@@ -209,7 +204,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         return self._background
 
     @background.setter
-    def background(self, background_spectrum: DeviceInput) -> None:
+    def background(self, background_spectrum: devices.DeviceInput) -> None:
         """Set a background spectrum for the silent substitution problem."""
         if background_spectrum is None:
             self._background = background_spectrum
@@ -223,7 +218,7 @@ class SilentSubstitutionProblem(StimulationDevice):
                 self._background = background_spectrum
 
     @property
-    def bounds(self) -> PrimaryBounds:
+    def bounds(self) -> devices.PrimaryBounds:
         """Define input bounds for each primary.
 
         The *bounds* property ensures that solutions are within gamut. Bounds
@@ -266,7 +261,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         return self._bounds
 
     @bounds.setter
-    def bounds(self, new_bounds: PrimaryBounds) -> None:
+    def bounds(self, new_bounds: devices.PrimaryBounds) -> None:
         """Set new input bounds for the primaries."""
         self._assert_bounds_are_valid(new_bounds)
         self._bounds = list(new_bounds)
@@ -500,7 +495,9 @@ class SilentSubstitutionProblem(StimulationDevice):
     # Error checking
     # ---------------
 
-    def _assert_bounds_are_valid(self, new_bounds: PrimaryBounds) -> None:
+    def _assert_bounds_are_valid(
+        self, new_bounds: devices.PrimaryBounds
+    ) -> None:
         """Check bounds are valid."""
         correct_length = len(new_bounds) == self.nprimaries
         tuples_of_float = all(
@@ -589,7 +586,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         )
 
     def smlri_calculator(
-        self, x0: PrimaryWeights
+        self, x0: devices.PrimaryWeights
     ) -> tuple[pd.Series, pd.Series]:
         """Calculate alphaopic irradiances for candidate solution.
 
@@ -625,7 +622,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         )
 
     def print_photoreceptor_contrasts(
-        self, x0: PrimaryWeights, contrast_statistic: str = "simple"
+        self, x0: devices.PrimaryWeights, contrast_statistic: str = "simple"
     ):
         """Print photoreceptor contrasts for a given solution."""
         contrasts = self.get_photoreceptor_contrasts(x0, contrast_statistic)
@@ -634,7 +631,7 @@ class SilentSubstitutionProblem(StimulationDevice):
     # TODO: Catch error when background is not set
     # TODO: When background is set, do we need michelson?
     def get_photoreceptor_contrasts(
-        self, x0: PrimaryWeights, contrast_statistic: str = "simple"
+        self, x0: devices.PrimaryWeights, contrast_statistic: str = "simple"
     ) -> pd.Series:
         """Return contrasts for ignored, minimized and modulated photoreceptors.
 
@@ -664,7 +661,7 @@ class SilentSubstitutionProblem(StimulationDevice):
         elif contrast_statistic == "michelson":
             return (max_smlri - min_smlri) / (max_smlri + min_smlri)
 
-    def objective_function(self, x0: PrimaryWeights) -> float:
+    def objective_function(self, x0: devices.PrimaryWeights) -> float:
         """Calculates contrast error on modulated photoreceptor(s) in
         accordance with the problem definition.
 
@@ -693,7 +690,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             )
         return function_value
 
-    def silencing_constraint(self, x0: PrimaryWeights) -> float:
+    def silencing_constraint(self, x0: devices.PrimaryWeights) -> float:
         """Calculate contrast error for minimized photoreceptor(s).
 
         Parameters
@@ -714,7 +711,7 @@ class SilentSubstitutionProblem(StimulationDevice):
     # TODO: contrast is coming out at half
     def optim_solve(
         self, global_search: bool = False, **kwargs
-    ) -> optimize.OptimizeResult:
+    ) -> scipy.optimize.OptimizeResult:
         """Use optimisation to solve the current silent substitution problem.
 
         This method is good for finding maximum available contrast. It uses
@@ -764,7 +761,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             options = kwargs.pop("options", default_options)
 
             print("> Performing local optimization with SLSQP.")
-            result = optimize.minimize(
+            result = scipy.optimize.minimize(
                 fun=self.objective_function,
                 x0=self.initial_guess_x0(),
                 method="SLSQP",
@@ -793,7 +790,7 @@ class SilentSubstitutionProblem(StimulationDevice):
             )
 
             # Do optimization
-            result = optimize.basinhopping(
+            result = scipy.optimize.basinhopping(
                 func=self.objective_function,
                 x0=self.initial_guess_x0(),
                 minimizer_kwargs=minimizer_kwargs,
@@ -981,12 +978,12 @@ class SilentSubstitutionProblem(StimulationDevice):
         bg_spd, mod_spd = self.get_solution_spds(solution)
 
         # get xy
-        bg_xy = spd_to_xyY(bg_spd, binwidth=self.calibration_wavelengths[2])[
-            :2
-        ]
-        mod_xy = spd_to_xyY(mod_spd, binwidth=self.calibration_wavelengths[2])[
-            :2
-        ]
+        bg_xy = colorfuncs.spd_to_xyY(
+            bg_spd, binwidth=self.calibration_wavelengths[2]
+        )[:2]
+        mod_xy = colorfuncs.spd_to_xyY(
+            mod_spd, binwidth=self.calibration_wavelengths[2]
+        )[:2]
         return bg_xy, mod_xy
 
     def plot_solution_xy(self, solution, ax=None, **kwargs):
@@ -1018,13 +1015,13 @@ class SilentSubstitutionProblem(StimulationDevice):
             axes=ax, title=False, standalone=False
         )
 
-        cie170_2 = get_CIE170_2_chromaticity_coordinates()
+        cie170_2 = CIE.get_CIE170_2_chromaticity_coordinates()
         ax.plot(cie170_2["x"], cie170_2["y"], c="k", ls=":", label="CIE 170-2")
         ax.legend()
         ax.set(title="CIE 1931 horseshoe", xlim=(-0.1, 0.9), ylim=(-0.1, 0.9))
 
         # Plot aopic irradiances
-        ax.set(xticklabels="")
+        #ax.set(xticklabels="")
 
         # Chromaticity
         ax.scatter(
@@ -1089,7 +1086,10 @@ class SilentSubstitutionProblem(StimulationDevice):
             ax=ax,
             **kwargs,
         )
-        ax.set_ylabel("$a$-opic irradiance")
+        ax.set_ylabel(r"$\alpha$-opic irradiance")
+        xlabels = [f"$E_{{{pr}}}$" for pr in self.observer.photoreceptors]
+        ax.set_xticklabels(xlabels)
+        ax.set_xlabel("")
         return ax
 
     # TODO: CMFs should come from observers
@@ -1118,6 +1118,63 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         return fig
 
+    def print_solution(self, solution):
+        if self._background is None:
+            bg_weights = solution[0 : self.nprimaries]
+            mod_weights = solution[self.nprimaries : self.nprimaries * 2]
+        else:
+            bg_weights = self._background
+            mod_weights = solution
+
+        print(f"Background spectrum: {self.w2s(bg_weights)}")
+        print(f"Modulation spectrum: {self.w2s(mod_weights)}")
+
+    # TODO: polish
+    def make_contrast_waveform(
+        self,
+        frequency: int | float,
+        sampling_frequency: int,
+        target_contrast: float,
+        phase: int | float = 0,
+        duration: int | float = 1,
+    ):
+        """Make a sinusoidal contrast modulation.
+
+        Parameters
+        ----------
+        frequency : int | float
+            Modulation frequency in Hz.
+        sampling_frequency : int
+            Sampling frequency of the modulation. This should not exceed the
+            temporal resolution (spectral switching time) of the stimulation
+            device.
+        target_contrast : float
+            Peak contrast of the modulation for targetted photoreceptor(s).
+        phase : int | float, optional
+            Phase offset. The default is 0.
+        duration : int | float, optional
+            Duration of the modulation. The default is 1.
+
+        Returns
+        -------
+        solutions : list
+            Solution for each time point in the modulation.
+
+        """
+        waveform = waves.make_stimulus_waveform(
+            frequency,
+            sampling_frequency,
+            phase,
+            duration,
+        )
+
+        solutions = []
+        for point in waveform:
+            contrast = point * target_contrast
+            self.target_contrast = contrast
+            solutions.append(self.linalg_solve())
+        return solutions
+
     # TODO: Fix
     def plot_contrast_modulation(self, solutions):
         """Sonmething here.
@@ -1134,7 +1191,7 @@ class SilentSubstitutionProblem(StimulationDevice):
 
         """
         fig, ax = plt.subplots(1, 1)
-
+        
         splatter = [self.get_photoreceptor_contrasts(s) for s in solutions]
         splatter = pd.concat(splatter, axis=1)
 

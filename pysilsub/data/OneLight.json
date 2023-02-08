@@ -3,7 +3,7 @@
     "calibration_wavelengths": [
         380,
         781,
-        2
+        1
     ],
     "primary_resolutions": [
         256,
@@ -346,7 +346,7 @@
         ]
     ],
     "name": "OneLight",
-    "calibration_units": "W/$m^2$/s/nm",
+    "calibration_units": "W/m$^2$/nm",
     "json_name": "OneLight",
     "notes": "OneLight VISX Spectra, digital light synthesis engine used in Spitschan et al. papers. Highly linear with 52 narrow-band (16 nm FWHM) primaries and the capacity to modulate between spectra at 256 Hz. Reinvented from original measurements here as a perfectly linear device with 8-bit channel resolution. For further details, see Spitschan, M., Aguirre, G. K., & Brainard, D. H. (2015). Selective stimulation of penumbral cones reveals perception in the shadow of retinal blood vessels. PLoS ONE, 10(4), 1\u201322. https://doi.org/10.1371/journal.pone.0124328"
 }

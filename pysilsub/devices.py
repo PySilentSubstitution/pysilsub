@@ -11,15 +11,12 @@ import os
 import os.path as op
 from typing import Any, Optional, Sequence, Union, List, Tuple, Type
 import json
-from pprint import pprint
+import pprint
 
 import importlib_resources
-from scipy import interpolate
-from scipy import optimize
-from scipy import stats
+import scipy
 import matplotlib.pyplot as plt
-import matplotlib.path as mplpath
-from matplotlib.colors import cnames
+import matplotlib as mpl
 import seaborn as sns
 import pandas as pd
 import numpy as np
@@ -27,12 +24,9 @@ import numpy.typing as npt
 from colour.plotting import plot_chromaticity_diagram_CIE1931
 
 from . import colorfuncs
-from .CIE import (
-    get_CIE_1924_photopic_vl,
-    get_CIE170_2_chromaticity_coordinates,
-)
-from .plots import ss_solution_plot
-from .observers import _Observer, StandardColorimetricObserver
+from . import CIE
+from . import observers
+from . import plots
 
 
 # Type aliases
@@ -67,7 +61,9 @@ class StimulationDevice:
         calibration_wavelengths: Sequence[int],
         primary_resolutions: Sequence[int],
         primary_colors: PrimaryColors,
-        observer: str | Type[_Observer] | None = "CIE_standard_observer",
+        observer: str
+        | Type[observers._Observer]
+        | None = "CIE_standard_observer",
         name: str | None = None,
         config: dict[str, Any] | None = None,
     ) -> None:
@@ -135,7 +131,7 @@ class StimulationDevice:
 
         self._assert_observer_is_valid(observer)
         if observer == "CIE_standard_observer":
-            self.observer = StandardColorimetricObserver()
+            self.observer = observers.ColorimetricObserver()
         else:
             self.observer = observer
 
@@ -257,7 +253,7 @@ class StimulationDevice:
             for f in available:
                 config = json.load(open(pkg / "data" / f, "r"))
                 print(f'{"*"*60}\n{config["name"]:*^60s}\n{"*"*60}')
-                pprint(config)
+                pprint.pprint(config)
                 print("\n")
 
         return [a.strip(".json") for a in available]
@@ -416,7 +412,7 @@ class StimulationDevice:
             )
 
         if all([isinstance(c, str) for c in colors]):
-            mpl_colornames = list(cnames.keys())
+            mpl_colornames = list(mpl.colors.cnames.keys())
             msg = (
                 f" Valid color names: {mpl_colornames}\n\nAt least one color "
                 + "name was not valid. Please choose from the above list, or "
@@ -438,7 +434,7 @@ class StimulationDevice:
         """Check observer is valid."""
         if not (
             (observer == "CIE_standard_observer")
-            or (isinstance(observer, _Observer))
+            or (isinstance(observer, observers._Observer))
         ):
             raise ValueError(
                 f"> {observer} is not a valid argument for observer."
@@ -468,7 +464,7 @@ class StimulationDevice:
 
     def _xy_in_gamut(self, xy_coord: tuple[float, float]) -> bool:
         """Return True if xy_coord is within the gamut of the device."""
-        poly_path = mplpath.Path(self._get_gamut().to_numpy())
+        poly_path = mpl.path.Path(self._get_gamut().to_numpy())
         return poly_path.contains_point(xy_coord)
 
     # TODO: review below here
@@ -506,7 +502,7 @@ class StimulationDevice:
                 axes=ax, title=False, standalone=False
             )
         if show_CIE170_2_horseshoe:
-            cie170_2 = get_CIE170_2_chromaticity_coordinates()
+            cie170_2 = CIE.get_CIE170_2_chromaticity_coordinates()
             ax.plot(
                 cie170_2["x"], cie170_2["y"], c="k", ls=":", label="CIE 170-2"
             )
@@ -636,7 +632,7 @@ class StimulationDevice:
             primary_input = primary_input * self.primary_resolutions[primary]
 
         # TODO: these could go in a dispatch table
-        f = interpolate.interp1d(
+        f = scipy.interpolate.interp1d(
             x=self.calibration.loc[primary].index.values,
             y=self.calibration.loc[primary],
             axis=0,
@@ -723,7 +719,7 @@ class StimulationDevice:
             Lux values.
 
         """
-        vl = get_CIE_1924_photopic_vl(
+        vl = CIE.get_CIE_1924_photopic_vl(
             binwidth=self.calibration_wavelengths[-1]
         )
         lux = self.calibration.dot(vl.values) * 683  # lux conversion factor
@@ -763,7 +759,7 @@ class StimulationDevice:
         tolerance: float = 1e-6,
         plot_solution: bool = False,
         verbose: bool = True,
-    ) -> optimize.OptimizeResult:
+    ) -> scipy.optimize.OptimizeResult:
         """Find device settings for a spectrum with requested xyY values.
 
         Parameters
@@ -833,7 +829,7 @@ class StimulationDevice:
         x0 = np.random.uniform(0, 1, self.nprimaries)
 
         # Do global search
-        result = optimize.basinhopping(
+        result = scipy.optimize.basinhopping(
             func=_xyY_objective_function,
             x0=x0,
             niter=100,
@@ -855,7 +851,7 @@ class StimulationDevice:
 
         # Reacfactor!
         if plot_solution is not None:
-            fig, axs = ss_solution_plot()
+            fig, axs = plots.ss_solution_plot()
             # Plot the spectrum
             self.predict_multiprimary_spd(
                 result.x, name=f"solution_xyY:\n{solution_xyY.round(3)}"
@@ -942,10 +938,10 @@ class StimulationDevice:
                 new_x = np.polyval(poly_coeff, x)
 
             elif fit == "beta_cdf":
-                popt, pcov = optimize.curve_fit(
-                    stats.beta.cdf, y, x, p0=[2.0, 1.0]
+                popt, pcov = scipy.optimize.curve_fit(
+                    scipy.stats.beta.cdf, y, x, p0=[2.0, 1.0]
                 )
-                new_x = stats.beta.cdf(x, *popt)
+                new_x = scipy.stats.beta.cdf(x, *popt)
 
             new_x = (new_x * self.primary_resolutions[primary]).astype("int")
 
@@ -958,7 +954,7 @@ class StimulationDevice:
             .interpolate("linear", axis=1)
             .astype("int")
         )
-        
+
         # TODO temp fix, make generic
         gamma_table = gamma_table.clip(0, 4095)
         self.gamma = gamma_table
@@ -997,7 +993,7 @@ class StimulationDevice:
             g = g / g.max()
             y = y / y.max()
 
-            fig, ax = plt.subplots(figsize=(3,3))
+            fig, ax = plt.subplots(figsize=(3, 3))
             ax.plot(x, y, c=self.primary_colors[primary], label="Measured")
             ax.plot(x, x, c="k", ls=":", label="Ideal")
             ax.plot(x, g, c="k", label="Reverse fit")

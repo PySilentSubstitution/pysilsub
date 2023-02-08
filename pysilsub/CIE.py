@@ -214,6 +214,35 @@ def get_CIEPO06_optical_density() -> pd.DataFrame:
     return pd.read_csv(fpath, index_col="Wavelength")
 
 
+def estimate_CIEPO06_lens_density(age):
+    """Estimate lens density spectrum for observer using CIEPO06.
+    
+
+    Parameters
+    ----------
+    age : int
+        Observer age..
+
+    Returns
+    -------
+    correct_lomd : TYPE
+        DESCRIPTION.
+
+    """
+    docul = get_CIEPO06_optical_density()
+    if age <= 60.0:
+        correct_lomd = (
+            docul["D_ocul_1"].mul(1 + (0.02 * (age - 32)))
+            + docul["D_ocul_2"]
+        )
+    else:
+        correct_lomd = (
+            docul["D_ocul_1"].mul(1.56 + (0.0667 * (age - 60)))
+            + docul["D_ocul_2"]
+        )
+    return correct_lomd
+
+
 def get_CIE_203_2012_lens_density(age, wls):
     """Lens density function from CIE 203:2012 (used for melanopsin).
 

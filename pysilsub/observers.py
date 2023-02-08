@@ -12,15 +12,19 @@ from __future__ import annotations
 
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
-from pysilsub.CIE import (
-    get_CIES026_action_spectra,
-    get_CIE_A_lms,
-    get_CIEPO06_optical_density,
-    get_CIEPO06_macula_density,
-    get_CIE_203_2012_lens_density,
-)
+from . import CIE
+from . import precep
+
+
+class ObserverError(Exception):
+    """Generic Python-exception-derived object.
+
+    Raised programmatically by Observer class methods when arguments are
+    incorrectly specified or when they do not agree with values of other.
+    """
 
 
 # TODO: use these
@@ -29,7 +33,7 @@ MAX_DENSITY_S: float = 0.3
 
 
 def get_lens_density_spectrum(age):
-    d = get_CIEPO06_optical_density()
+    d = CIE.get_CIEPO06_optical_density()
     if age <= 60.0:
         correct_lomd = d["D_ocul_1"].mul(1 + 0.02 * (age - 32)) + d["D_ocul_2"]
     else:
@@ -64,14 +68,41 @@ class _Observer:
         "mel": "tab:cyan",
     }
 
-    def __init__(self) -> None:
-        self.action_spectra = None
+    def __init__(self, action_spectra=None) -> None:
+        self._action_spectra = action_spectra
+        # self._photoreceptors = None
+        # self._photoreceptor_colors = None
 
     def __repr__(self):
         return f"{self.__class__.__name__}"
 
     def __str__(self):
         return f"{self.__class__.__name__}"
+
+    @property
+    def action_spectra(self):
+        """Photoreceptor action spectra of the observer.
+
+        Raises
+        ------
+        ObserverError
+            If requested and not present.
+
+        Returns
+        -------
+        action_spectra : pd.DataFrame
+            The observer action spectra.
+
+        """
+        if self._action_spectra is None:
+            print(self.__class__.action_spectra.__doc__)
+            raise ObserverError("There are no action spectra.")
+        return self._action_spectra
+
+    @action_spectra.setter
+    def action_spectra(self, action_spectra: pd.DataFrame) -> None:
+        """Set the observer action spectra."""
+        self._action_spectra = action_spectra
 
     def plot_action_spectra(self, ax: plt.Axes = None, **kwargs) -> plt.Axes:
         """Plot photoreceptor action spectra for the observer.
@@ -88,9 +119,6 @@ class _Observer:
         ax : matplotlib.axes.Axes
 
         """
-        # TODO: error for no action spectra
-        if self.action_spectra is None:
-            raise AttributeError("No action spectra to plot.")
         if ax is None:
             ax = plt.gca()
         self.action_spectra.plot(
@@ -101,56 +129,32 @@ class _Observer:
         return ax
 
 
-class StandardColorimetricObserver(_Observer):
-    """CIE Standard colorimetric observer model.
-
-    The standard colorimetric observer model as specified by the CIE (32 years
-    old, field size of 10 degrees).
-
-    """
-
-    def __init__(self) -> None:
-        """Initialise with default action spectra."""
-        super().__init__()
-
-        # Assumed by the standard
-        self.age = 32
-        self.field_size = 10
-
-        # Get photoreceptor action for the CIE standard colorimetric observer
-        self.action_spectra = get_CIES026_action_spectra()
-
-        # Other info
-        self.lens_density_spectrum = get_CIEPO06_optical_density()["D_ocul"]
-        self.macular_pigment_density_spectrum = get_CIEPO06_macula_density()
-
-    def __str__(self):
-        return f"{self.__class__.__name__}(age={self.age}, field_size={self.field_size})"
-
-
-class IndividualColorimetricObserver(_Observer):
-    """Individual colorimetric observer model.
-
-    Action spectra for sc, mc and lc cones are adjusted for age and field size.
-
-    See Asano et al. and CIE report for further details.
-
-    """
-
-    def __init__(self, age: int | float, field_size: int | float):
+class ColorimetricObserver(_Observer):
+    def __init__(
+        self,
+        age: int | float = 32,
+        field_size: int | float = 10,
+        penumbral_cones: bool = False,
+    ):
         super().__init__()
         self.age = age
         self.field_size = field_size
+        self.penumbral_cones = penumbral_cones
 
         # Get photoreceptor action for the CIE standard colorimetric observer
-        self.action_spectra = get_CIES026_action_spectra()
+        self.action_spectra = CIE.get_CIES026_action_spectra()
         self.action_spectra[["lc", "mc", "sc"]] = self.adjust_lms(
             age, field_size
         )
         self.action_spectra["mel"] = self.adjust_melanopsin()
         self.action_spectra["rh"] = self.adjust_rhodopsin()
+        if self.penumbral_cones:
+            self.add_penumbral_cones()
 
     def __str__(self):
+        return f"{self.__class__.__name__}(age={self.age}, field_size={self.field_size})"
+
+    def __repr__(self):
         return f"{self.__class__.__name__}(age={self.age}, field_size={self.field_size})"
 
     # TODO: refactor
@@ -187,8 +191,8 @@ class IndividualColorimetricObserver(_Observer):
             )
         # Get the raw data. Note that the first two points of each have been
         # interpolated.
-        A_lms = get_CIE_A_lms()
-        rmd = get_CIEPO06_macula_density().squeeze()
+        A_lms = CIE.get_CIE_A_lms()
+        rmd = CIE.get_CIEPO06_macula_density().squeeze()
 
         # Field size corrected macular density
         corrected_rmd = rmd * (0.485 * np.exp(-self.field_size / 6.132))
@@ -250,9 +254,9 @@ class IndividualColorimetricObserver(_Observer):
 
         """
         wls = np.arange(380, 781, 1)
-        ld32 = get_CIE_203_2012_lens_density(32, wls)
+        ld32 = CIE.get_CIE_203_2012_lens_density(32, wls)
         t32 = 10 ** (-ld32) * 100  # transmittance
-        lens_function = get_CIE_203_2012_lens_density(self.age, wls=wls)
+        lens_function = CIE.get_CIE_203_2012_lens_density(self.age, wls=wls)
         lens_transmittance = (10**-lens_function) * 100  # transmittance
         correction_function = (
             lens_transmittance / t32
@@ -276,9 +280,9 @@ class IndividualColorimetricObserver(_Observer):
 
         """
         wls = np.arange(380, 781, 1)
-        ld32 = get_CIE_203_2012_lens_density(32, wls)
+        ld32 = CIE.get_CIE_203_2012_lens_density(32, wls)
         t32 = 10 ** (-ld32) * 100  # transmittance
-        lens_function = get_CIE_203_2012_lens_density(self.age, wls=wls)
+        lens_function = CIE.get_CIE_203_2012_lens_density(self.age, wls=wls)
         lens_transmittance = (10**-lens_function) * 100  # transmittance
         correction_function = (
             lens_transmittance / t32
@@ -289,3 +293,28 @@ class IndividualColorimetricObserver(_Observer):
         # (10**-np.exp(-correction_function))
         new_rod = new_rod.div(new_rod.max())  # Normalise
         return new_rod
+
+    def add_penumbral_cones(self):
+
+        hgb_transmittance = precep.get_retinal_hemoglobin_transmittance(
+            wavelengths=(380, 781, 1),
+            vessel_oxygenation_fraction=0.85,
+            vessel_overall_thickness_um=5,
+        )
+        # Multiply the spectral sensitivities (stored in a pandas DataFrame)
+        # by the HGb transmittance spectrum, divide by maximum, and assign a new label.
+        penumbral_cones = self.action_spectra[["sc", "mc", "lc"]].mul(
+            hgb_transmittance, axis=0
+        )
+        penumbral_cones = penumbral_cones / penumbral_cones.max()
+        penumbral_cones.columns = [
+            receptor + "*" for receptor in penumbral_cones.columns
+        ]
+
+        # Override list of photoreceptors and colors used for plotting.
+        # We add a '*' to denote the action spectra for penumbral cones.
+        self.action_spectra = self.action_spectra.join(penumbral_cones)
+        self.photoreceptors = self.action_spectra.columns.tolist()
+        self.photoreceptor_colors.update(
+            {"sc*": "darkblue", "mc*": "darkgreen", "lc*": "darkred"}
+        )

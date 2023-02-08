@@ -37,6 +37,8 @@ extensions = [
     "sphinx.ext.mathjax"
     ]
 
+nbsphinx_prompt_width = 150
+
 # Show docs in order of definition
 autodoc_class_signature = 'separated'
 autodoc_member_order = 'bysource'

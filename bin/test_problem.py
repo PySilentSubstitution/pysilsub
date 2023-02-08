@@ -23,15 +23,18 @@ ssp = SSP.from_package_data("STLAB_2_York")
 # ssp = SSP.from_json('../data/LEDCube.json')
 
 # Check 3-primary LMS 100% contrast
-ssp.ignore = ["R"]
-ssp.modulate = ["S"]
-ssp.minimize = ["I", "M", "L"]
-
-ssp.target_contrast = 0.48
+ssp.ignore = ['rh', 'mel']
+ssp.modulate = ['mc', 'lc']
+ssp.minimize = ['sc']
+ssp.target_contrast = [-0.1, 0.1]
 ssp.background = [0.5] * ssp.nprimaries
 result = ssp.linalg_solve()
 ssp.plot_solution(result)
 
+solutions = ssp.make_contrast_waveform(1, 50, .11)
+ssp.plot_contrast_modulation(solutions)
+
+#%%
 sol_set = ssp.weights_to_settings(result)
 
 spd_fig = ssp.plot_calibration_spds(**{"legend": False})

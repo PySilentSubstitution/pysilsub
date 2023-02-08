@@ -59,7 +59,7 @@ algebra and numerical optimisation via a configurable, intuitive interface.
    problem.minimize = ['sc', 'mc', 'lc']  # Minimise cone contrast
    problem.modulate = ['mel']  # Target melanopsin
    problem.target_contrast = .45  # With 45% contrast 
-   solution = problem.linalg_solve()  # Solve with optimisation
+   solution = problem.linalg_solve()  # Solve with linear algebra
    fig = problem.plot_solution(solution)  # Plot the solution
 
 .. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg
