@@ -23,7 +23,6 @@ setuptools.setup(
         'numpy',
         'scipy',
         'matplotlib',
-        'seaborn',  # Potentially not require this
         'pandas',
         'importlib-resources',
         'colour-science'

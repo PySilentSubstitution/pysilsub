@@ -209,19 +209,17 @@ def get_CIEPO06_optical_density() -> pd.DataFrame:
         Optical density as a function of wavelength.
 
     """
-
     fpath = PKG / "data" / "CIEPO06_optical_density.csv"
     return pd.read_csv(fpath, index_col="Wavelength")
 
 
 def estimate_CIEPO06_lens_density(age):
     """Estimate lens density spectrum for observer using CIEPO06.
-    
 
     Parameters
     ----------
     age : int
-        Observer age..
+        Observer age.
 
     Returns
     -------
@@ -232,8 +230,7 @@ def estimate_CIEPO06_lens_density(age):
     docul = get_CIEPO06_optical_density()
     if age <= 60.0:
         correct_lomd = (
-            docul["D_ocul_1"].mul(1 + (0.02 * (age - 32)))
-            + docul["D_ocul_2"]
+            docul["D_ocul_1"].mul(1 + (0.02 * (age - 32))) + docul["D_ocul_2"]
         )
     else:
         correct_lomd = (
@@ -276,7 +273,6 @@ def get_CIE_203_2012_lens_density(age, wls):
 
 def get_CIEPO06_macula_density() -> pd.Series:
     """Optical density D_macula of the macular pigment."""
-
     fpath = PKG / "data" / "CIEPO06_macula_density.csv"
     return pd.read_csv(fpath, index_col="Wavelength").squeeze("columns")
 

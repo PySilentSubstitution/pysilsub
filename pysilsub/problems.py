@@ -16,7 +16,6 @@ import numpy as np
 import numpy.typing as npt
 import scipy
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib import animation
 import matplotlib as mpl
@@ -24,7 +23,6 @@ from colour.plotting import plot_chromaticity_diagram_CIE1931
 
 from . import devices
 from . import colorfuncs
-from . import plots
 from . import observers
 from . import CIE
 from . import waves
@@ -915,7 +913,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
             mod_spd = self.predict_multiprimary_spd(
                 solution, name="Modulation"
             )
-        except:
+        except Exception:
             bg_spd = self.predict_multiprimary_spd(
                 solution[: self.nprimaries], name="Background"
             )
@@ -1021,7 +1019,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
         ax.set(title="CIE 1931 horseshoe", xlim=(-0.1, 0.9), ylim=(-0.1, 0.9))
 
         # Plot aopic irradiances
-        #ax.set(xticklabels="")
+        # ax.set(xticklabels="")
 
         # Chromaticity
         ax.scatter(
@@ -1054,7 +1052,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
         ax : plt.Axes, optional
             Axes on which to  plot. The default is None.
         **kwargs : dict
-            Passed to `sns.barplot()`.
+            Passed to `DataFrame.bar.plot()`.
 
         Returns
         -------
@@ -1065,27 +1063,15 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
         if ax is None:
             ax = plt.gca()
 
-        # get aopic
+        # Default kwargs
+        width = kwargs.pop("width", 0.7)
+
+        # Get aopic and plot
         bg_ao, mod_ao = self.smlri_calculator(solution)
-        df_ao = (
-            pd.concat([bg_ao, mod_ao], axis=1)
-            .T.melt(
-                value_name="aopic",
-                var_name="Photoreceptor",
-                ignore_index=False,
-            )
-            .reset_index()
-            .rename(columns={"index": "Spectrum"})
-        )
-        # Aopic
-        sns.barplot(
-            data=df_ao,
-            x="Photoreceptor",
-            y="aopic",
-            hue="Spectrum",
-            ax=ax,
-            **kwargs,
-        )
+        data = pd.concat([bg_ao, mod_ao], axis=1)
+        data.plot.bar(ax=ax, rot=0, width=width, **kwargs)
+
+        # Set labels. Some fun bugs solved here :)
         ax.set_ylabel(r"$\alpha$-opic irradiance")
         xlabels = [f"$E_{{{pr}}}$" for pr in self.observer.photoreceptors]
         ax.set_xticklabels(xlabels)
@@ -1191,7 +1177,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
 
         """
         fig, ax = plt.subplots(1, 1)
-        
+
         splatter = [self.get_photoreceptor_contrasts(s) for s in solutions]
         splatter = pd.concat(splatter, axis=1)
 

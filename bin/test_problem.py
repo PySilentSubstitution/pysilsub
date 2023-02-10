@@ -34,6 +34,7 @@ ssp.plot_solution(result)
 solutions = ssp.make_contrast_waveform(1, 50, .11)
 ssp.plot_contrast_modulation(solutions)
 
+bg, mod = ssp.smlri_calculator(result)
 #%%
 sol_set = ssp.weights_to_settings(result)
 

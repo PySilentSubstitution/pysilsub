@@ -2,14 +2,14 @@
 ``pysilsub.devices``
 ====================
 
-Software model for multiprimary stimulation devices. 
- 
+Software model for multiprimary stimulation devices.
+
 """
 from __future__ import annotations
 
 import os
 import os.path as op
-from typing import Any, Optional, Sequence, Union, List, Tuple, Type
+from typing import Any, Sequence, Union, List, Tuple, Type
 import json
 import pprint
 
@@ -17,7 +17,6 @@ import importlib_resources
 import scipy
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-import seaborn as sns
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
@@ -26,7 +25,6 @@ from colour.plotting import plot_chromaticity_diagram_CIE1931
 from . import colorfuncs
 from . import CIE
 from . import observers
-from . import plots
 
 
 # Type aliases
@@ -554,22 +552,23 @@ class StimulationDevice:
         # Plot defaults
         lw = kwargs.pop("lw", 0.5)
 
-        data = self._melt_spds(spds=data)
+        # Plot spds
+        for primary, color in enumerate(self.primary_colors):
+            self.calibration.loc[primary].T.plot(
+                c=color, lw=lw, ax=ax, legend=False
+            )
 
-        _ = sns.lineplot(
-            x="Wavelength (nm)",
-            y="Flux",
-            data=data,
-            hue="Primary",
-            palette=self.primary_colors,
-            units="Setting",
-            ax=ax,
-            lw=lw,
-            estimator=None,
-            **kwargs,
-        )
+        # Add legend
+        handles = [
+            plt.Line2D([0], [0], c=color) for color in self.primary_colors
+        ]
+        labels = list(range(self.nprimaries))
+
+        # Legend and labels
+        ax.legend(handles, labels, title="Primary")
         ax.set_title(f"{self.name} SPDs")
         ax.set_ylabel(ylabel)
+
         return ax
 
     def plot_calibration_spds_and_gamut(
@@ -851,7 +850,7 @@ class StimulationDevice:
 
         # Reacfactor!
         if plot_solution is not None:
-            fig, axs = plots.ss_solution_plot()
+            fig, axs = plt.subplots(1, 3, figsize=(12, 4))
             # Plot the spectrum
             self.predict_multiprimary_spd(
                 result.x, name=f"solution_xyY:\n{solution_xyY.round(3)}"

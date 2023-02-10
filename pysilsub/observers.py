@@ -5,7 +5,9 @@
 ``pysilsub.observers``
 ======================
 
-Standard and individualistic colorimetric observer models.
+Colorimetric observer model based on CIEPO06 and CIES026. 
+
+Translated from...
 
 """
 from __future__ import annotations
@@ -224,7 +226,7 @@ class ColorimetricObserver(_Observer):
         # Corrected to Energy Terms
         lms_bar = lms_barq.mul(lms_barq.index, axis=0)
 
-        # resample / interpolate to visible wavelengths
+        # Resample / interpolate to visible wavelengths
         interp_kwds = dict(method="cubic", fill_value="extrapolate")
         lms_bar_norm = (
             lms_bar.reindex(range(380, 781, 1))
@@ -295,7 +297,18 @@ class ColorimetricObserver(_Observer):
         return new_rod
 
     def add_penumbral_cones(self):
+        """Include spectral sensitivities for penumbral cones.
+        
+        Penumbral cones are cones that lie in the shadow of retinal blood
+        vessels and have altered spectral sensitivity functions due to 
+        prefiltering of light by hemoglobin. 
+        
 
+        Returns
+        -------
+        None.
+
+        """
         hgb_transmittance = precep.get_retinal_hemoglobin_transmittance(
             wavelengths=(380, 781, 1),
             vessel_oxygenation_fraction=0.85,
