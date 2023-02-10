@@ -306,9 +306,9 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.problems</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">problems</span>
 
-<span class="n">ssp</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_1_York&#39;</span><span class="p">)</span>
+<span class="n">ssp</span> <span class="o">=</span> <span class="n">problems</span><span class="o">.</span><span class="n">SilentSubstitutionProblem</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_1_York&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -335,7 +335,7 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 <span class="ansi-red-fg">Type:</span>        property
-<span class="ansi-red-fg">String form:</span> &lt;property object at 0x7fb25bcd6430&gt;
+<span class="ansi-red-fg">String form:</span> &lt;property object at 0x7f8fd9195120&gt;
 <span class="ansi-red-fg">Docstring:</span>
 Photoreceptor(s) to be ignored.
 
@@ -376,7 +376,7 @@ ignore : [None] or list of str
 <h2>Defining a problem<a class="headerlink" href="#Defining-a-problem" title="Permalink to this heading">¶</a></h2>
 <p>Problems are defined by setting the required/desired properties. The <code class="docutils literal notranslate"><span class="pre">ignore</span></code>, <code class="docutils literal notranslate"><span class="pre">modulate</span></code> and <code class="docutils literal notranslate"><span class="pre">minimize</span></code> properties <strong>must</strong> be set and should together account for all photoreceptors (‘sc’, ‘mc’, ‘lc’, ‘rh’, ‘mel’). The <code class="docutils literal notranslate"><span class="pre">background</span></code> and <code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> properties may need to be set, depending on the constraints of your research question and which solver you intend to use.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Retinal photoreceptors:</span><span class="se">\n</span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">photoreceptors</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -406,6 +406,7 @@ Retinal photoreceptors:
 *************** Silent Substitution Problem ****************
 ************************************************************
 Device: STLAB_1 (binocular, left eye)
+Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
 Minimising: [&#39;mc&#39;, &#39;lc&#39;, &#39;mel&#39;]
 Modulating: [&#39;sc&#39;]
@@ -425,7 +426,7 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 <h3><code class="docutils literal notranslate"><span class="pre">.linalg_solve()</span></code><a class="headerlink" href="#.linalg_solve()" title="Permalink to this heading">¶</a></h3>
 <p>This method uses linear algebra for unidirectional scaling of the primaries and works only if the <code class="docutils literal notranslate"><span class="pre">background</span></code> and <code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> properties have been set.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">linalg_solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">()</span>
@@ -439,16 +440,16 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Primary
-0    0.690321
-1    0.691415
-2    0.466177
-3    0.408474
-4    0.340682
-5    0.481743
-6    0.592777
-7    0.482589
-8    0.401621
-9    0.457403
+0    0.690308
+1    0.691431
+2    0.466195
+3    0.408491
+4    0.340666
+5    0.481720
+6    0.592775
+7    0.482610
+8    0.401599
+9    0.457392
 dtype: float64
 </pre></div></div>
 </div>
@@ -457,7 +458,7 @@ dtype: float64
 <h3><code class="docutils literal notranslate"><span class="pre">.optim_solve(...)</span></code><a class="headerlink" href="#.optim_solve(...)" title="Permalink to this heading">¶</a></h3>
 <p>This method uses numerical optimisation methods from <code class="docutils literal notranslate"><span class="pre">scipy.optimize</span></code>. If the <code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> property was not set, the solver aims to maximise contrast. If the <code class="docutils literal notranslate"><span class="pre">background</span></code> property was not set, the background spectrum will also be optimised.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optim_solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:{</span><span class="s1">&#39;disp&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">}})</span>
@@ -470,9 +471,11 @@ dtype: float64
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
 &gt; Performing local optimization with SLSQP.
-[ 0.18839776  0.94905427  0.79360254  0.22002221  0.27236013  0.6421311
-  0.35241468  0.76237495  0.04011788  0.03181959]
+[  2.38104832e-01   7.10487771e-01   7.60510053e-01   2.10032646e-01
+   6.24550834e-01   2.72578729e-01   5.10968407e-01   5.64254190e-01
+   4.48026535e-01   3.58199455e-04]
 </pre></div></div>
 </div>
 </section>
@@ -482,7 +485,7 @@ dtype: float64
 <p>Having found a solution, you will probably want to see what it looks like.</p>
 <p><code class="docutils literal notranslate"><span class="pre">.plot_solution(...)</span></code> makes a nice plot showing the predicted background and modulation spectra alongside their CIE <em>xy</em> chromaticity coordinates and <em>a</em>-opic irradiance.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Linear algebra solution</span>
@@ -498,7 +501,7 @@ dtype: float64
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optimisation solution</span>

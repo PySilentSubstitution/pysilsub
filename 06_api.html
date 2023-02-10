@@ -39,7 +39,8 @@
 <span id="api-documentation"></span><h1>API Documentation<a class="headerlink" href="#module-pysilsub.observers" title="Permalink to this heading">¶</a></h1>
 <section id="pysilsub-observers">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers</span></code><a class="headerlink" href="#pysilsub-observers" title="Permalink to this heading">¶</a></h2>
-<p>Standard and individualistic colorimetric observer models.</p>
+<p>Colorimetric observer model based on CIEPO06 and CIES026.</p>
+<p>Translated from…</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="pysilsub.observers.ObserverError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.observers.</span></span><span class="sig-name descname"><span class="pre">ObserverError</span></span><a class="headerlink" href="#pysilsub.observers.ObserverError" title="Permalink to this definition">¶</a></dt>
@@ -49,46 +50,25 @@ incorrectly specified or when they do not agree with values of other.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="pysilsub.observers.StandardColorimetricObserver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.observers.</span></span><span class="sig-name descname"><span class="pre">StandardColorimetricObserver</span></span><a class="headerlink" href="#pysilsub.observers.StandardColorimetricObserver" title="Permalink to this definition">¶</a></dt>
-<dd><p>CIE Standard colorimetric observer model.</p>
-<p>The standard colorimetric observer model as specified by the CIE (32 years
-old, field size of 10 degrees).</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.observers.StandardColorimetricObserver.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.StandardColorimetricObserver.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialise with default action spectra.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.observers.</span></span><span class="sig-name descname"><span class="pre">IndividualColorimetricObserver</span></span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Individual colorimetric observer model.</p>
-<p>Action spectra for sc, mc and lc cones are adjusted for age and field size.</p>
-<p>See Asano et al. and CIE report for further details.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.observers.ColorimetricObserver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.observers.</span></span><span class="sig-name descname"><span class="pre">ColorimetricObserver</span></span><a class="headerlink" href="#pysilsub.observers.ColorimetricObserver" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.observers.ColorimetricObserver.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penumbral_cones</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.ColorimetricObserver.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>age</strong> (<em>int</em><em> | </em><em>float</em>) – </p></li>
 <li><p><strong>field_size</strong> (<em>int</em><em> | </em><em>float</em>) – </p></li>
+<li><p><strong>penumbral_cones</strong> (<em>bool</em>) – </p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver.adjust_lms">
-<span class="sig-name descname"><span class="pre">adjust_lms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver.adjust_lms" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.observers.ColorimetricObserver.adjust_lms">
+<span class="sig-name descname"><span class="pre">adjust_lms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">age</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.ColorimetricObserver.adjust_lms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adjust LMS spectral sensetivities for age and field size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -107,8 +87,8 @@ old, field size of 10 degrees).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver.adjust_melanopsin">
-<span class="sig-name descname"><span class="pre">adjust_melanopsin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver.adjust_melanopsin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.observers.ColorimetricObserver.adjust_melanopsin">
+<span class="sig-name descname"><span class="pre">adjust_melanopsin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.ColorimetricObserver.adjust_melanopsin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adjust melanopsin action spectrum for observer age.</p>
 <p>After CIE:, we use a different lens density spectrum.</p>
 <dl class="field-list simple">
@@ -122,8 +102,8 @@ old, field size of 10 degrees).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.observers.IndividualColorimetricObserver.adjust_rhodopsin">
-<span class="sig-name descname"><span class="pre">adjust_rhodopsin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.IndividualColorimetricObserver.adjust_rhodopsin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.observers.ColorimetricObserver.adjust_rhodopsin">
+<span class="sig-name descname"><span class="pre">adjust_rhodopsin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.ColorimetricObserver.adjust_rhodopsin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adjust rhodopsin action spectrum for observer age.</p>
 <p>After CIE:, we use a different lens density spectrum.</p>
 <dl class="field-list simple">
@@ -132,6 +112,20 @@ old, field size of 10 degrees).</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.observers.ColorimetricObserver.add_penumbral_cones">
+<span class="sig-name descname"><span class="pre">add_penumbral_cones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.observers.ColorimetricObserver.add_penumbral_cones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Include spectral sensitivities for penumbral cones.</p>
+<p>Penumbral cones are cones that lie in the shadow of retinal blood
+vessels and have altered spectral sensitivity functions due to
+prefiltering of light by hemoglobin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -942,8 +936,8 @@ contrast on the modulated photoreceptors.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.smlri_calculator">
-<span class="sig-name descname"><span class="pre">smlri_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.smlri_calculator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.aopic_calculator">
+<span class="sig-name descname"><span class="pre">aopic_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.aopic_calculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate alphaopic irradiances for candidate solution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -951,8 +945,8 @@ contrast on the modulated photoreceptors.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>bg_smlri</strong> (<em>pd.Series</em>) – Alphaopic irradiances for the background spectrum.</p></li>
-<li><p><strong>mod_smlri</strong> (<em>pd.Series</em>) – Alphaopic irradiances for the modulation spectrum.</p></li>
+<li><p><strong>bg_aopic</strong> (<em>pd.Series</em>) – Alphaopic irradiances for the background spectrum.</p></li>
+<li><p><strong>mod_aopic</strong> (<em>pd.Series</em>) – Alphaopic irradiances for the modulation spectrum.</p></li>
 </ul>
 </p>
 </dd>
@@ -1091,8 +1085,8 @@ alternatively the Moore-Penrose pseudo-inverse.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>bg_spd</strong> (<em>TYPE</em>) – Chromaticity coordinates of background spectrum.</p></li>
-<li><p><strong>mod_spd</strong> (<em>TYPE</em>) – Chromaticity coordinates of modulation spectrum.</p></li>
+<li><p><strong>bg_spd</strong> (<em>pd.Series</em>) – Chromaticity coordinates of background spectrum.</p></li>
+<li><p><strong>mod_spd</strong> (<em>pd.Series</em>) – Chromaticity coordinates of modulation spectrum.</p></li>
 </ul>
 </p>
 </dd>
@@ -1168,7 +1162,7 @@ alternatively the Moore-Penrose pseudo-inverse.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p></li>
 <li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – Axes on which to  plot. The default is None.</p></li>
-<li><p><strong>**kwargs</strong> (<em>dict</em>) – Passed to <cite>sns.barplot()</cite>.</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – Passed to <cite>DataFrame.bar.plot()</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1198,18 +1192,58 @@ alternatively the Moore-Penrose pseudo-inverse.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation">
-<span class="sig-name descname"><span class="pre">plot_contrast_modulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sonmething here.</p>
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.print_solution">
+<span class="sig-name descname"><span class="pre">print_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.print_solution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the device input settings for the background and modulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>solutions</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+<dd class="field-odd"><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.make_contrast_modulation">
+<span class="sig-name descname"><span class="pre">make_contrast_modulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_contrast</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.make_contrast_modulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a sinusoidal contrast modulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frequency</strong> (<em>int</em><em> | </em><em>float</em>) – Modulation frequency in Hz.</p></li>
+<li><p><strong>sampling_frequency</strong> (<em>int</em>) – Sampling frequency of the modulation. This should not exceed the
+temporal resolution (spectral switching time) of the stimulation
+device.</p></li>
+<li><p><strong>target_contrast</strong> (<em>float</em>) – Peak contrast of the modulation for targetted photoreceptor(s).</p></li>
+<li><p><strong>phase</strong> (<em>int</em><em> | </em><em>float</em><em>, </em><em>optional</em>) – Phase offset. The default is 0. Use np.pi</p></li>
+<li><p><strong>duration</strong> (<em>int</em><em> | </em><em>float</em><em>, </em><em>optional</em>) – Duration of the modulation. The default is 1.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>fig</strong> – DESCRIPTION.</p>
+<dd class="field-even"><p><strong>solutions</strong> – Solution for each time point in the modulation.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>TYPE</p>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation">
+<span class="sig-name descname"><span class="pre">plot_contrast_modulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot photoreceptor contrast over time for a list of solutions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>solutions</strong> (<em>list</em>) – List of solutions returned by one of the solvers (one for each
+timepoint in the modulation).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>fig</strong> – The plot.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt.Figure</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1599,7 +1633,7 @@ tabulated values by 0.86207.</p>
 <dd><p>Estimate lens density spectrum for observer using CIEPO06.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>age</strong> (<em>int</em>) – Observer age..</p>
+<dd class="field-odd"><p><strong>age</strong> (<em>int</em>) – Observer age.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>correct_lomd</strong> – DESCRIPTION.</p>
