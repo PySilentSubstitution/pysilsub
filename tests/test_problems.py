@@ -30,19 +30,19 @@ BOUNDS_CASE = [(0.0, 1.0)] * 10
 
 PROBLEM_CASES = [
     {
-    'ignore': ['R'],
-    'minimize': ['M', 'L', 'I'],
-    'modulate': ['S']
+    'ignore': ['rh'],
+    'minimize': ['mc', 'lc', 'mel'],
+    'modulate': ['sc']
     },
     {
     'ignore': [None],
-    'minimize': ['M', 'L', 'I', 'R'],
-    'modulate': ['S']
+    'minimize': ['mc', 'lc', 'mel', 'rh'],
+    'modulate': ['sc']
     },
     {
-    'ignore': ['R'],
-    'minimize': ['I'],
-    'modulate': ['S', 'M', 'L']
+    'ignore': ['rh'],
+    'minimize': ['mel'],
+    'modulate': ['sc', 'mc', 'lc']
     }
     ]
 
@@ -50,9 +50,9 @@ class TestProblem(unittest.TestCase):
     
     def setUp(self):
         self.problem = SSP.from_package_data("BCGAR")
-        self.problem.ignore = ['R']
-        self.problem.modulate = ['S']
-        self.problem.minimize = ['M', 'L', 'I']
+        self.problem.ignore = ['rh']
+        self.problem.target = ['sc']
+        self.problem.silence = ['mc', 'lc', 'mel']
         self.problem.background = [.5] * self.problem.nprimaries
         self.x0 = [.5] * self.problem.nprimaries
     

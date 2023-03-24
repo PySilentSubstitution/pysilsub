@@ -1,5 +1,5 @@
 {
-    "calibration": "/Users/jtm545/Projects/PySilSub/pysilsub/data/ProPixx_.csv",
+    "calibration": "/Users/jtm545/Projects/PySilSub/pysilsub/data/ProPixx.csv",
     "calibration_wavelengths": [
         380,
         781,
@@ -11,12 +11,12 @@
         255
     ],
     "primary_colors": [
-        "blue",
+        "red",
         "green",
-        "red"
+        "blue"
     ],
     "name": "ProPixx Projector",
-    "calibration_units": "mW/cm$^2$/nm",
+    "calibration_units": "Counts/s/nm",
     "json_name": "ProPixx",
-    "notes": "VPixx ProPixx projector at the York Neuroimaging Center. Spectra were measured with an OceanOptics Jaz spectrometer using a long fiber optic cable and calibrated with reference to a tungsten-hallogen light source."
+    "notes": "VPixx ProPixx projector at the York Neuroimaging Center. Spectra were measured with an OceanOptics Jaz spectrometer using a long fiber optic cable."
 }

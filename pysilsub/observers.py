@@ -9,16 +9,22 @@ Colorimetric observer model based on CIEPO06 and CIES026.
 
 Translated from...
 
+  - https://www.rit.edu/cos/colorscience/re_AsanoObserverFunctions.php
+  
+Checked against:
+    
+  - https://ksmet1977.github.io/luxpy/build/html/_modules/luxpy/toolboxes/indvcmf/individual_observer_cmf_model.html
+
 """
 from __future__ import annotations
 
-
+import os.path as op
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
 from . import CIE
-from . import precep
+from . import preceps
 
 
 class ObserverError(Exception):
@@ -60,7 +66,6 @@ class _Observer:
 
     """
 
-    # Class attribute colors for photoreceptors
     photoreceptors: list[str] = ["sc", "mc", "lc", "rh", "mel"]
     photoreceptor_colors: dict[str, str] = {
         "sc": "tab:blue",
@@ -72,8 +77,6 @@ class _Observer:
 
     def __init__(self, action_spectra=None) -> None:
         self._action_spectra = action_spectra
-        # self._photoreceptors = None
-        # self._photoreceptor_colors = None
 
     def __repr__(self):
         return f"{self.__class__.__name__}"
@@ -105,6 +108,32 @@ class _Observer:
     def action_spectra(self, action_spectra: pd.DataFrame) -> None:
         """Set the observer action spectra."""
         self._action_spectra = action_spectra
+        self.photoreceptors = action_spectra.columns.to_list()
+        print(
+            "Assigned new (probably not suitable) colors for action spectra."
+        )
+        nreceptors = len(self.photoreceptors)
+
+    def save_action_spectra(self, save_to: str = "."):
+        """Save observer action spectra to csv.
+
+        Parameters
+        ----------
+        save_to : str, optional
+            Location to save file. The default is '.' (current working
+            directory).
+
+        Returns
+        -------
+        None.
+
+        """
+        fname = (
+            f"action_spectra_age_{self.age}_field_size_{self.field_size}.csv"
+        )
+        absfname = op.abspath(op.join(save_to, fname))
+        print(f"Saving action spectra to --> {absfname}")
+        self.action_spectra.to_csv(absfname)
 
     def plot_action_spectra(self, ax: plt.Axes = None, **kwargs) -> plt.Axes:
         """Plot photoreceptor action spectra for the observer.
@@ -144,12 +173,12 @@ class ColorimetricObserver(_Observer):
         self.penumbral_cones = penumbral_cones
 
         # Get photoreceptor action for the CIE standard colorimetric observer
-        self.action_spectra = CIE.get_CIES026_action_spectra()
-        self.action_spectra[["lc", "mc", "sc"]] = self.adjust_lms(
+        self._action_spectra = CIE.get_CIES026_action_spectra()
+        self._action_spectra[["lc", "mc", "sc"]] = self.adjust_lms(
             age, field_size
         )
-        self.action_spectra["mel"] = self.adjust_melanopsin()
-        self.action_spectra["rh"] = self.adjust_rhodopsin()
+        self._action_spectra["mel"] = self.adjust_melanopsin()
+        self._action_spectra["rh"] = self.adjust_rhodopsin()
         if self.penumbral_cones:
             self.add_penumbral_cones()
 
@@ -298,24 +327,25 @@ class ColorimetricObserver(_Observer):
 
     def add_penumbral_cones(self):
         """Include spectral sensitivities for penumbral cones.
-        
+
         Penumbral cones are cones that lie in the shadow of retinal blood
-        vessels and have altered spectral sensitivity functions due to 
-        prefiltering of light by hemoglobin. 
-        
+        vessels and have altered spectral sensitivity functions due to
+        prefiltering of light by hemoglobin.
+
 
         Returns
         -------
         None.
 
         """
-        hgb_transmittance = precep.get_retinal_hemoglobin_transmittance(
+        hgb_transmittance = preceps.get_retinal_hemoglobin_transmittance(
             wavelengths=(380, 781, 1),
             vessel_oxygenation_fraction=0.85,
             vessel_overall_thickness_um=5,
         )
         # Multiply the spectral sensitivities (stored in a pandas DataFrame)
-        # by the HGb transmittance spectrum, divide by maximum, and assign a new label.
+        # by the HGb transmittance spectrum, divide by maximum, and assign a
+        # new label.
         penumbral_cones = self.action_spectra[["sc", "mc", "lc"]].mul(
             hgb_transmittance, axis=0
         )

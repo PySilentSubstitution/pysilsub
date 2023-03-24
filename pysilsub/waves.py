@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Feb  5 18:28:20 2023
+``pysilsub.waves``
+==================
 
-@author: jtm545
+Convenience functions for accessing prereceptoral filter functions.
+
+
 """
 
 import numpy as np
@@ -48,3 +51,10 @@ def make_stimulus_waveform(
     time = np.arange(0, duration, sampling_interval)
     waveform = np.sin(2 * np.pi * frequency * time + phase)
     return pd.Series(waveform, index=time)
+
+
+if __name__ == "__main__":
+    x = make_stimulus_waveform(
+        frequency=0.5, sampling_frequency=50, phase=0, duration=2
+    )
+    plt.plot(x)

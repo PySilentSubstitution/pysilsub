@@ -8,20 +8,20 @@ Created on Wed Feb  9 13:58:55 2022
 import pandas as pd
 
 from pysilsub.devices import StimulationDevice
-from pysilsub.observers import Observer
+from pysilsub.observers import _Observer
 
 # Choose device
 # sd = StimulationDevice.from_json("../data/STLAB_1_York.json")
 # sd = StimulationDevice.from_json("../data/STLAB_2_York.json")
 # sd = StimulationDevice.from_json("../data/STLAB_1_Oxford.json")
-sd = StimulationDevice.from_json("../data/STLAB_2_Oxford.json")
+#sd = StimulationDevice.from_json("../data/STLAB_2_Oxford.json")
 # sd = StimulationDevice.from_json("../data/BCGAR_8_bit_linear_config.json")
 # sd = StimulationDevice.from_json("../data/VirtualSky.json")
 # sd = StimulationDevice.from_json("../data/OneLight.json")
 
 # sd = StimulationDevice.from_json('../data/LEDCube.json')
 sd = StimulationDevice.from_package_data("STLAB_Oxford")
-
+sd = StimulationDevice.from_package_data('OneLight')
 
 # Plot the spds
 spd_fig = sd.plot_calibration_spds()

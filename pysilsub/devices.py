@@ -20,7 +20,7 @@ import matplotlib as mpl
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
-from colour.plotting import plot_chromaticity_diagram_CIE1931
+import colour
 
 from . import colorfuncs
 from . import CIE
@@ -448,6 +448,7 @@ class StimulationDevice:
             repeated at the end to complete the path for plotting.
 
         """
+        #breakpoint()
         max_spds = self.calibration.loc[
             (slice(None), self.primary_resolutions), :
         ]
@@ -457,12 +458,12 @@ class StimulationDevice:
             axis=1,
         )
         # Join the dots
-        xyY = pd.concat([xyY, xyY.iloc[0].to_frame().T], ignore_index=True)
-        return xyY[["x", "y"]]
+        #xyY = pd.concat([xyY, xyY.iloc[0].to_frame().T], ignore_index=True)
+        return scipy.spatial.ConvexHull(xyY[["x", "y"]])
 
     def _xy_in_gamut(self, xy_coord: tuple[float, float]) -> bool:
         """Return True if xy_coord is within the gamut of the device."""
-        poly_path = mpl.path.Path(self._get_gamut().to_numpy())
+        poly_path = mpl.path.Path(self._get_gamut().points)
         return poly_path.contains_point(xy_coord)
 
     # TODO: review below here
@@ -496,34 +497,45 @@ class StimulationDevice:
         if ax is None:
             ax = plt.gca()
         if show_1931_horseshoe:
-            plot_chromaticity_diagram_CIE1931(
+            colour.plotting.plot_chromaticity_diagram_CIE1931(
                 axes=ax, title=False, standalone=False
             )
         if show_CIE170_2_horseshoe:
             cie170_2 = CIE.get_CIE170_2_chromaticity_coordinates()
-            ax.plot(
+            cie_horse = ax.plot(
                 cie170_2["x"], cie170_2["y"], c="k", ls=":", label="CIE 170-2"
             )
 
         # Defaults plot kws
         lw = kwargs.pop("lw", 2)
         marker = kwargs.pop("marker", "x")
-        markersize = kwargs.pop("markersize", 8)
+        markersize = kwargs.pop("markersize", 36)
         color = kwargs.pop("color", "k")
         label = kwargs.pop("label", "Gamut")
-
-        ax.plot(
-            gamut["x"],
-            gamut["y"],
+        
+        # Plot gamut
+        for simplex in gamut.simplices:
+            lines = ax.plot(
+                gamut.points[simplex, 0],
+                gamut.points[simplex, 1], 
+                lw=lw, color=color, label='Gamut',
+                **kwargs
+                )
+            
+        # Plot primary chromaticity coordinates    
+        points = ax.scatter(
+            gamut.points[:, 0],
+            gamut.points[:, 1],
             color=color,
-            lw=lw,
             marker=marker,
-            markersize=markersize,
-            label=label,
+            s=markersize,
+            label='Primary',
             **kwargs,
         )
         ax.set(xlim=(-0.15, 0.9), ylim=(-0.1, 1), title=f"{self.name}")
-        ax.legend()
+        # Fix legend
+        handles = [cie_horse[0], lines[0], points]
+        ax.legend(handles, ['CIE 170-2', 'Gamut', 'Primaries'])
         return ax
 
     # TODO: don't require seaborn
@@ -551,6 +563,7 @@ class StimulationDevice:
 
         # Plot defaults
         lw = kwargs.pop("lw", 0.5)
+        legend = kwargs.pop("legend", True)
 
         # Plot spds
         for primary, color in enumerate(self.primary_colors):
@@ -559,13 +572,15 @@ class StimulationDevice:
             )
 
         # Add legend
-        handles = [
-            plt.Line2D([0], [0], c=color) for color in self.primary_colors
-        ]
-        labels = list(range(self.nprimaries))
-
-        # Legend and labels
-        ax.legend(handles, labels, title="Primary")
+        if legend:
+            handles = [
+                plt.Line2D([0], [0], c=color) for color in self.primary_colors
+            ]
+            labels = list(range(self.nprimaries))
+    
+            # Legend and labels
+            ax.legend(handles, labels, title="Primary")
+            
         ax.set_title(f"{self.name} SPDs")
         ax.set_ylabel(ylabel)
 
@@ -877,8 +892,8 @@ class StimulationDevice:
                 marker="x",
                 label="Resolved",
             )
-            self.plot_gamut(ax=axs[1], show_CIE170_2_horseshoe=False)
-            axs[1].legend()
+            self.plot_gamut(ax=axs[1], show_CIE170_2_horseshoe=True)
+            #axs[1].legend()
             device_ao = self.predict_multiprimary_aopic(
                 result.x, name="Background"
             )
@@ -1042,7 +1057,7 @@ class StimulationDevice:
         """
         if self.gamma is None:
             raise StimulationDeviceError(
-                "Gamm atable does not exist. Run `do_gamma()` first."
+                "Gamma table does not exist. Run `do_gamma()` first."
             )
 
         self._assert_primary_input_is_valid(primary, primary_input)
