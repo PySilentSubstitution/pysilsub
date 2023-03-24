@@ -295,7 +295,7 @@ div.rendered_html tbody tr:hover {
 </style>
 <section id="Linear-algebra">
 <h1>Linear algebra<a class="headerlink" href="#Linear-algebra" title="Permalink to this heading">¶</a></h1>
-<p>Silent substitution problems may be solved with linear algebra.</p>
+<p>Linear algebra is a fast and efficient means of solving silent substitution problems.</p>
 <section id="Basic-example">
 <h2>Basic example<a class="headerlink" href="#Basic-example" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
@@ -304,15 +304,15 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.problems</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
 
-<span class="c1"># Instantiate the problem class</span>
+<span class="c1"># Instantiate the problem class for a 5-primary system</span>
 <span class="n">ssp</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;BCGAR&#39;</span><span class="p">)</span>
 
 <span class="c1"># Define problem</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.2</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.3</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
 
 <span class="c1"># Find solution</span>
@@ -320,7 +320,11 @@ div.rendered_html tbody tr:hover {
 
 <span class="c1"># Plot solution</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
-</pre></div>
+
+<span class="c1"># Show device settings</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The background settings are: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The modulation settings are: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -336,10 +340,12 @@ Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
 Minimising: [&#39;mc&#39;, &#39;lc&#39;, &#39;mel&#39;]
 Modulating: [&#39;sc&#39;]
-Target contrast: [ 0.2]
+Target contrast: [ 0.3]
 Background: [0.5, 0.5, 0.5, 0.5, 0.5]
 
 
+The background settings are: [127, 127, 127, 127, 127]
+The modulation settings are: [245, 56, 129, 132, 83]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -349,30 +355,13 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5]
 <img alt="_images/05b_linear_algebra_2_1.png" src="_images/05b_linear_algebra_2_1.png" />
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The background settings are: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The modulation settings are: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-The background settings are: [127, 127, 127, 127, 127]
-The modulation settings are: [205, 79, 128, 130, 98]
-</pre></div></div>
-</div>
 </section>
 <section id="Worked-example">
 <h2>Worked example<a class="headerlink" href="#Worked-example" title="Permalink to this heading">¶</a></h2>
-<p>For a background spectrum we will take the mixture of all primaries at half-max power, <span class="math notranslate nohighlight">\(\alpha_{bg} = [.5 \ .5 \ .5 \ .5 \ .5]\)</span>. Note that in this case we are not summing the predicted spectra as we’ll be doing matrix algebra involving the individual primaries.</p>
+<p>Here’s what just happened.</p>
+<p>For a background spectrum we take the mixture of all primaries at half-max power, <span class="math notranslate nohighlight">\(\alpha_{bg} = [.5 \ .5 \ .5 \ .5 \ .5]\)</span>. Note that in this case we are not summing the predicted spectra as we’ll be doing matrix algebra involving the individual primaries.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">abg</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
@@ -382,7 +371,7 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -515,7 +504,7 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div>
 <p>Next, we’ll be needing the spectral sensitivities for the photoreceptors.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.CIE</span> <span class="kn">import</span> <span class="n">get_CIES026_action_spectra</span>
@@ -526,7 +515,7 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -659,7 +648,7 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div>
 <p>The dot product of these matrices, which we will call <span class="math notranslate nohighlight">\(A\)</span>, contains the <em>a</em>-opic irradiances for each primary component of the background spectrum.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">sss</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">bg_spds</span><span class="p">)</span>
@@ -668,7 +657,7 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -744,7 +733,7 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div>
 <p>Now, the unique scaling coefficients for the primaries <span class="math notranslate nohighlight">\(\alpha_{sc} = [p_{0} \ p_{1} \ p_{2} \ p_{3} \ p_{4}]\)</span> that must be added to the primary weights for the background <span class="math notranslate nohighlight">\(\alpha_{bg}\)</span> for a requested modulation <span class="math notranslate nohighlight">\(\beta = [sc \ mc \ lc \ rh \ mel]\)</span>, are discovered as <span class="math notranslate nohighlight">\(\alpha_{sc} = \beta A^{-1}\)</span>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -760,7 +749,7 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -843,12 +832,13 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Requested modulation for S-cones</span>
-<span class="n">requested_contrast</span> <span class="o">=</span> <span class="mf">.2</span>
+<span class="n">requested_contrast</span> <span class="o">=</span> <span class="mf">.3</span>
 
+<span class="c1"># sc, mc, lc, rh, mel</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">requested_contrast</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
 
 <span class="c1"># Scale requested contrasts to percentage of background units</span>
@@ -861,23 +851,23 @@ The modulation settings are: [205, 79, 128, 130, 98]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Primary
-0    0.303106
-1   -0.178799
-2   -0.001551
-3    0.016999
-4   -0.139469
+0    0.454659
+1   -0.268198
+2   -0.002326
+3    0.025499
+4   -0.209204
 dtype: float64
 </pre></div></div>
 </div>
 <p>Following on from above, <span class="math notranslate nohighlight">\(\alpha_{mod} = \alpha_{bg} + \alpha_{sc}\)</span>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">amod</span> <span class="o">=</span> <span class="p">(</span><span class="n">abg</span> <span class="o">+</span> <span class="n">asc</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
@@ -886,70 +876,96 @@ dtype: float64
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[0.8031061259025292,
- 0.32120125937804056,
- 0.4984491198072997,
- 0.5169994543850375,
- 0.36053050404907117]
+[0.9546591888537936,
+ 0.23180188906706095,
+ 0.4976736797109496,
+ 0.5254991815775562,
+ 0.29079575607360675]
 </pre></div></div>
 </div>
 <p>Obviously, these values need to be between zero and one for the solution to be valid, which in this case they are. As before, we can visualise the solution.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">amod</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the solutution</span>
+<span class="n">result_fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">amod</span><span class="p">)</span>
+
+<span class="c1"># Show device settings</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The background settings are: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">abg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The modulation settings are: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">amod</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The background settings are: [127, 127, 127, 127, 127]
+The modulation settings are: [243, 59, 126, 134, 74]
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/05b_linear_algebra_17_0.png" src="_images/05b_linear_algebra_17_0.png" />
+<img alt="_images/05b_linear_algebra_16_1.png" src="_images/05b_linear_algebra_16_1.png" />
 </div>
 </div>
 </section>
 <section id="Contrast-modulations">
 <h2>Contrast modulations<a class="headerlink" href="#Contrast-modulations" title="Permalink to this heading">¶</a></h2>
-<p>Multiprimary devices with good linearity, high resolution and rapid spectral switching capability may be used to present temporal modulations of photoreceptor-targeted contrast. Such stimuli have helped to shed light on how the pupil responds to input from different photoreceptors as a function of time (e.g., <a class="reference external" href="https://jov.arvojournals.org/article.aspx?articleid=2565122">Barrionuevo et al., 2016</a>; <a class="reference external" href="https://www.pnas.org/doi/10.1073/pnas.1400942111">Spitschan et al., 2014</a>).</p>
+<p>Multiprimary devices with good linearity, sufficient bit depth and rapid spectral switching capabilities may be used to present temporal modulations of photoreceptor-targeted contrast. Such stimuli have helped to shed light on how the pupil responds to input from different photoreceptors as a function of time (e.g., <a class="reference external" href="https://jov.arvojournals.org/article.aspx?articleid=2565122">Barrionuevo et al., 2016</a>; <a class="reference external" href="https://www.pnas.org/doi/10.1073/pnas.1400942111">Spitschan et al., 2014</a>).</p>
 <p>To make contrast modulations, first define a stimulus profile with a sampling frequency in line with the switching capability of the stimulation device. In this case, its a 1 Hz sinusoid with 50 samples per cycle.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="k">def</span> <span class="nf">sinusoid_modulation</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate a sinusoidal waveform&quot;&quot;&quot;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">duration</span> <span class="o">*</span> <span class="n">Fs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Fs</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">waves</span>
 
-<span class="n">stimulus_profile</span> <span class="o">=</span> <span class="n">sinusoid_modulation</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+<span class="n">duration</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># s</span>
+<span class="n">frequency</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Hz</span>
+<span class="n">sampling_frequency</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># Hz</span>
+
+<span class="n">stimulus_profile</span> <span class="o">=</span> <span class="n">waves</span><span class="o">.</span><span class="n">make_stimulus_waveform</span><span class="p">(</span>
+    <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
+    <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+    <span class="n">sampling_frequency</span><span class="o">=</span><span class="n">sampling_frequency</span>
+<span class="p">)</span>
+
+<span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stimulus_profile</span><span class="p">))</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">stimulus_profile</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (ms)&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x7f84517ba260&gt;]
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/05b_linear_algebra_19_0.png" src="_images/05b_linear_algebra_19_0.png" />
+<img alt="_images/05b_linear_algebra_18_1.png" src="_images/05b_linear_algebra_18_1.png" />
 </div>
 </div>
 <p>Now, define a problem. Here we define the background spectrum as all primaries at half-max power so we can maximise bidirectional contrast. Then we say that we want to ignore rods, minimize contrast on M-cones, L-cones and melanopsin, and modulate the S-cones.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load some example data for a 10-primary system</span>
@@ -957,8 +973,8 @@ dtype: float64
 
 <span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -983,36 +999,18 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 </pre></div></div>
 </div>
 <p>Next, choose a peak contrast value that is known to be in gamut and solve for each point in the stimulus profile. The algebraic approach is well suited here as it guarantees a linear uni-directional scaling of the primaries and is less computationally expensive than optimisation.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">peak_contrast</span> <span class="o">=</span> <span class="mf">.4</span>  <span class="c1"># Known to be within gamut</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">peak_contrast</span> <span class="o">=</span> <span class="mf">.3</span>  <span class="c1"># Known to be within gamut</span>
 <span class="n">solutions</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">stimulus_profile</span><span class="p">:</span>
     <span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="n">point</span> <span class="o">*</span> <span class="n">peak_contrast</span>
     <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-<p>Plotting the forward projection of contrast for each solution in this case reveals a smooth S-cone modulation with little contrast splatter on the other photoreceptors.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="n">splatter</span> <span class="o">=</span> <span class="p">[</span><span class="n">ssp</span><span class="o">.</span><span class="n">get_photoreceptor_contrasts</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solutions</span><span class="p">]</span>
-<span class="n">splatter</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">splatter</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">splatter</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ssp</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">photoreceptor_colors</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Simple contrast&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+<span class="c1"># Plot the modulation</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_contrast_modulation</span><span class="p">(</span><span class="n">solutions</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1020,16 +1018,18 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/05b_linear_algebra_25_0.png" src="_images/05b_linear_algebra_25_0.png" />
+<img alt="_images/05b_linear_algebra_22_0.png" src="_images/05b_linear_algebra_22_0.png" />
 </div>
 </div>
+<p>Plotting the forward projection of contrast for each solution in this case reveals a smooth S-cone modulation with little contrast splatter on the other photoreceptors.</p>
 <p>Finally, convert the solutions to settings compatible with the native resolution of the stimulation device.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device_settings</span> <span class="o">=</span> <span class="p">[</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solutions</span><span class="p">]</span>
 <span class="n">device_settings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">device_settings</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+<span class="n">device_settings</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
 <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">option_context</span><span class="p">(</span><span class="s1">&#39;display.max_rows&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">device_settings</span><span class="p">)</span>
 </pre></div>
@@ -1040,63 +1040,41 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-         0     1     2     3     4     5     6     7     8     9
-0     2047  2047  2047  2047  2047  2047  2047  2047  2047  2047
-20    2242  2243  2012  1953  1883  2028  2142  2029  1946  2003
-40    2435  2437  1978  1861  1722  2010  2236  2012  1847  1960
-61    2621  2624  1945  1771  1567  1992  2327  1995  1750  1919
-81    2798  2802  1914  1686  1418  1975  2413  1978  1659  1879
-...    ...   ...   ...   ...   ...   ...   ...   ...   ...   ...
-918   1131  1125  2210  2488  2814  2135  1600  2131  2521  2252
-938   1296  1292  2180  2408  2676  2119  1681  2116  2435  2215
-959   1473  1470  2149  2323  2527  2102  1767  2099  2344  2175
-979   1659  1657  2116  2233  2372  2084  1858  2082  2247  2134
-1000  1852  1851  2082  2141  2211  2066  1952  2065  2148  2091
+             0     1     2     3     4     5     6     7     8     9
+time
+0.000000  2047  2047  2047  2047  2047  2047  2047  2047  2047  2047
+0.020408  2194  2194  2021  1977  1924  2033  2118  2034  1971  2014
+0.040816  2338  2339  1995  1907  1804  2019  2189  2020  1897  1982
+0.061224  2477  2480  1971  1840  1687  2006  2257  2008  1824  1951
+0.081633  2610  2613  1947  1776  1576  1993  2322  1996  1756  1921
+...        ...   ...   ...   ...   ...   ...   ...   ...   ...   ...
+0.918367  1360  1356  2169  2377  2622  2113  1712  2110  2402  2201
+0.938776  1484  1481  2147  2318  2518  2101  1772  2098  2338  2173
+0.959184  1617  1614  2123  2254  2407  2088  1837  2086  2270  2143
+0.979592  1756  1755  2099  2187  2290  2075  1905  2074  2197  2112
+1.000000  1900  1900  2073  2117  2170  2061  1976  2060  2123  2080
 
 [50 rows x 10 columns]
 </pre></div></div>
 </div>
 <p>Now you just need to tell the stimulation device to set the primary inputs to these values at the specified timepoints and it will produce the S-cone modulation shown above.</p>
 <p>Note that with this method one can also modulate multiple photoreceptors together.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">peak_contrast</span> <span class="o">=</span> <span class="mf">.2</span>  <span class="c1"># Known to be within gamut</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
+
+<span class="n">peak_contrast</span> <span class="o">=</span> <span class="mf">.2</span>  <span class="c1"># Known to be within gamut</span>
 <span class="n">solutions</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">stimulus_profile</span><span class="p">:</span>
     <span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="n">point</span> <span class="o">*</span> <span class="n">peak_contrast</span>
     <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="n">splatter</span> <span class="o">=</span> <span class="p">[</span><span class="n">ssp</span><span class="o">.</span><span class="n">get_photoreceptor_contrasts</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solutions</span><span class="p">]</span>
-<span class="n">splatter</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">splatter</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">splatter</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ssp</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">photoreceptor_colors</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Simple contrast&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+<span class="c1"># Plot the modulation</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_contrast_modulation</span><span class="p">(</span><span class="n">solutions</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1104,40 +1082,27 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/05b_linear_algebra_31_0.png" src="_images/05b_linear_algebra_31_0.png" />
+<img alt="_images/05b_linear_algebra_27_0.png" src="_images/05b_linear_algebra_27_0.png" />
 </div>
 </div>
 <p>We can even modulate photoreceptors in counterphase.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">peak_contrast</span> <span class="o">=</span> <span class="mf">.2</span>  <span class="c1"># Known to be within gamut</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
+
+<span class="n">peak_contrast</span> <span class="o">=</span> <span class="mf">.35</span>  <span class="c1"># Known to be within gamut</span>
 <span class="n">solutions</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">stimulus_profile</span><span class="p">:</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">point</span> <span class="o">*</span> <span class="n">peak_contrast</span>
     <span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span>
     <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="n">splatter</span> <span class="o">=</span> <span class="p">[</span><span class="n">ssp</span><span class="o">.</span><span class="n">get_photoreceptor_contrasts</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solutions</span><span class="p">]</span>
-<span class="n">splatter</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">splatter</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">splatter</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">ssp</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">photoreceptor_colors</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Simple contrast&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+<span class="c1"># Plot the modulation</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_contrast_modulation</span><span class="p">(</span><span class="n">solutions</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1145,7 +1110,7 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/05b_linear_algebra_34_0.png" src="_images/05b_linear_algebra_34_0.png" />
+<img alt="_images/05b_linear_algebra_29_0.png" src="_images/05b_linear_algebra_29_0.png" />
 </div>
 </div>
 </section>

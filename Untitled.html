@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>&lt;no title&gt; &#8212; PySilSub 0.0.13 documentation</title>
+    <title>&lt;no title&gt; &#8212; PySilSub 0.0.14 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -115,7 +115,7 @@ div.nboutput.container div.prompt pre {
 /* all prompts */
 div.nbinput.container div.prompt,
 div.nboutput.container div.prompt {
-    width: 4.5ex;
+    width: 150;
     padding-top: 5px;
     position: relative;
     user-select: none;
@@ -291,182 +291,444 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">observers</span>
+
+<span class="kn">from</span> <span class="nn">luxpy</span> <span class="kn">import</span> <span class="n">indvcmf</span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyplr</span> <span class="kn">import</span> <span class="n">oceanops</span>
-
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="c1"># Connect to spectrometer</span>
-    <span class="n">oo</span> <span class="o">=</span> <span class="n">oceanops</span><span class="o">.</span><span class="n">OceanOptics</span><span class="o">.</span><span class="n">from_serial_number</span><span class="p">(</span><span class="s1">&#39;JAZA1505&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Obtain sample</span>
-    <span class="n">counts</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">oo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
-        <span class="n">correct_dark_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">correct_nonlinearity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">integration_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Optimize integration time</span>
-        <span class="n">scans_to_average</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># Average of three scans</span>
-        <span class="n">boxcar_width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># Boxcar smoothing</span>
-        <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;daylight_reflected_off_a_wall&#39;</span>
-    <span class="p">)</span>
-
-    <span class="c1"># Visualise</span>
-    <span class="n">counts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Pixel wavelength&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
-
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt; Measurement terminated  by user&#39;</span><span class="p">)</span>
-
-<span class="k">finally</span><span class="p">:</span>
-    <span class="n">oo</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-<span class="n">red</span><span class="p">,</span> <span class="n">red_info</span> <span class="o">=</span> <span class="n">counts</span><span class="p">,</span> <span class="n">info</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>indvcmf.compute_cmfs<span class="o">??</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&gt; Obtaining sample...
-        &gt; Integration time: 0.001 seconds
-        &gt; Maximum reported value: 6765
-        &gt; Integration time: 0.008233 seconds
-        &gt; Maximum reported value: 4649
-        &gt; Integration time: 0.098643 seconds
-        &gt; Maximum reported value: 75138
-        &gt; Integration time: 0.07313 seconds
-        &gt; Maximum reported value: 61095
-        &gt; Integration time: 0.066678 seconds
-        &gt; Maximum reported value: 47749
-        &gt; Integration time: 0.077786 seconds
-        &gt; Maximum reported value: 61420
-        &gt; Integration time: 0.070547 seconds
-        &gt; Maximum reported value: 59940
-        &gt; Integration time: 0.065563 seconds
-        &gt; Maximum reported value: 47592
-        &gt; Integration time: 0.076738 seconds
-        &gt; Maximum reported value: 61448
-        &gt; Integration time: 0.069565 seconds
-        &gt; Maximum reported value: 54402
-&gt; Computing average of 3 scans
-&gt; Applying boxcar average (boxcar_width = 0)
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/Untitled_0_1.png" src="_images/Untitled_0_1.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyplr</span> <span class="kn">import</span> <span class="n">oceanops</span>
-
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="c1"># Connect to spectrometer</span>
-    <span class="n">oo</span> <span class="o">=</span> <span class="n">oceanops</span><span class="o">.</span><span class="n">OceanOptics</span><span class="o">.</span><span class="n">from_serial_number</span><span class="p">(</span><span class="s1">&#39;JAZA1505&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Obtain sample</span>
-    <span class="n">counts</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">oo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
-        <span class="n">correct_dark_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">correct_nonlinearity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">integration_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Optimize integration time</span>
-        <span class="n">scans_to_average</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># Average of three scans</span>
-        <span class="n">boxcar_width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># Boxcar smoothing</span>
-        <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;daylight_reflected_off_a_wall&#39;</span>
-    <span class="p">)</span>
-
-    <span class="c1"># Visualise</span>
-    <span class="n">counts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Pixel wavelength&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
-
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt; Measurement terminated  by user&#39;</span><span class="p">)</span>
-
-<span class="k">finally</span><span class="p">:</span>
-    <span class="n">oo</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-<span class="n">green</span><span class="p">,</span> <span class="n">green_info</span> <span class="o">=</span> <span class="n">counts</span><span class="p">,</span> <span class="n">info</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
 <div class="highlight"><pre>
-&gt; Obtaining sample...
-        &gt; Integration time: 0.001 seconds
-        &gt; Maximum reported value: 162
-        &gt; Integration time: 0.343534 seconds
-        &gt; Maximum reported value: 49966
-        &gt; Integration time: 0.382984 seconds
-        &gt; Maximum reported value: 53902
-&gt; Computing average of 3 scans
-&gt; Applying boxcar average (boxcar_width = 0)
+<span class="ansi-red-fg">Signature:</span>
+indvcmf<span class="ansi-blue-fg">.</span>compute_cmfs<span class="ansi-blue-fg">(</span>
+    fieldsize<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">10</span><span class="ansi-blue-fg">,</span>
+    age<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">32</span><span class="ansi-blue-fg">,</span>
+    wl<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    var_od_lens<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span>
+    var_od_macula<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span>
+    var_shft_LMS<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span>
+    var_od_LMS<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span>
+    norm_type<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    out<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;lms&#39;</span><span class="ansi-blue-fg">,</span>
+    base<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span>
+    strategy_2<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span>
+    odata0<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    lms_to_xyz_method<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    allow_negative_values<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span>
+    normalize_lms_to_xyz_matrix<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span>
+<span class="ansi-blue-fg">)</span>
+<span class="ansi-red-fg">Docstring:</span>
+Generate Individual Observer CMFs (cone fundamentals)
+based on CIE2006 cone fundamentals and published literature
+on observer variability in color matching and in physiological parameters.
+
+Args:
+    :age:
+        | 32 or float or int, optional
+        | Observer age
+    :fieldsize:
+        | 10, optional
+        | Field size of stimulus in degrees (between 2° and 10°).
+    :wl:
+        | None, optional
+        | Interpolation/extraplation of :LMS: output to specified wavelengths.
+        | None: output original _WL
+    :var_od_lens:
+        | 0, optional
+        | Variation of optical density of lens.
+    :var_od_macula:
+        | 0, optional
+        | Variation of optical density of macula.
+    :var_shft_LMS:
+        | [0, 0, 0] optional
+        | Variation (shift) of LMS peak absorptance.
+    :var_od_LMS:
+        | [0, 0, 0] optional
+        | Variation of LMS optical densities.
+    :norm_type:
+        | None, optional
+        | - &#39;max&#39;: normalize LMSq functions to max = 1
+        | - &#39;area&#39;: normalize to area
+        | - &#39;power&#39;: normalize to power
+    :out:
+        | &#39;lms&#39; or &#39;xyz&#39;, optional
+        | Determines output.
+    :base:
+        | False, boolean, optional
+        | The returned energy-based LMS cone fundamentals given to the
+        | precision of 9 sign. figs. if &#39;True&#39;, and to the precision of
+        | 6 sign. figs. if &#39;False&#39;.
+    :strategy_2:
+        | True, bool, optional
+        | Use strategy 2 in github.com/ifarup/ciefunctions issue #121 for
+        | computing the weighting factor. If false, strategy 3 is applied.
+    :odata0:
+        | None, optional
+        | Dict with uncorrected ocular media and macula density functions and LMS absorptance functions
+        | None defaults to the ones stored in _DATA
+    :lms_to_xyz_method:
+        | None, optional
+        | Method to use to determine lms-to-xyz conversion matrix (options: &#39;asano&#39;, &#39;cietc197&#39;)
+    :allow_negative_values:
+        | False, optional
+        | Cone fundamentals or color matching functions should not have negative values.
+        |     If False: X[X&lt;0] = 0.
+    :normalize_lms_to_xyz_matrix:
+        | False, optional
+        | Normalize that EEW is always at [100,100,100] in XYZ and LMS system.
+
+Returns:
+    :returns:
+        | - &#39;LMS&#39; [or &#39;XYZ&#39;]: ndarray with individual observer equal area-normalized
+        |           cone fundamentals. Wavelength have been added.
+        |
+        | [- &#39;M&#39;: lms to xyz conversion matrix
+        |  -  &#39;trans_lens&#39;: ndarray with lens transmission
+        |      (no interpolation)
+        |  - &#39;trans_macula&#39;: ndarray with macula transmission
+        |      (no interpolation)
+        |  - &#39;sens_photopig&#39; : ndarray with photopigment sens.
+        |      (no interpolation)]
+
+References:
+     1. `Asano Y, Fairchild MD, and Blondé L, (2016),
+     Individual Colorimetric Observer Model.
+     PLoS One 11, 1–19.
+     &lt;http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0145671&gt;`_
+
+     2. `Asano Y, Fairchild MD, Blondé L, and Morvan P (2016).
+     Color matching experiment for highlighting interobserver variability.
+     Color Res. Appl. 41, 530–539.
+     &lt;https://onlinelibrary.wiley.com/doi/abs/10.1002/col.21975&gt;`_
+
+     3. `CIE, TC1-36, (2006).
+     Fundamental Chromaticity Diagram with Physiological Axes - Part I
+     (Vienna: CIE).
+     &lt;http://www.cie.co.at/publications/fundamental-chromaticity-diagram-physiological-axes-part-1&gt;`_
+
+     4. `Asano&#39;s Individual Colorimetric Observer Model
+     &lt;https://www.rit.edu/cos/colorscience/re_AsanoObserverFunctions.php&gt;`_
+
+     5. `CIE TC1-97 Python code for cone fundamentals and XYZ cmf calculations
+     (by Ivar Farup and Jan Henrik Wold, (c) 2012-2017)
+     &lt;http://github.com/ifarup/ciefunctions&gt;`_
+<span class="ansi-red-fg">Source:</span>
+<span class="ansi-green-fg">def</span> compute_cmfs<span class="ansi-blue-fg">(</span>fieldsize <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">10</span><span class="ansi-blue-fg">,</span> age <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">32</span><span class="ansi-blue-fg">,</span> wl <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+                 var_od_lens <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> var_od_macula <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span>
+                 var_shft_LMS <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> var_od_LMS <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span>
+                 norm_type <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span> out <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;lms&#39;</span><span class="ansi-blue-fg">,</span> base <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span>
+                 strategy_2 <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span> odata0 <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+                 lms_to_xyz_method <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span> allow_negative_values <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span>
+                 normalize_lms_to_xyz_matrix <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">False</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+    <span class="ansi-blue-fg">&#34;&#34;&#34;</span>
+<span class="ansi-blue-fg">    Generate Individual Observer CMFs (cone fundamentals) </span>
+<span class="ansi-blue-fg">    based on CIE2006 cone fundamentals and published literature </span>
+<span class="ansi-blue-fg">    on observer variability in color matching and in physiological parameters.</span>
+<span class="ansi-blue-fg">        </span>
+<span class="ansi-blue-fg">    Args:</span>
+<span class="ansi-blue-fg">        :age: </span>
+<span class="ansi-blue-fg">            | 32 or float or int, optional</span>
+<span class="ansi-blue-fg">            | Observer age</span>
+<span class="ansi-blue-fg">        :fieldsize:</span>
+<span class="ansi-blue-fg">            | 10, optional</span>
+<span class="ansi-blue-fg">            | Field size of stimulus in degrees (between 2° and 10°).</span>
+<span class="ansi-blue-fg">        :wl: </span>
+<span class="ansi-blue-fg">            | None, optional</span>
+<span class="ansi-blue-fg">            | Interpolation/extraplation of :LMS: output to specified wavelengths.</span>
+<span class="ansi-blue-fg">            | None: output original _WL</span>
+<span class="ansi-blue-fg">        :var_od_lens:</span>
+<span class="ansi-blue-fg">            | 0, optional</span>
+<span class="ansi-blue-fg">            | Variation of optical density of lens.</span>
+<span class="ansi-blue-fg">        :var_od_macula:</span>
+<span class="ansi-blue-fg">            | 0, optional</span>
+<span class="ansi-blue-fg">            | Variation of optical density of macula.</span>
+<span class="ansi-blue-fg">        :var_shft_LMS:</span>
+<span class="ansi-blue-fg">            | [0, 0, 0] optional</span>
+<span class="ansi-blue-fg">            | Variation (shift) of LMS peak absorptance.</span>
+<span class="ansi-blue-fg">        :var_od_LMS:</span>
+<span class="ansi-blue-fg">            | [0, 0, 0] optional</span>
+<span class="ansi-blue-fg">            | Variation of LMS optical densities.</span>
+<span class="ansi-blue-fg">        :norm_type:</span>
+<span class="ansi-blue-fg">            | None, optional</span>
+<span class="ansi-blue-fg">            | - &#39;max&#39;: normalize LMSq functions to max = 1</span>
+<span class="ansi-blue-fg">            | - &#39;area&#39;: normalize to area</span>
+<span class="ansi-blue-fg">            | - &#39;power&#39;: normalize to power</span>
+<span class="ansi-blue-fg">        :out: </span>
+<span class="ansi-blue-fg">            | &#39;lms&#39; or &#39;xyz&#39;, optional</span>
+<span class="ansi-blue-fg">            | Determines output.</span>
+<span class="ansi-blue-fg">        :base:</span>
+<span class="ansi-blue-fg">            | False, boolean, optional</span>
+<span class="ansi-blue-fg">            | The returned energy-based LMS cone fundamentals given to the</span>
+<span class="ansi-blue-fg">            | precision of 9 sign. figs. if &#39;True&#39;, and to the precision of</span>
+<span class="ansi-blue-fg">            | 6 sign. figs. if &#39;False&#39;.</span>
+<span class="ansi-blue-fg">        :strategy_2: </span>
+<span class="ansi-blue-fg">            | True, bool, optional</span>
+<span class="ansi-blue-fg">            | Use strategy 2 in github.com/ifarup/ciefunctions issue #121 for </span>
+<span class="ansi-blue-fg">            | computing the weighting factor. If false, strategy 3 is applied.</span>
+<span class="ansi-blue-fg">        :odata0: </span>
+<span class="ansi-blue-fg">            | None, optional</span>
+<span class="ansi-blue-fg">            | Dict with uncorrected ocular media and macula density functions and LMS absorptance functions</span>
+<span class="ansi-blue-fg">            | None defaults to the ones stored in _DATA</span>
+<span class="ansi-blue-fg">        :lms_to_xyz_method:</span>
+<span class="ansi-blue-fg">            | None, optional</span>
+<span class="ansi-blue-fg">            | Method to use to determine lms-to-xyz conversion matrix (options: &#39;asano&#39;, &#39;cietc197&#39;)</span>
+<span class="ansi-blue-fg">        :allow_negative_values:</span>
+<span class="ansi-blue-fg">            | False, optional</span>
+<span class="ansi-blue-fg">            | Cone fundamentals or color matching functions should not have negative values.</span>
+<span class="ansi-blue-fg">            |     If False: X[X&lt;0] = 0.</span>
+<span class="ansi-blue-fg">        :normalize_lms_to_xyz_matrix:</span>
+<span class="ansi-blue-fg">            | False, optional</span>
+<span class="ansi-blue-fg">            | Normalize that EEW is always at [100,100,100] in XYZ and LMS system.</span>
+<span class="ansi-blue-fg">            </span>
+<span class="ansi-blue-fg">    Returns:</span>
+<span class="ansi-blue-fg">        :returns: </span>
+<span class="ansi-blue-fg">            | - &#39;LMS&#39; [or &#39;XYZ&#39;]: ndarray with individual observer equal area-normalized </span>
+<span class="ansi-blue-fg">            |           cone fundamentals. Wavelength have been added.</span>
+<span class="ansi-blue-fg">            |    </span>
+<span class="ansi-blue-fg">            | [- &#39;M&#39;: lms to xyz conversion matrix</span>
+<span class="ansi-blue-fg">            |  -  &#39;trans_lens&#39;: ndarray with lens transmission </span>
+<span class="ansi-blue-fg">            |      (no interpolation)</span>
+<span class="ansi-blue-fg">            |  - &#39;trans_macula&#39;: ndarray with macula transmission </span>
+<span class="ansi-blue-fg">            |      (no interpolation)</span>
+<span class="ansi-blue-fg">            |  - &#39;sens_photopig&#39; : ndarray with photopigment sens. </span>
+<span class="ansi-blue-fg">            |      (no interpolation)]</span>
+<span class="ansi-blue-fg">            </span>
+<span class="ansi-blue-fg">    References:</span>
+<span class="ansi-blue-fg">         1. `Asano Y, Fairchild MD, and Blondé L, (2016), </span>
+<span class="ansi-blue-fg">         Individual Colorimetric Observer Model. </span>
+<span class="ansi-blue-fg">         PLoS One 11, 1–19. </span>
+<span class="ansi-blue-fg">         &lt;http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0145671&gt;`_</span>
+<span class="ansi-blue-fg">        </span>
+<span class="ansi-blue-fg">         2. `Asano Y, Fairchild MD, Blondé L, and Morvan P (2016). </span>
+<span class="ansi-blue-fg">         Color matching experiment for highlighting interobserver variability. </span>
+<span class="ansi-blue-fg">         Color Res. Appl. 41, 530–539. </span>
+<span class="ansi-blue-fg">         &lt;https://onlinelibrary.wiley.com/doi/abs/10.1002/col.21975&gt;`_</span>
+<span class="ansi-blue-fg">         </span>
+<span class="ansi-blue-fg">         3. `CIE, TC1-36, (2006). </span>
+<span class="ansi-blue-fg">         Fundamental Chromaticity Diagram with Physiological Axes - Part I </span>
+<span class="ansi-blue-fg">         (Vienna: CIE). </span>
+<span class="ansi-blue-fg">         &lt;http://www.cie.co.at/publications/fundamental-chromaticity-diagram-physiological-axes-part-1&gt;`_ </span>
+<span class="ansi-blue-fg">         </span>
+<span class="ansi-blue-fg">         4. `Asano&#39;s Individual Colorimetric Observer Model </span>
+<span class="ansi-blue-fg">         &lt;https://www.rit.edu/cos/colorscience/re_AsanoObserverFunctions.php&gt;`_</span>
+<span class="ansi-blue-fg">         </span>
+<span class="ansi-blue-fg">         5. `CIE TC1-97 Python code for cone fundamentals and XYZ cmf calculations </span>
+<span class="ansi-blue-fg">         (by Ivar Farup and Jan Henrik Wold, (c) 2012-2017) </span>
+<span class="ansi-blue-fg">         &lt;http://github.com/ifarup/ciefunctions&gt;`_</span>
+<span class="ansi-blue-fg">    &#34;&#34;&#34;</span>
+    <span class="ansi-red-fg"># TC1-97 ciefunctions rounds fieldsize:</span>
+    fieldsize_tmp <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>round<span class="ansi-blue-fg">(</span>fieldsize<span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span>
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span>fieldsize_tmp <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">2</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span>fieldsize_tmp <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">10</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        fieldsize <span class="ansi-blue-fg">=</span> fieldsize_tmp
+
+    <span class="ansi-green-fg">if</span> odata0 <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+        odata <span class="ansi-blue-fg">=</span> _DATA<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;odata&#39;</span><span class="ansi-blue-fg">]</span>
+    <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+        odata <span class="ansi-blue-fg">=</span> odata0
+
+    <span class="ansi-green-fg">if</span> wl <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+        wl <span class="ansi-blue-fg">=</span> odata<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;wls&#39;</span><span class="ansi-blue-fg">]</span>
+    <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+        wl <span class="ansi-blue-fg">=</span> getwlr<span class="ansi-blue-fg">(</span>wl3 <span class="ansi-blue-fg">=</span> wl<span class="ansi-blue-fg">)</span>
+
+    <span class="ansi-green-fg">if</span> lms_to_xyz_method <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+        lms_to_xyz_method <span class="ansi-blue-fg">=</span> _LMS_TO_XYZ_METHOD
+
+    out_list <span class="ansi-blue-fg">=</span> out<span class="ansi-blue-fg">.</span>split<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;,&#39;</span><span class="ansi-blue-fg">)</span>
+
+    <span class="ansi-red-fg"># =======================================================================</span>
+    <span class="ansi-red-fg"># Create initial data arrays</span>
+    <span class="ansi-red-fg"># =======================================================================</span>
+    <span class="ansi-red-fg"># &#39;_base&#39; : 9 sign. figs.</span>
+    <span class="ansi-red-fg"># &#39;_std&#39;  : standard number of sign. figs./decimal places</span>
+    <span class="ansi-red-fg"># &#39;_all&#39;  : values given at 0.1 nm steps from 390 nm to 830 nm</span>
+    <span class="ansi-red-fg"># &#39;_main&#39; : values given at 1 nm steps from 390 nm to 830 nm</span>
+    <span class="ansi-red-fg"># &#39;_spec&#39; : values given at specified wavelengths</span>
+
+    <span class="ansi-red-fg"># wavelength arrays:</span>
+    wl_all <span class="ansi-blue-fg">=</span> odata<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;wls&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-red-fg">#my_round(np.arange(390., 830. + .01, .1), 1)</span>
+    wl_spec <span class="ansi-blue-fg">=</span> wl
+
+    <span class="ansi-red-fg"># LMS-base values (9 sign.figs.) at 0.1 nm steps from 390 nm to 830 nm;</span>
+    <span class="ansi-red-fg"># wavelengths in first row.</span>
+    LMS_base_all<span class="ansi-blue-fg">,</span> LMSq_<span class="ansi-blue-fg">,</span> LMSa_<span class="ansi-blue-fg">,</span> LMSe_o_max<span class="ansi-blue-fg">,</span> rmd<span class="ansi-blue-fg">,</span> docul <span class="ansi-blue-fg">=</span> _LMS_energy<span class="ansi-blue-fg">(</span>fieldsize <span class="ansi-blue-fg">=</span> fieldsize<span class="ansi-blue-fg">,</span> age <span class="ansi-blue-fg">=</span> age<span class="ansi-blue-fg">,</span>
+                                                                      var_od_lens <span class="ansi-blue-fg">=</span> var_od_lens<span class="ansi-blue-fg">,</span> var_od_mac <span class="ansi-blue-fg">=</span> var_od_macula<span class="ansi-blue-fg">,</span>
+                                                                      var_shft_LMS <span class="ansi-blue-fg">=</span> var_shft_LMS<span class="ansi-blue-fg">,</span> var_od_LMS <span class="ansi-blue-fg">=</span> var_od_LMS<span class="ansi-blue-fg">,</span>
+                                                                      norm_type <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;max&#39;</span><span class="ansi-blue-fg">,</span> out <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;LMSe,LMSq,alpha_lms,LMSe_o_max,rmd,docul&#39;</span><span class="ansi-blue-fg">,</span>
+                                                                      base <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span> odata0 <span class="ansi-blue-fg">=</span> odata<span class="ansi-blue-fg">)</span> <span class="ansi-red-fg"># note: base only applies to LMSe !</span>
+
+    <span class="ansi-red-fg"># Do sompe checks to save on calculation time (don&#39;t calculate anything not needed.):</span>
+    wl_equal_to_all <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>array_equal<span class="ansi-blue-fg">(</span>my_round<span class="ansi-blue-fg">(</span>wl_spec<span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> my_round<span class="ansi-blue-fg">(</span>LMS_base_all<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span><span class="ansi-green-fg">not</span> wl_equal_to_all<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;xyz&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;XYZ&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;M&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">&amp;</span> <span class="ansi-blue-fg">(</span>lms_to_xyz_method <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;cietc197&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+        <span class="ansi-red-fg"># =======================================================================</span>
+        <span class="ansi-red-fg"># Create LMS spline functions</span>
+        <span class="ansi-red-fg"># =======================================================================</span>
+        <span class="ansi-red-fg"># base:</span>
+        <span class="ansi-blue-fg">(</span>wl_all<span class="ansi-blue-fg">,</span> L_base_all<span class="ansi-blue-fg">,</span> M_base_all<span class="ansi-blue-fg">,</span> S_base_all<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">=</span> LMS_base_all
+        L_base_spline <span class="ansi-blue-fg">=</span> sp<span class="ansi-blue-fg">.</span>interpolate<span class="ansi-blue-fg">.</span>InterpolatedUnivariateSpline<span class="ansi-blue-fg">(</span>wl_all<span class="ansi-blue-fg">,</span> L_base_all<span class="ansi-blue-fg">)</span>
+        M_base_spline <span class="ansi-blue-fg">=</span> sp<span class="ansi-blue-fg">.</span>interpolate<span class="ansi-blue-fg">.</span>InterpolatedUnivariateSpline<span class="ansi-blue-fg">(</span>wl_all<span class="ansi-blue-fg">,</span> M_base_all<span class="ansi-blue-fg">)</span>
+        S_base_spline <span class="ansi-blue-fg">=</span> sp<span class="ansi-blue-fg">.</span>interpolate<span class="ansi-blue-fg">.</span>InterpolatedUnivariateSpline<span class="ansi-blue-fg">(</span>wl_all<span class="ansi-blue-fg">,</span> S_base_all<span class="ansi-blue-fg">)</span>
+
+        <span class="ansi-red-fg"># =======================================================================</span>
+        <span class="ansi-red-fg"># Compute the LMS-base cone fundamentals </span>
+        <span class="ansi-red-fg"># =======================================================================</span>
+        <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span><span class="ansi-green-fg">not</span> wl_equal_to_all<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+            <span class="ansi-red-fg"># - LMS-base values (9 sign. figs) for specified wavelengths;</span>
+            <span class="ansi-red-fg">#   wavelengths in first row.</span>
+            LMS_base_spec <span class="ansi-blue-fg">=</span> chop<span class="ansi-blue-fg">(</span>_compute_LMS<span class="ansi-blue-fg">(</span>wl_spec<span class="ansi-blue-fg">,</span> L_base_spline<span class="ansi-blue-fg">,</span> M_base_spline<span class="ansi-blue-fg">,</span> S_base_spline<span class="ansi-blue-fg">,</span> base <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+        <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+            LMS_base_spec <span class="ansi-blue-fg">=</span> chop<span class="ansi-blue-fg">(</span>LMS_base_all<span class="ansi-blue-fg">)</span>
+        LMS <span class="ansi-blue-fg">=</span> LMS_base_spec
+    <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+        LMS <span class="ansi-blue-fg">=</span> chop<span class="ansi-blue-fg">(</span>LMS_base_all<span class="ansi-blue-fg">)</span>
+
+    <span class="ansi-red-fg"># =========================================================================</span>
+    <span class="ansi-red-fg"># Compute the cone-fundamental-based XYZ tristimulus functions</span>
+    <span class="ansi-red-fg"># =========================================================================</span>
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;xyz&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;XYZ&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;M&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+        <span class="ansi-green-fg">if</span> lms_to_xyz_method <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;asano&#39;</span><span class="ansi-blue-fg">:</span>
+            XYZ<span class="ansi-blue-fg">,</span> M <span class="ansi-blue-fg">=</span> lmsb_to_xyzb<span class="ansi-blue-fg">(</span>LMS<span class="ansi-blue-fg">,</span> fieldsize<span class="ansi-blue-fg">,</span> out <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;xyz,M&#39;</span><span class="ansi-blue-fg">,</span> allow_negative_values <span class="ansi-blue-fg">=</span> allow_negative_values<span class="ansi-blue-fg">)</span>
+
+        <span class="ansi-green-fg">elif</span> lms_to_xyz_method <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;cietc197&#39;</span><span class="ansi-blue-fg">:</span>
+
+            <span class="ansi-red-fg"># Vλ and weighting factors of the L and M cone fundamentals:</span>
+
+            <span class="ansi-red-fg"># - Cone-fundamental-based V(λ) values (7 sign. figs.) at 0.1 nm steps</span>
+            <span class="ansi-red-fg">#   from 390 nm to 830 nm; wavelengths in first column</span>
+            <span class="ansi-red-fg"># - Weights of L and M cone fundamentals in V(λ) synthesis</span>
+            <span class="ansi-red-fg"># Re-use already calculated LMSe, LMSq, ...</span>
+            <span class="ansi-blue-fg">(</span>V_std_all<span class="ansi-blue-fg">,</span> LM_weights<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">=</span> _Vl_energy_and_LM_weights<span class="ansi-blue-fg">(</span>fieldsize <span class="ansi-blue-fg">=</span> fieldsize<span class="ansi-blue-fg">,</span> age <span class="ansi-blue-fg">=</span> age<span class="ansi-blue-fg">,</span>
+                                                                  strategy_2 <span class="ansi-blue-fg">=</span> strategy_2<span class="ansi-blue-fg">,</span>
+                                                                  LMSa <span class="ansi-blue-fg">=</span> LMSa_<span class="ansi-blue-fg">,</span> LMSq <span class="ansi-blue-fg">=</span> LMSq_<span class="ansi-blue-fg">,</span>
+                                                                  LMSe <span class="ansi-blue-fg">=</span> LMS_base_all<span class="ansi-blue-fg">,</span> LMSe_o_max <span class="ansi-blue-fg">=</span> LMSe_o_max<span class="ansi-blue-fg">,</span>
+                                                                  odata0 <span class="ansi-blue-fg">=</span> odata0<span class="ansi-blue-fg">)</span>
+
+            <span class="ansi-red-fg"># Create spline function for Vlambda:</span>
+            wl_all<span class="ansi-blue-fg">,</span> V_std_all <span class="ansi-blue-fg">=</span> V_std_all
+            V_std_spline <span class="ansi-blue-fg">=</span> sp<span class="ansi-blue-fg">.</span>interpolate<span class="ansi-blue-fg">.</span>InterpolatedUnivariateSpline<span class="ansi-blue-fg">(</span>wl_all<span class="ansi-blue-fg">,</span> V_std_all<span class="ansi-blue-fg">)</span>
+
+            <span class="ansi-red-fg">#  Determine reference diagram</span>
+            xyz_reference <span class="ansi-blue-fg">=</span> _xyz_interpolated_reference_system<span class="ansi-blue-fg">(</span>fieldsize<span class="ansi-blue-fg">,</span> _CMF<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;1931_2&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;bar&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> _CMF<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;1964_10&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;bar&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+
+            <span class="ansi-red-fg"># - Non-renormalised tranformation matrix (8 decimal placed)</span>
+            <span class="ansi-red-fg"># - Non-renormalised CIE cone-fundamental-based XYZ tristimulus</span>
+            <span class="ansi-red-fg">#   values (7 sign. figs) for specified wavelengths; wavelengths in first row.</span>
+            <span class="ansi-red-fg"># - Ditto renormalized</span>
+            <span class="ansi-blue-fg">(</span>trans_mat_std<span class="ansi-blue-fg">,</span> XYZ_std_spec<span class="ansi-blue-fg">,</span> trans_mat_std_N<span class="ansi-blue-fg">,</span> XYZ_std_spec_N<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">=</span> _compute_XYZ<span class="ansi-blue-fg">(</span>L_base_spline<span class="ansi-blue-fg">,</span>
+                                                                                         M_base_spline<span class="ansi-blue-fg">,</span>
+                                                                                         S_base_spline<span class="ansi-blue-fg">,</span>
+                                                                                         V_std_spline<span class="ansi-blue-fg">,</span>
+                                                                                         LMS_base_spec<span class="ansi-blue-fg">,</span>
+                                                                                         LMS_base_all<span class="ansi-blue-fg">,</span>
+                                                                                         LM_weights<span class="ansi-blue-fg">,</span>
+                                                                                         xyz_reference<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">#            M = trans_mat_std, # unnormalized xyzbar! (when specified wavelenght range = [390,830,1] then XYZ_spec == XYZ_spec_N!!)</span>
+<span class="ansi-red-fg">#            XYZ = XYZ_std_spec</span>
+            M <span class="ansi-blue-fg">=</span> trans_mat_std_N <span class="ansi-red-fg"># re-normalized xyzbar! (for specified wavelenght range)</span>
+            XYZ <span class="ansi-blue-fg">=</span> XYZ_std_spec_N
+
+    <span class="ansi-red-fg"># Output extra:</span>
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">&#39;trans_lens&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">:</span>
+        trans_lens <span class="ansi-blue-fg">=</span> docul<span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+        trans_lens<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">10</span><span class="ansi-blue-fg">**</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">-</span>docul<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">&#39;trans_macula&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">:</span>
+        trans_macula <span class="ansi-blue-fg">=</span> rmd<span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+        trans_macula<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">10</span><span class="ansi-blue-fg">**</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">-</span>rmd<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">&#39;sens_photopig&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">:</span>
+        sens_photopig <span class="ansi-blue-fg">=</span> LMSa_<span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+        sens_photopig<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> LMSa_<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">*</span> LMSa_<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">:</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span>
+
+    <span class="ansi-red-fg"># Change normalization of M to </span>
+    <span class="ansi-red-fg"># ensure that EEW is always at [100,100,100] in XYZ system:</span>
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;M&#39;</span> <span class="ansi-green-fg">in</span> out_list<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">&amp;</span> <span class="ansi-blue-fg">(</span>normalize_lms_to_xyz_matrix <span class="ansi-blue-fg">==</span> <span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        Mi <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>linalg<span class="ansi-blue-fg">.</span>inv<span class="ansi-blue-fg">(</span>M<span class="ansi-blue-fg">)</span> <span class="ansi-red-fg"># M: lms-&gt;xyz; Mi: xyz-&gt;lms</span>
+        Min <span class="ansi-blue-fg">=</span> math<span class="ansi-blue-fg">.</span>normalize_3x3_matrix<span class="ansi-blue-fg">(</span>Mi<span class="ansi-blue-fg">,</span> xyz0 <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>array<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span> <span class="ansi-red-fg"># normalize Mi matrix</span>
+        M <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>linalg<span class="ansi-blue-fg">.</span>inv<span class="ansi-blue-fg">(</span>Min<span class="ansi-blue-fg">)</span> <span class="ansi-red-fg"># calculate new lms-&gt;xyz normalized matrix</span>
+        LMS<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>dot<span class="ansi-blue-fg">(</span>Min<span class="ansi-blue-fg">,</span>XYZ<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span> <span class="ansi-red-fg"># calculate lmsbar such that they match M!</span>
+
+
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;xyz&#39;</span> <span class="ansi-green-fg">in</span> out<span class="ansi-blue-fg">.</span>lower<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>split<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;,&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">&amp;</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;lms&#39;</span> <span class="ansi-green-fg">in</span> out<span class="ansi-blue-fg">.</span>lower<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>split<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;,&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-red-fg"># Change normalization of LMS, XYZ:</span>
+        <span class="ansi-green-fg">if</span> norm_type <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+            LMS <span class="ansi-blue-fg">=</span> spd_normalize<span class="ansi-blue-fg">(</span>LMS<span class="ansi-blue-fg">,</span> norm_type <span class="ansi-blue-fg">=</span> norm_type<span class="ansi-blue-fg">)</span>
+            XYZ <span class="ansi-blue-fg">=</span> spd_normalize<span class="ansi-blue-fg">(</span>XYZ<span class="ansi-blue-fg">,</span> norm_type <span class="ansi-blue-fg">=</span> norm_type<span class="ansi-blue-fg">)</span>
+
+    <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;xyz&#39;</span> <span class="ansi-green-fg">in</span> out<span class="ansi-blue-fg">.</span>lower<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>split<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;,&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+            LMS <span class="ansi-blue-fg">=</span> XYZ
+            out <span class="ansi-blue-fg">=</span> out<span class="ansi-blue-fg">.</span>replace<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;xyz&#39;</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;LMS&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>replace<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;XYZ&#39;</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;LMS&#39;</span><span class="ansi-blue-fg">)</span>
+        <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;lms&#39;</span> <span class="ansi-green-fg">in</span> out<span class="ansi-blue-fg">.</span>lower<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>split<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;,&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+            out <span class="ansi-blue-fg">=</span> out<span class="ansi-blue-fg">.</span>replace<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;lms&#39;</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;LMS&#39;</span><span class="ansi-blue-fg">)</span>
+
+        <span class="ansi-red-fg"># Change normalization of LMS:</span>
+        <span class="ansi-green-fg">if</span> norm_type <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+            LMS <span class="ansi-blue-fg">=</span> spd_normalize<span class="ansi-blue-fg">(</span>LMS<span class="ansi-blue-fg">,</span> norm_type <span class="ansi-blue-fg">=</span> norm_type<span class="ansi-blue-fg">)</span>
+
+    <span class="ansi-green-fg">if</span> base <span class="ansi-blue-fg">==</span> <span class="ansi-green-fg">False</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;lms&#39;</span> <span class="ansi-green-fg">in</span> out<span class="ansi-blue-fg">.</span>lower<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>split<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;,&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+            LMS <span class="ansi-blue-fg">=</span> sign_figs<span class="ansi-blue-fg">(</span>LMS<span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">6</span><span class="ansi-blue-fg">)</span> <span class="ansi-red-fg"># only LMS. XYZ is output at 7 sign. digit level in tc197 Python code</span>
+
+    <span class="ansi-green-fg">if</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;LMS&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;lms&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> LMS
+    <span class="ansi-green-fg">elif</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;XYZ&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;xyz&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> XYZ
+    <span class="ansi-green-fg">elif</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;LMS,M&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;lms,M&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> LMS<span class="ansi-blue-fg">,</span> M
+    <span class="ansi-green-fg">elif</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;XYZ,M&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;xyz,M&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> XYZ<span class="ansi-blue-fg">,</span> M
+    <span class="ansi-green-fg">elif</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;LMS,XYZ,M&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">|</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;lms,xyz,M&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> LMS<span class="ansi-blue-fg">,</span> XYZ<span class="ansi-blue-fg">,</span> M
+    <span class="ansi-green-fg">elif</span> out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;M&#39;</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> M
+    <span class="ansi-green-fg">elif</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;LMS,trans_lens,trans_macula,sens_photopig&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> LMS<span class="ansi-blue-fg">,</span>trans_lens<span class="ansi-blue-fg">,</span> trans_macula<span class="ansi-blue-fg">,</span> sens_photopig
+    <span class="ansi-green-fg">elif</span> <span class="ansi-blue-fg">(</span>out <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;LMS,trans_lens,trans_macula,sens_photopig,LMSa&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> LMS<span class="ansi-blue-fg">,</span> trans_lens<span class="ansi-blue-fg">,</span> trans_macula<span class="ansi-blue-fg">,</span> sens_photopig<span class="ansi-blue-fg">,</span> odata<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;LMSa&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>copy<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+    <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+        <span class="ansi-green-fg">return</span> eval<span class="ansi-blue-fg">(</span>out<span class="ansi-blue-fg">)</span>
+<span class="ansi-red-fg">File:</span>      ~/opt/anaconda3/envs/pysilsub/lib/python3.10/site-packages/luxpy/toolboxes/indvcmf/individual_observer_cmf_model.py
+<span class="ansi-red-fg">Type:</span>      function
+
 </pre></div></div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/Untitled_1_1.png" src="_images/Untitled_1_1.png" />
-</div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyplr</span> <span class="kn">import</span> <span class="n">oceanops</span>
-
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="c1"># Connect to spectrometer</span>
-    <span class="n">oo</span> <span class="o">=</span> <span class="n">oceanops</span><span class="o">.</span><span class="n">OceanOptics</span><span class="o">.</span><span class="n">from_serial_number</span><span class="p">(</span><span class="s1">&#39;JAZA1505&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Obtain sample</span>
-    <span class="n">counts</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">oo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
-        <span class="n">correct_dark_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">correct_nonlinearity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">integration_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Optimize integration time</span>
-        <span class="n">scans_to_average</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># Average of three scans</span>
-        <span class="n">boxcar_width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># Boxcar smoothing</span>
-        <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;daylight_reflected_off_a_wall&#39;</span>
-    <span class="p">)</span>
-
-    <span class="c1"># Visualise</span>
-    <span class="n">counts</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Pixel wavelength&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
-
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt; Measurement terminated  by user&#39;</span><span class="p">)</span>
-
-<span class="k">finally</span><span class="p">:</span>
-    <span class="n">oo</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-<span class="n">blue</span><span class="p">,</span> <span class="n">blue_info</span> <span class="o">=</span> <span class="n">counts</span><span class="p">,</span> <span class="n">info</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observer</span> <span class="o">=</span> <span class="n">observers</span><span class="o">.</span><span class="n">ColorimetricObserver</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">cmfs</span> <span class="o">=</span> <span class="n">indvcmf</span><span class="o">.</span><span class="n">compute_cmfs</span><span class="p">(</span><span class="n">age</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">fieldsize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cmfs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cmfs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&gt; Obtaining sample...
-        &gt; Integration time: 0.001 seconds
-        &gt; Maximum reported value: 540
-        &gt; Integration time: 0.103145 seconds
-        &gt; Maximum reported value: 7624
-        &gt; Integration time: 0.753582 seconds
-        &gt; Maximum reported value: 56213
-&gt; Computing average of 3 scans
-&gt; Applying boxcar average (boxcar_width = 0)
+&lt;AxesSubplot: xlabel=&#39;Wavelength (nm)&#39;, ylabel=&#39;Spectral sensitivity&#39;&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -475,143 +737,6 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <img alt="_images/Untitled_2_1.png" src="_images/Untitled_2_1.png" />
 </div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gun</span><span class="p">)</span> <span class="k">for</span> <span class="n">gun</span> <span class="ow">in</span> <span class="p">[</span><span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">]]</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">info</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">gun</span><span class="p">)</span> <span class="k">for</span> <span class="n">gun</span> <span class="ow">in</span> <span class="p">[</span><span class="n">red_info</span><span class="p">,</span> <span class="n">green_info</span><span class="p">,</span> <span class="n">blue_info</span><span class="p">]]</span>
-<span class="n">info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<br/></pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">info</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;/Users/jtm545/Desktop/crt_info.csv&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;/Users/jtm545/Desktop/crt_spectra.csv&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="output_area rendered_html docutils container">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>339.117812</th>
-      <td>-79.611009</td>
-      <td>-141.539884</td>
-      <td>-167.907043</td>
-    </tr>
-    <tr>
-      <th>339.496633</th>
-      <td>-58.904581</td>
-      <td>-119.152637</td>
-      <td>-160.435458</td>
-    </tr>
-    <tr>
-      <th>339.875426</th>
-      <td>-57.241816</td>
-      <td>-90.129336</td>
-      <td>-148.844191</td>
-    </tr>
-    <tr>
-      <th>340.254190</th>
-      <td>-48.985825</td>
-      <td>-84.324280</td>
-      <td>-133.884134</td>
-    </tr>
-    <tr>
-      <th>340.632925</th>
-      <td>-30.746273</td>
-      <td>-88.464951</td>
-      <td>-178.721381</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>1027.022825</th>
-      <td>-15.863791</td>
-      <td>-4.826671</td>
-      <td>18.526824</td>
-    </tr>
-    <tr>
-      <th>1027.304744</th>
-      <td>22.217200</td>
-      <td>71.258443</td>
-      <td>44.175347</td>
-    </tr>
-    <tr>
-      <th>1027.586598</th>
-      <td>-29.916675</td>
-      <td>2.631273</td>
-      <td>-0.518365</td>
-    </tr>
-    <tr>
-      <th>1027.868385</th>
-      <td>21.394249</td>
-      <td>15.037381</td>
-      <td>-40.230331</td>
-    </tr>
-    <tr>
-      <th>1028.150106</th>
-      <td>15.605334</td>
-      <td>43.162084</td>
-      <td>67.327433</td>
-    </tr>
-  </tbody>
-</table>
-<p>2048 rows × 3 columns</p>
-</div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:

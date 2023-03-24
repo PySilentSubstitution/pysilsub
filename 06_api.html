@@ -41,6 +41,17 @@
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers</span></code><a class="headerlink" href="#pysilsub-observers" title="Permalink to this heading">¶</a></h2>
 <p>Colorimetric observer model based on CIEPO06 and CIES026.</p>
 <p>Translated from…</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.rit.edu/cos/colorscience/re_AsanoObserverFunctions.php">https://www.rit.edu/cos/colorscience/re_AsanoObserverFunctions.php</a></p></li>
+</ul>
+</div></blockquote>
+<p>Checked against:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://ksmet1977.github.io/luxpy/build/html/_modules/luxpy/toolboxes/indvcmf/individual_observer_cmf_model.html">https://ksmet1977.github.io/luxpy/build/html/_modules/luxpy/toolboxes/indvcmf/individual_observer_cmf_model.html</a></p></li>
+</ul>
+</div></blockquote>
 <dl class="py exception">
 <dt class="sig sig-object py" id="pysilsub.observers.ObserverError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pysilsub.observers.</span></span><span class="sig-name descname"><span class="pre">ObserverError</span></span><a class="headerlink" href="#pysilsub.observers.ObserverError" title="Permalink to this definition">¶</a></dt>
@@ -631,35 +642,35 @@ of other .</p>
 extended with properties and methods to define and solve a silent
 substitution problem. After instantiating, set the properties to define a
 problem and then use the solver methods to find a solution:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub.problem</span> <span class="kn">import</span> <span class="n">SilentSubstitutionProblem</span> <span class="k">as</span> <span class="n">SSP</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pysilsub</span>
 
 <span class="c1"># EXAMPLE: 1</span>
 <span class="c1"># Using all channels at half-power as the background spectrum,</span>
 <span class="c1"># use linear algebra to find a solution that gives 20 % S-cone</span>
 <span class="c1"># contrast while ignoring rods and silencing M-cones, L-cones</span>
 <span class="c1"># and melanopsin.</span>
-<span class="n">problem</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_York&#39;</span><span class="p">)</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">nprimaries</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.2</span>
-<span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">()</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">plot_ss_result</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+<span class="n">ssp</span> <span class="o">=</span> <span class="n">pysilsub</span><span class="o">.</span><span class="n">problems</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_York&#39;</span><span class="p">)</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.2</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">linalg_solve</span><span class="p">()</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_ss_result</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
 
 <span class="c1"># EXAMPLE: 2</span>
 <span class="c1"># Without specifying a background spectrum, use numerical</span>
 <span class="c1"># optimisation to find a pair of spectra which maximise</span>
 <span class="c1"># melanopsin contrast while ignoring rods and silencing the</span>
 <span class="c1"># cones.</span>
-<span class="n">problem</span> <span class="o">=</span> <span class="n">SSP</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_York&#39;</span><span class="p">)</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">solution</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">()</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">plot_ss_result</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="n">ssp</span> <span class="o">=</span> <span class="n">pysilsub</span><span class="o">.</span><span class="n">problems</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;STLAB_York&#39;</span><span class="p">)</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">()</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_ss_result</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -708,7 +719,7 @@ photostimulator</cite>. The default name is <cite>Stimulation Device</cite>.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.background">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">background</span></span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.background" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define a background spectrum for the silent substitution stimulus.</p>
+<dd><p>Set a background spectrum for the silent substitution stimulus.</p>
 <p>Setting the <em>background</em> property internally conditions the silent
 substitution problem.</p>
 <blockquote>
@@ -721,7 +732,7 @@ optimises the modulation spectrum.</p></li>
 </div></blockquote>
 <p>For example, to use all channels at half power as the background
 spectrum:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">nprimaries</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -750,17 +761,17 @@ automatically in the <code class="docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <p>If, after creating a problem you want to constrain solutions to avoid
-the lower and upper extremes of the input ranges, for example, you
+the lower and upper extremes of the input ranges (for example) you
 could pass something like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">.05</span><span class="p">,</span> <span class="mf">.95</span><span class="p">,)]</span> <span class="o">*</span> <span class="n">problem</span><span class="o">.</span><span class="n">nprimaries</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">.05</span><span class="p">,</span> <span class="mf">.95</span><span class="p">,)]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
 </pre></div>
 </div>
 <p>It is also possible to set different bounds for each primary. This may
 be useful if you want to <em>pin</em> a problematic primary so that its value
 is constrained during optimisation:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_bounds</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">bounds</span>
-<span class="n">new_bounds</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">.49</span><span class="p">,</span> <span class="mf">.51</span><span class="p">,)</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">new_bounds</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_bounds</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">bounds</span>
+<span class="n">new_bounds</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">.49</span><span class="p">,</span> <span class="mf">.51</span><span class="p">,)</span>  <span class="c1"># Constrain the 4th primary</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">new_bounds</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -782,20 +793,25 @@ is constrained during optimisation:</p>
 <dd><p>Photoreceptor(s) to be ignored.</p>
 <p>Setting the <em>ignore</em> property internally conditions the silent
 substitution problem such that the specified photoreceptor(s) will be
-ignored by the solvers (enabling them to find more contrast). In most
-cases <em>ignore</em> will be set to [‘rh’], because it is considered safe
-practice to ignore rods when stimuli are in the photopic range
-(&gt;300 cd/m2):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+ignored by the solvers (enabling them to find more contrast on the
+targeted photoreceptors). For example, one may choose to <em>ignore</em> rods
+when working in the photopic range (&gt;300 cd/m2) as they are often
+assumed to be saturated and incapable of signalling at these light
+levels:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>But you could also choose to ignore rods and melanopsin:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<p>One may also choose to ignore both rods and melanopsin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Or both rods and the non-functional cone of a dichromat:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>In the event that you don’t want to ignore any photoreceptors, you must
 still pass:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Setting the <em>ignore</em> property is an essential step for conditioning a
@@ -814,24 +830,24 @@ silent substitution problem.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.minimize">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">minimize</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.minimize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Photoreceptor(s) to be minimized.</p>
-<p>Setting the <em>minimize</em> property internally conditions the silent
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.silence">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">silence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.silence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Photoreceptor(s) to be (nominally) silenced.</p>
+<p>Setting the <em>silence</em> property internally conditions the silent
 substitution problem such that contrast on the target photoreceptors
 will be minimized. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Would minimize contrast on the cone photoreceptors.</p>
-<p>Setting the <em>minimize</em> property is an essential step for conditioning a
+<p>Would aim to silence the cone photoreceptors.</p>
+<p>Setting the <em>silence</em> property is an essential step for conditioning a
 silent substitution problem.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>SilSubProblemError if requested but not specified.</strong> – </p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>minimize</strong> – Photoreceptor(s) to be minimized.</p>
+<dd class="field-even"><p><strong>silence</strong> – Photoreceptor(s) to be silenced.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of str</p>
@@ -840,27 +856,27 @@ silent substitution problem.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.modulate">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modulate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.modulate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Photoreceptor(s) to modulate.</p>
-<p>Setting the <em>modulate</em> property internally conditions the silent
+<dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.target">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Photoreceptor(s) to target.</p>
+<p>Setting the <em>target</em> property internally conditions the silent
 substitution problem so the solvers know which photoreceptor(s) should
-be targeted with contrast. For example, to modulate melanopsin:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+be targeted with contrast. For example, to target melanopsin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>It is also possible to modulate multiple photoreceptors:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
+<p>It is also possible to target multiple photoreceptors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Setting the <em>modulate</em> property is an essential step for conditioning a
+<p>Setting the <em>target</em> property is an essential step for conditioning a
 silent substitution problem.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>SilSubProblemError if requested but not specified.</strong> – </p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>modulate</strong> – Photoreceptors to be modulated.</p>
+<dd class="field-even"><p><strong>target</strong> – Photoreceptors to target.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of str</p>
@@ -871,38 +887,42 @@ silent substitution problem.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.target_contrast">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_contrast</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy._typing._generic_alias.ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.target_contrast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Target contrast to aim for on modulated photoreceptor(s).</p>
+<dd><p>Target contrast to aim for on targeted photoreceptor(s).</p>
 <p>Setting the <em>target_contrast</em> property conditions the silent
 substitution problem so the solvers know what target contrast to aim
 for:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.5</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.5</span>
 </pre></div>
 </div>
-<p>This would aim for 50% contrast on the modulated photoreceptor(s). If
+<p>This would aim for 50% contrast on the targeted photoreceptor(s). If
 modulating multiple photoreceptors in different directions and / or
 with different contrasts, <em>target_contrast</em> should be a sequence of
-values (if you specify multiple receptors to modulate and pass a float
+values (if you specify multiple receptors to targeted and pass a float
 then it is assumed <em>target_contrast</em> should be the same for each
 photoreceptor):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
-<span class="n">problem</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>The above example defines a problem that will ignore rods and aim for
-50% negative contrast on S-cones and 50% positive contrast on L- and
-M-cones, relative to the background spectrum.</p>
+<p>The above example defines a problem that will ignore rods, silence
+S-cones and melanopsin, and aim for 50% negative contrast on M-cones
+and 50% positive contrast on L-cones, relative to the background
+spectrum.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>Setting <em>target_contrast</em> is required for <code class="docutils literal notranslate"><span class="pre">linalg_solve()</span></code>.</p>
 <p>When using <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code>, <em>target_contrast</em> can be set to ‘max’
 or ‘min’, in which case the optimizer will aim to maximize or minimize
-contrast on the modulated photoreceptors.</p>
+contrast on the targeted photoreceptors.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>SilSubProblemError if requested but not specified.</strong> – </p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>target_contrast</strong> – Contrast to aim for on photoreceptor(s) being modulated.</p>
+<dd class="field-even"><p><strong>target_contrast</strong> – Contrast to aim for on photoreceptor(s) being targeted.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>NDArray or str</p>
@@ -973,7 +993,7 @@ contrast on the modulated photoreceptors.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.get_photoreceptor_contrasts">
 <span class="sig-name descname"><span class="pre">get_photoreceptor_contrasts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contrast_statistic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'simple'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.get_photoreceptor_contrasts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return contrasts for ignored, minimized and modulated photoreceptors.</p>
+<dd><p>Return contrasts for ignored, silenced and targeted photoreceptors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -994,14 +1014,14 @@ contrast on the modulated photoreceptors.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.objective_function">
 <span class="sig-name descname"><span class="pre">objective_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.objective_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates contrast error on modulated photoreceptor(s) in
-accordance with the problem definition.</p>
+<dd><p>Calculate contrast error on targeted photoreceptor(s).</p>
+<p>This happens in accordance with the problem definition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x0</strong> (<em>Sequence of float</em>) – Primary input weights.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Contrast error on modulated photoreceptor(s).</p>
+<dd class="field-even"><p>Contrast error on targeted photoreceptor(s).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -1012,13 +1032,13 @@ accordance with the problem definition.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.silencing_constraint">
 <span class="sig-name descname"><span class="pre">silencing_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.silencing_constraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate contrast error for minimized photoreceptor(s).</p>
+<dd><p>Calculate contrast error for silenced photoreceptor(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x0</strong> (<em>Sequence of float</em>) – Primary input weights.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Contrast error on minimized photoreceptor(s).</p>
+<dd class="field-even"><p>Contrast error on silenced photoreceptor(s).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -1028,7 +1048,7 @@ accordance with the problem definition.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.optim_solve">
-<span class="sig-name descname"><span class="pre">optim_solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_search</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.optim_solve" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">optim_solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_search</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.optim_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use optimisation to solve the current silent substitution problem.</p>
 <p>This method is good for finding maximum available contrast. It uses
 SciPy’s <cite>minimize</cite> function with the <cite>SLSQP</cite> (sequential quadratic
@@ -1040,8 +1060,11 @@ optimser will aim to maximise or minimize contrast, respectively,
 otherwise it will aim to converge on the target contrast.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>global_search</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform a global search with scipy’s basinhopping
-algorithm.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>global_search</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform a global search with scipy’s basinhopping
+algorithm.</p></li>
+<li><p><strong>x0</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><em>float</em><em>]</em><em>]</em>) – </p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>result</strong> – The result of the optimization.</p>
@@ -1194,7 +1217,7 @@ alternatively the Moore-Penrose pseudo-inverse.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.print_solution">
 <span class="sig-name descname"><span class="pre">print_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.print_solution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the device input settings for the background and modulation.</p>
+<dd><p>Print device input settings for background and modulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>solution</strong> (<em>array_like</em>) – The solution returned by one of the solvers.</p>
@@ -1232,7 +1255,7 @@ device.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation">
-<span class="sig-name descname"><span class="pre">plot_contrast_modulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot_contrast_modulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot photoreceptor contrast over time for a list of solutions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1701,14 +1724,12 @@ of known genotype. Vision Research, 40, 1711-1737.</p>
 </dd></dl>
 
 </section>
-<span class="target" id="module-pysilsub.precep"></span><section id="pysilsub-precep">
-<h2><code class="docutils literal notranslate"><span class="pre">pysilsub.precep</span></code><a class="headerlink" href="#pysilsub-precep" title="Permalink to this heading">¶</a></h2>
+<span class="target" id="module-pysilsub.preceps"></span><section id="pysilsub-preceps">
+<h2><code class="docutils literal notranslate"><span class="pre">pysilsub.preceps</span></code><a class="headerlink" href="#pysilsub-preceps" title="Permalink to this heading">¶</a></h2>
 <p>Convenience functions for accessing prereceptoral filter functions.</p>
-<p>Obtained from <a class="reference external" href="http://www.cvrl.org/">http://www.cvrl.org/</a></p>
-<p>&#64;author: jtm</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_hemoglobin_absorptances">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_hemoglobin_absorptances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_hemoglobin_absorptances" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_hemoglobin_absorptances">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_hemoglobin_absorptances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_hemoglobin_absorptances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtain Prahl’s estimates of hemoglobin absorptance spectra.</p>
 <p>These are tabulated data included in the software. They are returned as
 molar extinction coefficients (cm-1/M). The wavelength
@@ -1734,8 +1755,8 @@ spacing is 250-1000 in 2 nm bins.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_retinal_hemoglobin_transmittance">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_retinal_hemoglobin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_oxygenation_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_overall_thickness_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_retinal_hemoglobin_transmittance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_retinal_hemoglobin_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_retinal_hemoglobin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_oxygenation_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_overall_thickness_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_retinal_hemoglobin_transmittance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the hemoglobin transmittance spectrum for retinal vasculature.</p>
 <p>Return the hemoglobin transmittance spectrum, given a fraction of
 oxy/deoxy hemoglobin and an overall thickness of the blood layer.</p>
@@ -1764,8 +1785,8 @@ is .85.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_melanin_transmittance">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_melanin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_melanin_transmittance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_melanin_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_melanin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_melanin_transmittance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return melanin transmittance spectrum.</p>
 <p>The skin melanin absorption coefficient can be described by the following
 formula (eq. 2 in Bierman, Figuiero &amp; Rea, 2011; and
@@ -1792,8 +1813,8 @@ for more information.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_bilirubin_absorption">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_bilirubin_absorption</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_bilirubin_absorption" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_bilirubin_absorption">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_bilirubin_absorption</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_bilirubin_absorption" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return optical absorption spectrum of Bilirubin in chloroform.</p>
 <p>Units are Molar Extinction (cm-1/M)</p>
 <div class="admonition note">
@@ -1813,8 +1834,8 @@ for more information.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_bilirubin_transmittance">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_bilirubin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_bilirubin_transmittance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_bilirubin_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_bilirubin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_bilirubin_transmittance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return bilirubin transmittance spectrum.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1838,8 +1859,8 @@ for more information.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_eyelid_hemoglobin_transmittance">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_eyelid_hemoglobin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_eyelid_hemoglobin_transmittance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_eyelid_hemoglobin_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_eyelid_hemoglobin_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_eyelid_hemoglobin_transmittance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the hemoglobin transmittance spectrum for eyelid vasculature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1855,8 +1876,8 @@ for more information.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_eyelid_transmittance">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_eyelid_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_eyelid_transmittance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_eyelid_transmittance">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_eyelid_transmittance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[380,</span> <span class="pre">781,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_eyelid_transmittance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return transmittance spectrum of human eyelid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1872,8 +1893,8 @@ for more information.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_lens_density_spectra">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_lens_density_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_lens_density_spectra" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_lens_density_spectra">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_lens_density_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_lens_density_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get lens density spectra.</p>
 <p>See the following refs for further information:</p>
 <dl class="simple">
@@ -1907,8 +1928,8 @@ default is <cite>1</cite>.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pysilsub.precep.get_macula_pigment_density_spectra">
-<span class="sig-prename descclassname"><span class="pre">pysilsub.precep.</span></span><span class="sig-name descname"><span class="pre">get_macula_pigment_density_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.precep.get_macula_pigment_density_spectra" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pysilsub.preceps.get_macula_pigment_density_spectra">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.preceps.</span></span><span class="sig-name descname"><span class="pre">get_macula_pigment_density_spectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.preceps.get_macula_pigment_density_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get macula pigment density spectra.</p>
 <p>See the following refs for further information:</p>
 <dl class="simple">
@@ -1932,6 +1953,38 @@ default is <cite>1</cite>.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray or pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-pysilsub.waves"></span><section id="pysilsub-waves">
+<h2><code class="docutils literal notranslate"><span class="pre">pysilsub.waves</span></code><a class="headerlink" href="#pysilsub-waves" title="Permalink to this heading">¶</a></h2>
+<p>Convenience functions for accessing prereceptoral filter functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pysilsub.waves.make_stimulus_waveform">
+<span class="sig-prename descclassname"><span class="pre">pysilsub.waves.</span></span><span class="sig-name descname"><span class="pre">make_stimulus_waveform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.waves.make_stimulus_waveform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sinusoidal waveform.</p>
+<p>Can be used as a contrast template for silent substitution contrast
+modulations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frequency</strong> (<em>int</em><em> or </em><em>float</em>) – Temporal frequency of the sinusoid.</p></li>
+<li><p><strong>sampling_frequency</strong> (<em>int</em>) – Sampling frequency of the modulation. This should not exceed the
+temporal resolution (spectral switching time) of the stimulation
+device.</p></li>
+<li><p><strong>phase</strong> (<em>float</em><em>, </em><em>optional</em>) – Phase offset in radians. The default is <cite>0</cite>, which gives a sine wave.</p></li>
+<li><p><strong>duration</strong> (<em>int</em><em> or </em><em>flaot</em><em>, </em><em>optional</em>) – Duration of the modulation in seconds. The default is 1, becasuse it
+is easy to repeat a sinusoidal modulation multiple times and add a new
+timebase.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sinusoidal waveform with time index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.Series</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1987,7 +2040,8 @@ default is <cite>1</cite>.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysilsub-problems"><code class="docutils literal notranslate"><span class="pre">pysilsub.problems</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysilsub-colorfuncs"><code class="docutils literal notranslate"><span class="pre">pysilsub.colorfuncs</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysilsub-cie"><code class="docutils literal notranslate"><span class="pre">pysilsub.CIE</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pysilsub-precep"><code class="docutils literal notranslate"><span class="pre">pysilsub.precep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pysilsub-preceps"><code class="docutils literal notranslate"><span class="pre">pysilsub.preceps</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pysilsub-waves"><code class="docutils literal notranslate"><span class="pre">pysilsub.waves</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>

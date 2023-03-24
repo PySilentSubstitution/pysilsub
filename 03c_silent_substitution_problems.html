@@ -297,10 +297,9 @@ div.rendered_html tbody tr:hover {
 <h1>Silent substitution problems<a class="headerlink" href="#Silent-substitution-problems" title="Permalink to this heading">¶</a></h1>
 <p>Silent substitution stimuli typically take the form of pulses or temporal modulations of photoreceptor-directed contrast presented against a background spectrum to which an observer has adapted.</p>
 <p>The background spectrum serves to maintain a set pattern of photoreceptor activations and the modulation spectrum increases activation of the targeted photoreceptor(s) without altering activation of the others.</p>
-<p>Before getting started with silent substitution you will need a calibrated <a class="reference internal" href="03b_stimulation_devices.html"><span class="doc">forward model of your stimulation device</span></a> that can predict the spectral output for any combination of settings. With that in place, you are ready to solve silent substitution problems.</p>
 <section id="pysilsub.problems.SilentSubstitutionProblem">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.problems.SilentSubstitutionProblem</span></code><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem" title="Permalink to this heading">¶</a></h2>
-<p>This class serves as the interface for defining, solving, and visualising silent substitution problems. It extends <code class="docutils literal notranslate"><span class="pre">pysilsub.devices.StimulationDevice</span></code> with <a class="reference external" href="https://realpython.com/python-property/">properties</a> (i.e., managed class attributes), and methods for finding and plotting solutions.</p>
+<p>This class serves as the interface for defining, solving, and visualising silent substitution problems. It extends <code class="docutils literal notranslate"><span class="pre">pysilsub.devices.StimulationDevice</span></code> with <a class="reference external" href="https://realpython.com/python-property/">properties</a> (i.e., managed attributes), and methods for finding and plotting solutions.</p>
 <p>Instances are created in the same ways as <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> instances, so for convenience let’s use the <code class="docutils literal notranslate"><span class="pre">.from_package_data(...)</span></code> constructor described <a class="reference internal" href="03b_stimulation_devices.html#Package-data"><span class="std std-ref">here</span></a>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -316,8 +315,8 @@ div.rendered_html tbody tr:hover {
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">background</span></code> - the background spectrum</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ignore</span></code> - which photoreceptors to ignore</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">minimize</span></code> - which photoreceptors to minimize</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">modulate</span></code> - which photoreceptors to modulate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">silence</span></code> - which photoreceptors to (nominally) silence</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target</span></code> - which photoreceptors to target</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> - desired target contrast as a percentage of the background spectrum</p></li>
 </ul>
 <p>For more details on any of the above, just ask:</p>
@@ -335,27 +334,32 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 <span class="ansi-red-fg">Type:</span>        property
-<span class="ansi-red-fg">String form:</span> &lt;property object at 0x7f8fd9195120&gt;
+<span class="ansi-red-fg">String form:</span> &lt;property object at 0x7f92ebeb5df0&gt;
 <span class="ansi-red-fg">Docstring:</span>
 Photoreceptor(s) to be ignored.
 
 Setting the *ignore* property internally conditions the silent
 substitution problem such that the specified photoreceptor(s) will be
-ignored by the solvers (enabling them to find more contrast). In most
-cases *ignore* will be set to [&#39;rh&#39;], because it is considered safe
-practice to ignore rods when stimuli are in the photopic range
-(&gt;300 cd/m2)::
+ignored by the solvers (enabling them to find more contrast on the
+targeted photoreceptors). For example, one may choose to *ignore* rods
+when working in the photopic range (&gt;300 cd/m2) as they are often
+assumed to be saturated and incapable of signalling at these light
+levels::
 
-    problem.ignore = [&#39;rh&#39;]
+    ssp.ignore = [&#39;rh&#39;]
 
-But you could also choose to ignore rods and melanopsin::
+One may also choose to ignore both rods and melanopsin::
 
-    problem.ignore = [&#39;rh&#39;, &#39;mel&#39;]
+    ssp.ignore = [&#39;rh&#39;, &#39;mel&#39;]
+
+Or both rods and the non-functional cone of a dichromat::
+
+    ssp.ignore = [&#39;rh&#39;, &#39;lc&#39;]
 
 In the event that you don&#39;t want to ignore any photoreceptors, you must
 still pass::
 
-    problem.ignore = [None]
+    ssp.ignore = [None]
 
 Setting the *ignore* property is an essential step for conditioning a
 silent substitution problem.
@@ -368,13 +372,12 @@ Returns
 -------
 ignore : [None] or list of str
     Photoreceptors to be ignored.
-
 </pre></div></div>
 </div>
 </section>
 <section id="Defining-a-problem">
 <h2>Defining a problem<a class="headerlink" href="#Defining-a-problem" title="Permalink to this heading">¶</a></h2>
-<p>Problems are defined by setting the required/desired properties. The <code class="docutils literal notranslate"><span class="pre">ignore</span></code>, <code class="docutils literal notranslate"><span class="pre">modulate</span></code> and <code class="docutils literal notranslate"><span class="pre">minimize</span></code> properties <strong>must</strong> be set and should together account for all photoreceptors (‘sc’, ‘mc’, ‘lc’, ‘rh’, ‘mel’). The <code class="docutils literal notranslate"><span class="pre">background</span></code> and <code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> properties may need to be set, depending on the constraints of your research question and which solver you intend to use.</p>
+<p>Problems are defined by setting the required/desired properties. The <code class="docutils literal notranslate"><span class="pre">ignore</span></code>, <code class="docutils literal notranslate"><span class="pre">target</span></code> and <code class="docutils literal notranslate"><span class="pre">silence</span></code> properties <strong>must</strong> be set and should together account for all photoreceptors (‘sc’, ‘mc’, ‘lc’, ‘rh’, ‘mel’). The <code class="docutils literal notranslate"><span class="pre">background</span></code> and <code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> properties may need to be set, depending on the constraints of the research question and which solver you intend to use.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -383,8 +386,8 @@ ignore : [None] or list of str
 
 <span class="c1"># These properties *must* be set</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
 
 <span class="c1"># These properties may need to be set,</span>
 <span class="c1"># depending on which solver you intend to use</span>
@@ -456,7 +459,7 @@ dtype: float64
 </section>
 <section id=".optim_solve(...)">
 <h3><code class="docutils literal notranslate"><span class="pre">.optim_solve(...)</span></code><a class="headerlink" href="#.optim_solve(...)" title="Permalink to this heading">¶</a></h3>
-<p>This method uses numerical optimisation methods from <code class="docutils literal notranslate"><span class="pre">scipy.optimize</span></code>. If the <code class="docutils literal notranslate"><span class="pre">target_contrast</span></code> property was not set, the solver aims to maximise contrast. If the <code class="docutils literal notranslate"><span class="pre">background</span></code> property was not set, the background spectrum will also be optimised.</p>
+<p>This method uses numerical optimisation methods from <code class="docutils literal notranslate"><span class="pre">scipy.optimize</span></code>. If the <code class="docutils literal notranslate"><span class="pre">background</span></code> property was not set, the background spectrum will also be optimised.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -473,9 +476,8 @@ dtype: float64
 <div class="highlight"><pre>
 ~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
 &gt; Performing local optimization with SLSQP.
-[  2.38104832e-01   7.10487771e-01   7.60510053e-01   2.10032646e-01
-   6.24550834e-01   2.72578729e-01   5.10968407e-01   5.64254190e-01
-   4.48026535e-01   3.58199455e-04]
+[ 0.95180767  0.24221276  0.79303403  0.88903416  0.00752077  0.42491479
+  0.79642052  0.38099734  0.29926413  0.75991943]
 </pre></div></div>
 </div>
 </section>
@@ -490,14 +492,25 @@ dtype: float64
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Linear algebra solution</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">linalg_solution</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Background settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Modulation settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">linalg_solution</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ Background settings: [2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047]
+ Modulation settings: [2826, 2831, 1909, 1672, 1395, 1972, 2427, 1976, 1644, 1873]
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/03c_silent_substitution_problems_14_0.png" src="_images/03c_silent_substitution_problems_14_0.png" />
+<img alt="_images/03c_silent_substitution_problems_14_1.png" src="_images/03c_silent_substitution_problems_14_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -506,14 +519,25 @@ dtype: float64
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optimisation solution</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">optim_solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Background settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Modulation settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">optim_solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ Background settings: [2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047]
+ Modulation settings: [3897, 991, 3247, 3640, 30, 1740, 3261, 1560, 1225, 3111]
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/03c_silent_substitution_problems_15_0.png" src="_images/03c_silent_substitution_problems_15_0.png" />
+<img alt="_images/03c_silent_substitution_problems_15_1.png" src="_images/03c_silent_substitution_problems_15_1.png" />
 </div>
 </div>
 <p>Note that the above solutions are somewhat different due to the contrasting approaches of the solvers, but they achieve the same aim of finding 20% contrast on S-cones relative to the background spectrum without changing activation in the other photoreceptors.</p>

@@ -38,14 +38,13 @@ Which is the same as doing an editable install with *pip*:
 Requirements
 ------------
 
-*PySilSub* requires Python (>=3.8, <3.11), a set of standard numerical computing packages, and some plotting libraries (which eventually may not be required):
+*PySilSub* requires Python (>=3.8, <3.11), a set of standard numerical computing packages, and some plotting libraries:
 
 - numpy
 - scipy
 - matplotlib
 - pandas
 - importlib-resources
-- seaborn
 - colour-science
 
 The following additional packages may also be helpful for development:
@@ -71,7 +70,7 @@ Notes/Potential Issues
 
 We are aware of the following:
    
-   - ...
+   - Nothing major
 
 .. rubric:: Tables and indices
 ------------------------------

@@ -299,7 +299,7 @@ div.rendered_html tbody tr:hover {
 vessels, like when you go to the opticians and they shine that bright light in your eye, or when you move a candle leftwards and rightwards before your eye in a dark room whilst holding your gaze still.</p>
 <p>The stimulation device used by <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0124328">Spitschan et al., (2015)</a> had 56 narrowband primaries. We include a somewhat idealised version of the calibration spectra in <em>PySilSub</em>’s package data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">problems</span>
@@ -321,22 +321,22 @@ vessels, like when you go to the opticians and they shine that bright light in y
 <p>Now, to create action spectra for penumbral cones, we need an estimate of the retinal hemoglobin transmittance spectrum. This is easily obtained from <code class="docutils literal notranslate"><span class="pre">pysilsub.precep</span></code>, but to learn more about the theory behind the calculations, refer to <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0124328">Spitschan et al., (2015)</a>, then <a class="reference external" href="https://omlc.org/spectra/hemoglobin/">read this page</a>, and then <a class="reference external" href="https://github.com/PySilentSubstitution/pysilsub/blob/main/pysilsub/precep.py#L25">look at the
 code</a>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">precep</span>
+<span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">preceps</span>
 
 
 <span class="c1"># Get hemoglobin absorptances for display purposes. These</span>
 <span class="c1"># are in molar extinction units, which I would probably know</span>
 <span class="c1"># more about if I didn&#39;t drop chemistry at college.</span>
-<span class="n">hgb</span> <span class="o">=</span> <span class="n">precep</span><span class="o">.</span><span class="n">get_hemoglobin_absorptances</span><span class="p">()</span>
+<span class="n">hgb</span> <span class="o">=</span> <span class="n">preceps</span><span class="o">.</span><span class="n">get_hemoglobin_absorptances</span><span class="p">()</span>
 
 <span class="c1"># Get retinal hemoglobin transmittance spectrum, assuming a vessel</span>
 <span class="c1"># oxygenation fraction of 85% and thickness of 5 micrometers.</span>
-<span class="n">hgb_transmittance</span> <span class="o">=</span> <span class="n">precep</span><span class="o">.</span><span class="n">get_retinal_hemoglobin_transmittance</span><span class="p">(</span>
+<span class="n">hgb_transmittance</span> <span class="o">=</span> <span class="n">preceps</span><span class="o">.</span><span class="n">get_retinal_hemoglobin_transmittance</span><span class="p">(</span>
     <span class="n">wavelengths</span><span class="o">=</span><span class="p">(</span><span class="mi">380</span><span class="p">,</span> <span class="mi">781</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">vessel_oxygenation_fraction</span><span class="o">=</span><span class="mf">.85</span><span class="p">,</span>
     <span class="n">vessel_overall_thickness_um</span><span class="o">=</span><span class="mi">5</span>
@@ -359,7 +359,7 @@ code</a>.</p>
 <p>Above we can see that the absorptance spectra of oxy- and deoxy-hemoglobin differ. For an overall transmittance spectrum of retinal hemoglobin, we must factor in the thickness and oxygenation fraction of retinal blood vessels. The parameters used above are taken from <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0124328">Spitschan et al., (2015)</a>, but ultimately there is some guesswork involved here.</p>
 <p>Now that we have the transmittance spectrum for retinal hemoglobin we can create spectral sensitivity functions for penumbral cones. This is done by multiplying the original action spectra for S-, M- and L-cones by the retinal HGb transmittance spectrum and then dividing each by the maximum value to renormalise.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">observers</span>
@@ -391,17 +391,25 @@ code</a>.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Assigned new (probably not suitable) colors for action spectra.
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/05d_penumbral_cones_5_0.png" src="_images/05d_penumbral_cones_5_0.png" />
+<img alt="_images/05d_penumbral_cones_5_1.png" src="_images/05d_penumbral_cones_5_1.png" />
 </div>
 </div>
 <p>Great, we now have an <code class="docutils literal notranslate"><span class="pre">observer</span></code> class with additional action spectra for penumbral cones. In <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0124328">Spitschan et al., (2015)</a>, the purkinje tree percept was most evident when <code class="docutils literal notranslate"><span class="pre">mc*</span></code> and <code class="docutils literal notranslate"><span class="pre">lc*</span></code> photoreceptors were jointly stimulated at a modulation frequency of 16 Hz.</p>
 <p>Let’s find the required device inputs for the background and modulation spectra.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assign our custom observer with the penumbral cone action spectra.</span>
@@ -413,8 +421,8 @@ code</a>.</p>
 <span class="c1"># which is the maximum available in this example. The background</span>
 <span class="c1"># spectrum is all primaries at half-maximum.</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;mel&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;sc*&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc*&#39;</span><span class="p">,</span> <span class="s1">&#39;lc*&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">,</span> <span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;sc*&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mc*&#39;</span><span class="p">,</span> <span class="s1">&#39;lc*&#39;</span><span class="p">]</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.013</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.5</span><span class="p">]</span> <span class="o">*</span> <span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
@@ -442,7 +450,7 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.
 </div>
 <p>Finally, a solution…</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find solution with linear algebra.</span>

@@ -295,8 +295,8 @@ div.rendered_html tbody tr:hover {
 </style>
 <section id="Stimulation-devices">
 <h1>Stimulation devices<a class="headerlink" href="#Stimulation-devices" title="Permalink to this heading">¶</a></h1>
-<p>Silent substitution requires a stimulation device with at least as many primaries as there are photoreceptors in the retina. This generally means that <a class="reference internal" href="01_background.html"><span class="doc">5 primaries are needed</span></a>, although 4 primaries may suffice when working in the photopic range as rod photoreceptors become saturated and incapable of signalling above 300 cd/m<span class="math notranslate nohighlight">\(^2\)</span> (<a class="reference external" href="https://doi.org/10.1080/713818657">Aguiller and Stiles, 1954</a>; <a class="reference external" href="https://doi.org/10.1016/0042-6989(82)90143-2">Adelson, 1982</a>; but
-see <a class="reference external" href="https://iovs.arvojournals.org/article.aspx?articleid=2200107">Shapiro, 2002</a>; <a class="reference external" href="https://doi.org/10.1007/s10633-008-9159-0">Kremers et al., 2009</a>).</p>
+<p>Silent substitution requires a stimulation device with at least as many primaries as there are photoreceptors under consideration. This generally means that <a class="reference internal" href="01_background.html"><span class="doc">5 primaries are needed</span></a>, although 4 primaries may suffice when working in the photopic range as rod photoreceptors are thought to become saturated and incapable of signalling above 300 cd/m<span class="math notranslate nohighlight">\(^2\)</span> (<a class="reference external" href="https://doi.org/10.1080/713818657">Aguiller and Stiles, 1954</a>; <a class="reference external" href="https://doi.org/10.1016/0042-6989(82)90143-2">Adelson,
+1982</a>; but see <a class="reference external" href="https://iovs.arvojournals.org/article.aspx?articleid=2200107">Shapiro, 2002</a>; <a class="reference external" href="https://doi.org/10.1007/s10633-008-9159-0">Kremers et al., 2009</a>).</p>
 <p>The primaries should be independantly addressable, additive, and ideally stable over time with a linear gamma function. Peak wavelength and bandwidth are key considerations that will ultimately define the gamut and available contrast (<a class="reference external" href="https://doi.org/10.1364/josaa.420373">Evéquoz et al., 2021</a>), and the light source will also need to be integrated into an optical setup for stimulus delivery—usually either a Ganzfeld (e.g., <a class="reference external" href="https://doi.org/10.3758/s13428-021-01759-3">Martin et al., 2021</a>)
 or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167/15.1.27">Cao et al., 2015</a>).</p>
 <p><a class="reference external" href="https://doi.org/10.3390/photonics7040121">Conus and Geiser (2020)</a> reviewed stimulation devices from a range of silent substitution studies and found that, in most cases, the device had 4 or 5 primaries and was built from scratch using LEDs, optical bench components, and microprocessors, such as Arduino, for pulse width modulation control of intensity. Only a few devices were commercially bought.</p>
@@ -680,7 +680,6 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
 </div></div>
 </div>
 <p>If a device is known to be perfectly linear it would suffice to include measurements for each primary at only the minimum and maximum setting. But digital light devices are rarely linear, so to ensure an accurate device model one should include multiple measurements for each primary across the input range. In this case there are 64 measurements for each of the 10 primaries, evenly spaced across the input range.</p>
-<p>Now that we have instantiated <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code>, lets see what it can do.</p>
 </section>
 <section id="Visualising-calibration-data">
 <h2>Visualising calibration data<a class="headerlink" href="#Visualising-calibration-data" title="Permalink to this heading">¶</a></h2>
@@ -705,7 +704,7 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">7.08</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -720,12 +719,12 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
 <section id="Dealing-with-non-linearity">
 <h2>Dealing with non-linearity<a class="headerlink" href="#Dealing-with-non-linearity" title="Permalink to this heading">¶</a></h2>
 <p>Digital light-producing devices tend not to have a linear relationship between requested input and spectral output. On standard computer monitors this is often referred to as a <em>gamma function</em>, and often you will hear of a computer monitor being gamma corrected or linearized, which typically involves reversing a function fitted to the data to find the input values needed to achieve linear output.</p>
-<p><code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> includes a <code class="docutils literal notranslate"><span class="pre">.do_gamma()</span></code> method that characterises the linearity of each device primary with reverse <a class="reference external" href="https://en.wikipedia.org/wiki/Beta_distribution">beta cumulative distribution function</a> or polynomial curve fits. The interpolated results are saved in a lookup table that contains, for each requested input value, the actual value required to produce linear output.</p>
+<p><code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> includes a <code class="docutils literal notranslate"><span class="pre">.do_gamma()</span></code> method that characterises the linearity of each device primary with reverse <a class="reference external" href="https://en.wikipedia.org/wiki/Beta_distribution">beta cumulative distribution function</a> or <a class="reference external" href="https://en.wikipedia.org/wiki/Polynomial_regression">polynomial curve fits</a>. The interpolated results are saved in a lookup table that contains, for each requested input value, the actual value required to produce linear output.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="o">.</span><span class="n">do_gamma</span><span class="p">(</span><span class="n">fit</span><span class="o">=</span><span class="s1">&#39;polynomial&#39;</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="o">.</span><span class="n">do_gamma</span><span class="p">(</span><span class="n">fit</span><span class="o">=</span><span class="s1">&#39;polynomial&#39;</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">force_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">device</span><span class="o">.</span><span class="n">gamma</span>
 </pre></div>
 </div>
@@ -779,40 +778,40 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
   <tbody>
     <tr>
       <th>0</th>
-      <td>31</td>
-      <td>31</td>
-      <td>32</td>
-      <td>32</td>
-      <td>33</td>
-      <td>34</td>
-      <td>34</td>
-      <td>35</td>
-      <td>35</td>
-      <td>36</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
       <td>...</td>
-      <td>4082</td>
       <td>4084</td>
       <td>4085</td>
       <td>4087</td>
       <td>4089</td>
       <td>4090</td>
       <td>4092</td>
-      <td>4093</td>
+      <td>4094</td>
+      <td>4095</td>
       <td>4095</td>
       <td>4095</td>
     </tr>
     <tr>
       <th>1</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
       <td>8</td>
-      <td>8</td>
-      <td>9</td>
-      <td>10</td>
-      <td>11</td>
-      <td>12</td>
-      <td>13</td>
-      <td>14</td>
-      <td>15</td>
-      <td>16</td>
       <td>...</td>
       <td>4031</td>
       <td>4033</td>
@@ -827,195 +826,195 @@ or Maxwellian (e.g., <a class="reference external" href="https://doi.org/10.1167
     </tr>
     <tr>
       <th>2</th>
-      <td>29</td>
-      <td>29</td>
-      <td>30</td>
-      <td>31</td>
-      <td>31</td>
-      <td>32</td>
-      <td>33</td>
-      <td>33</td>
-      <td>34</td>
-      <td>35</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>7</td>
       <td>...</td>
-      <td>4082</td>
-      <td>4083</td>
-      <td>4083</td>
-      <td>4084</td>
       <td>4084</td>
       <td>4085</td>
       <td>4085</td>
       <td>4086</td>
       <td>4086</td>
       <td>4087</td>
+      <td>4087</td>
+      <td>4088</td>
+      <td>4088</td>
+      <td>4089</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>43</td>
-      <td>43</td>
-      <td>44</td>
-      <td>44</td>
-      <td>45</td>
-      <td>46</td>
-      <td>46</td>
-      <td>47</td>
-      <td>47</td>
-      <td>48</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>7</td>
       <td>...</td>
-      <td>4007</td>
       <td>4008</td>
+      <td>4009</td>
       <td>4010</td>
-      <td>4011</td>
+      <td>4012</td>
       <td>4013</td>
-      <td>4014</td>
       <td>4015</td>
-      <td>4017</td>
+      <td>4016</td>
       <td>4018</td>
-      <td>4020</td>
+      <td>4019</td>
+      <td>4021</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>32</td>
-      <td>33</td>
-      <td>34</td>
-      <td>36</td>
-      <td>37</td>
-      <td>39</td>
-      <td>40</td>
-      <td>42</td>
-      <td>43</td>
-      <td>44</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>4</td>
+      <td>6</td>
+      <td>8</td>
+      <td>9</td>
+      <td>11</td>
+      <td>13</td>
+      <td>14</td>
       <td>...</td>
-      <td>4061</td>
-      <td>4062</td>
-      <td>4062</td>
+      <td>4063</td>
       <td>4063</td>
       <td>4064</td>
       <td>4065</td>
-      <td>4065</td>
+      <td>4066</td>
       <td>4066</td>
       <td>4067</td>
       <td>4068</td>
+      <td>4069</td>
+      <td>4070</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>34</td>
-      <td>35</td>
-      <td>36</td>
-      <td>38</td>
-      <td>39</td>
-      <td>41</td>
-      <td>42</td>
-      <td>44</td>
-      <td>45</td>
-      <td>47</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>5</td>
+      <td>6</td>
+      <td>8</td>
+      <td>10</td>
+      <td>11</td>
+      <td>13</td>
+      <td>15</td>
       <td>...</td>
-      <td>4075</td>
-      <td>4076</td>
-      <td>4076</td>
-      <td>4077</td>
       <td>4077</td>
       <td>4078</td>
       <td>4079</td>
       <td>4079</td>
       <td>4080</td>
       <td>4081</td>
+      <td>4081</td>
+      <td>4082</td>
+      <td>4083</td>
+      <td>4084</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>40</td>
-      <td>41</td>
-      <td>42</td>
-      <td>44</td>
-      <td>45</td>
-      <td>47</td>
-      <td>48</td>
-      <td>49</td>
-      <td>51</td>
-      <td>52</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3</td>
+      <td>5</td>
+      <td>6</td>
+      <td>8</td>
+      <td>10</td>
+      <td>11</td>
+      <td>13</td>
+      <td>15</td>
       <td>...</td>
-      <td>4051</td>
-      <td>4052</td>
-      <td>4052</td>
       <td>4053</td>
       <td>4054</td>
       <td>4055</td>
-      <td>4055</td>
       <td>4056</td>
       <td>4057</td>
+      <td>4057</td>
       <td>4058</td>
+      <td>4059</td>
+      <td>4060</td>
+      <td>4061</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>69</td>
-      <td>70</td>
-      <td>72</td>
-      <td>74</td>
-      <td>76</td>
-      <td>78</td>
-      <td>80</td>
-      <td>82</td>
-      <td>84</td>
-      <td>86</td>
+      <td>0</td>
+      <td>2</td>
+      <td>4</td>
+      <td>7</td>
+      <td>9</td>
+      <td>12</td>
+      <td>14</td>
+      <td>17</td>
+      <td>19</td>
+      <td>22</td>
       <td>...</td>
-      <td>4064</td>
-      <td>4064</td>
-      <td>4065</td>
-      <td>4065</td>
-      <td>4066</td>
-      <td>4066</td>
-      <td>4067</td>
-      <td>4067</td>
+      <td>4068</td>
       <td>4068</td>
       <td>4069</td>
+      <td>4070</td>
+      <td>4070</td>
+      <td>4071</td>
+      <td>4072</td>
+      <td>4072</td>
+      <td>4073</td>
+      <td>4074</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>20</td>
-      <td>20</td>
-      <td>21</td>
-      <td>21</td>
-      <td>22</td>
-      <td>23</td>
-      <td>23</td>
-      <td>24</td>
-      <td>25</td>
-      <td>25</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+      <td>6</td>
       <td>...</td>
-      <td>4005</td>
-      <td>4007</td>
-      <td>4010</td>
-      <td>4012</td>
-      <td>4015</td>
-      <td>4017</td>
-      <td>4020</td>
-      <td>4022</td>
-      <td>4025</td>
-      <td>4028</td>
+      <td>4006</td>
+      <td>4008</td>
+      <td>4011</td>
+      <td>4013</td>
+      <td>4016</td>
+      <td>4018</td>
+      <td>4021</td>
+      <td>4023</td>
+      <td>4026</td>
+      <td>4029</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>35</td>
-      <td>35</td>
-      <td>36</td>
-      <td>37</td>
-      <td>37</td>
-      <td>38</td>
-      <td>39</td>
-      <td>39</td>
-      <td>40</td>
-      <td>41</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
       <td>...</td>
-      <td>4017</td>
+      <td>4018</td>
       <td>4019</td>
-      <td>4020</td>
       <td>4021</td>
       <td>4022</td>
+      <td>4023</td>
       <td>4024</td>
-      <td>4025</td>
       <td>4026</td>
       <td>4027</td>
-      <td>4029</td>
+      <td>4028</td>
+      <td>4030</td>
     </tr>
   </tbody>
 </table>
@@ -1210,6 +1209,7 @@ Name: All channels at half max, Length: 401, dtype: float64
     <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span>
     <span class="n">color</span><span class="o">=</span><span class="n">device</span><span class="o">.</span><span class="n">observer</span><span class="o">.</span><span class="n">photoreceptor_colors</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
     <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;W/m$^2$&#39;</span><span class="p">,</span>
+    <span class="n">rot</span><span class="o">=</span><span class="mi">0</span>
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Predicted a-opic irradiance for device settings:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">all_primaries_half_max</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1225,9 +1225,9 @@ Name: All channels at half max, Length: 401, dtype: float64
 Predicted a-opic irradiance for device settings:
  [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
-sc     22.985857
-mc     40.273954
-lc     49.544002
+sc     22.990637
+mc     40.281301
+lc     49.550207
 rh     38.653506
 mel    34.985300
 Name: Half max $a$-opic, dtype: float64
@@ -1328,14 +1328,14 @@ Name: Half max $a$-opic, dtype: float64
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-basinhopping step 0: f 3.01885e-07
-basinhopping step 1: f 1.43306e-07 trial_f 1.43306e-07 accepted 1  lowest_f 1.43306e-07
-found new global minimum on step 1 with function value 1.43306e-07
+basinhopping step 0: f 4.12966e-09
+basinhopping step 1: f 4.12802e-06 trial_f 4.12802e-06 accepted 1  lowest_f 4.12966e-09
+basinhopping step 2: f 4.0308e-07 trial_f 4.0308e-07 accepted 1  lowest_f 4.12966e-09
 Requested LMS: L    8.737379
 M    7.810517
 S    4.455637
 dtype: float64
-Solution LMS: [ 8.73775119  7.8105516   4.45569629]
+Solution LMS: [ 8.73731997  7.81053648  4.45562096]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -1361,7 +1361,7 @@ Solution LMS: [ 8.73775119  7.8105516   4.45569629]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[11, 663, 142, 198, 367, 1449, 59, 427, 649, 519]
+[884, 56, 148, 430, 1339, 313, 368, 0, 0, 4095]
 </pre></div></div>
 </div>
 </section>
@@ -1413,7 +1413,7 @@ Solution LMS: [ 8.73775119  7.8105516   4.45569629]
 </div>
 <p>Now we can instantiate from the json file.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s1">&#39;../../pysilsub/data/ProPixx.json&#39;</span><span class="p">)</span>
@@ -1422,7 +1422,7 @@ Solution LMS: [ 8.73775119  7.8105516   4.45569629]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1473,36 +1473,38 @@ Solution LMS: [ 8.73775119  7.8105516   4.45569629]
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 
-<span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="s1">&#39;VirtualSky&#39;</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_calibration_spds_and_gamut</span><span class="p">()</span>
-<span class="n">pprint</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
+<span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;STLAB_1_York&#39;</span><span class="p">,</span> <span class="s1">&#39;OneLight&#39;</span><span class="p">,</span> <span class="s1">&#39;ProPixx&#39;</span><span class="p">,</span> <span class="s1">&#39;VirtualSky&#39;</span><span class="p">]:</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">from_package_data</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">plot_calibration_spds_and_gamut</span><span class="p">(</span><span class="n">spd_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;legend&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">})</span>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;calibration&#39;: &#39;./data/VirtualSky.csv&#39;,
- &#39;calibration_units&#39;: &#39;W/m2/s/nm&#39;,
- &#39;calibration_wavelengths&#39;: [380, 781, 1],
- &#39;json_name&#39;: &#39;VirtualSky&#39;,
- &#39;name&#39;: &#39;VirtualSky (BGRW projector)&#39;,
- &#39;notes&#39;: &#39;The device is a BGRW projector with a likely 8-bit native &#39;
-          &#39;resolution. Though the data have been wrangled and given a &#39;
-          &#39;fictitious resolution, the spectral measurements are taken from the &#39;
-          &#39;device accross its native resolution. This is included as an &#39;
-          &#39;example of a 4-primary system.&#39;,
- &#39;primary_colors&#39;: [&#39;blue&#39;, &#39;green&#39;, &#39;red&#39;, &#39;darkgrey&#39;],
- &#39;primary_resolutions&#39;: [260, 260, 260, 260]}
-</pre></div></div>
+<img alt="_images/03b_stimulation_devices_39_0.png" src="_images/03b_stimulation_devices_39_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03b_stimulation_devices_39_1.png" src="_images/03b_stimulation_devices_39_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/03b_stimulation_devices_39_2.png" src="_images/03b_stimulation_devices_39_2.png" />
+</div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/03b_stimulation_devices_39_1.png" src="_images/03b_stimulation_devices_39_1.png" />
+<img alt="_images/03b_stimulation_devices_39_3.png" src="_images/03b_stimulation_devices_39_3.png" />
 </div>
 </div>
 </section>

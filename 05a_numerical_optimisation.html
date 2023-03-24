@@ -322,8 +322,8 @@ zero. In all cases, <span class="math notranslate nohighlight">\(x\)</span> is a
 
 <span class="c1"># Define problem</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rh&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">modulate</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
-<span class="n">ssp</span><span class="o">.</span><span class="n">minimize</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mel&#39;</span><span class="p">]</span>
+<span class="n">ssp</span><span class="o">.</span><span class="n">silence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="s1">&#39;mc&#39;</span><span class="p">,</span> <span class="s1">&#39;lc&#39;</span><span class="p">]</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="mf">.5</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
 
@@ -332,6 +332,10 @@ zero. In all cases, <span class="math notranslate nohighlight">\(x\)</span> is a
 
 <span class="c1"># Plot solution</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># Show device settings</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Background settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Modulation settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span><span class="p">:])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -344,7 +348,7 @@ zero. In all cases, <span class="math notranslate nohighlight">\(x\)</span> is a
 *************** Silent Substitution Problem ****************
 ************************************************************
 Device: STLAB_1 (binocular, left eye)
-Observer: StandardColorimetricObserver(age=32, field_size=10)
+Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
 Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
 Modulating: [&#39;mel&#39;]
@@ -355,6 +359,8 @@ Background: None
 ~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
 &gt; No background specified, will optimise background.
 &gt; Performing local optimization with SLSQP.
+ Background settings: [1288, 1111, 0, 0, 926, 1106, 4013, 1111, 1820, 0]
+ Modulation settings: [569, 65, 1093, 3328, 2743, 3176, 855, 2266, 4088, 1244]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -378,11 +384,11 @@ Background: None
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sc     0.000195
-mc     0.000471
-lc    -0.000134
-rh     0.319336
-mel    0.499450
+sc     0.000308
+mc     0.000688
+lc    -0.000042
+rh     0.286329
+mel    0.493534
 dtype: float64
 </pre></div></div>
 </div>
@@ -402,6 +408,10 @@ dtype: float64
 
 <span class="c1"># Plot solution</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># Show device settings</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Background settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Modulation settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span><span class="p">:])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -414,7 +424,7 @@ dtype: float64
 *************** Silent Substitution Problem ****************
 ************************************************************
 Device: STLAB_1 (binocular, left eye)
-Observer: StandardColorimetricObserver(age=32, field_size=10)
+Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
 Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
 Modulating: [&#39;mel&#39;]
@@ -426,6 +436,8 @@ Background: None
 &gt; No background specified, will optimise background.
 &gt; Aiming to maximise contrast.
 &gt; Performing local optimization with SLSQP.
+ Background settings: [3054, 2294, 0, 4095, 0, 2644, 4030, 2428, 0, 0]
+ Modulation settings: [3965, 0, 4094, 3839, 4094, 2805, 1677, 2431, 4028, 3964]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -448,11 +460,11 @@ Background: None
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sc     0.000038
-mc     0.000024
-lc     0.000004
-rh     0.555998
-mel    0.969204
+sc     0.000099
+mc     0.000282
+lc    -0.000058
+rh     0.232616
+mel    0.336895
 dtype: float64
 </pre></div></div>
 </div>
@@ -467,8 +479,14 @@ dtype: float64
 <span class="n">ssp</span><span class="o">.</span><span class="n">target_contrast</span> <span class="o">=</span> <span class="s1">&#39;max&#39;</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
 <span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:{</span><span class="s1">&#39;disp&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">}})</span>
+
+<span class="c1"># Plot solution</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
+
+<span class="c1"># Show device settings</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Background settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Modulation settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -480,7 +498,7 @@ dtype: float64
 *************** Silent Substitution Problem ****************
 ************************************************************
 Device: STLAB_1 (binocular, left eye)
-Observer: StandardColorimetricObserver(age=32, field_size=10)
+Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
 Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
 Modulating: [&#39;mel&#39;]
@@ -491,6 +509,8 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 ~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
 &gt; Aiming to maximise contrast.
 &gt; Performing local optimization with SLSQP.
+ Background settings: [2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047]
+ Modulation settings: [1889, 1820, 3250, 1213, 4016, 0, 2638, 1260, 4077, 3989]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -513,22 +533,22 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sc     0.000012
-mc     0.000004
-lc    -0.000014
-rh     0.104227
-mel    0.147923
+sc     0.000106
+mc     0.000006
+lc    -0.000017
+rh     0.069045
+mel    0.092677
 dtype: float64
 </pre></div></div>
 </div>
-<p>Note that pinning a background spectrum is a big constraint on the optimisation and is why in this case we only got about 14% contrast on melanopsin.</p>
+<p>Note that pinning a background spectrum is a big constraint on the optimisation and is why in this case we only got about 9% contrast on melanopsin.</p>
 </section>
 </section>
 <section id="Local-vs. global-optimisation">
 <h2>Local vs. global optimisation<a class="headerlink" href="#Local-vs. global-optimisation" title="Permalink to this heading">¶</a></h2>
-<p>By default, <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code> uses <em>Scipy’s</em> <code class="docutils literal notranslate"><span class="pre">minimize</span></code> function, which is a <em>local</em> minimizer. It starts with an initial random guess for the primary inputs and works from that point to minimize the objective function (which in this case was to maximize contrast).</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code> uses <em>Scipy’s</em> <code class="docutils literal notranslate"><span class="pre">minimize</span></code> function, which is a <em>local</em> minimizer. It starts with an initial random guess (unless told otherwise) for the primary inputs and works from that point to minimize the objective function (which in this case was to maximize contrast).</p>
 <p>Due to the random nature of the starting point in the function landscape, the minimum it finds is unlikely to be the global minimum.</p>
-<p>If you have enough time, you can tell <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code> to search for the global minimum, in which case it will use <em>Scipy’s</em> <code class="docutils literal notranslate"><span class="pre">basinhopping</span></code> algorithm to perform a series of local searches, each with a different starting point.</p>
+<p>If you have enough time, you can tell <code class="docutils literal notranslate"><span class="pre">.optim_solve()</span></code> to search for the global minimum, in which case it will use <em>Scipy’s</em> <code class="docutils literal notranslate"><span class="pre">basinhopping</span></code> algorithm to perform a series of local optimisations in conjunction with a global stepping algorithm and return the best solution.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -536,7 +556,13 @@ dtype: float64
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ssp</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">ssp</span><span class="o">.</span><span class="n">print_problem</span><span class="p">()</span>
 <span class="n">solution</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">optim_solve</span><span class="p">(</span><span class="n">global_search</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># Plot solution</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">plot_solution</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># Show device settings</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Background settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Modulation settings: </span><span class="si">{</span><span class="n">ssp</span><span class="o">.</span><span class="n">w2s</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">ssp</span><span class="o">.</span><span class="n">nprimaries</span><span class="p">:])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -549,7 +575,7 @@ dtype: float64
 *************** Silent Substitution Problem ****************
 ************************************************************
 Device: STLAB_1 (binocular, left eye)
-Observer: StandardColorimetricObserver(age=32, field_size=10)
+Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
 Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
 Modulating: [&#39;mel&#39;]
@@ -562,26 +588,28 @@ Background: None
 &gt; Aiming to maximise contrast.
 &gt; Performing global optimization with basinhopping and SLSQP
 warning: basinhopping: local minimization failure
-basinhopping step 0: f -0.838032
-basinhopping step 1: f -0.576571 trial_f -0.576571 accepted 1  lowest_f -0.838032
+basinhopping step 0: f -0.641801
 warning: basinhopping: local minimization failure
-basinhopping step 2: f -0.840987 trial_f -0.840987 accepted 1  lowest_f -0.840987
-found new global minimum on step 2 with function value -0.840987
+basinhopping step 1: f -1.04344 trial_f -1.04344 accepted 1  lowest_f -1.04344
+found new global minimum on step 1 with function value -1.04344
+basinhopping step 2: f -1.04095 trial_f -1.04095 accepted 1  lowest_f -1.04344
+basinhopping step 3: f -1.58638 trial_f -1.58638 accepted 1  lowest_f -1.58638
+found new global minimum on step 3 with function value -1.58638
 warning: basinhopping: local minimization failure
-basinhopping step 3: f -0.840987 trial_f -0.668947 accepted 0  lowest_f -0.840987
-basinhopping step 4: f -0.87087 trial_f -0.87087 accepted 1  lowest_f -0.87087
-found new global minimum on step 4 with function value -0.87087
-basinhopping step 5: f -0.965084 trial_f -0.965084 accepted 1  lowest_f -0.965084
-found new global minimum on step 5 with function value -0.965084
+basinhopping step 4: f -0.49171 trial_f -0.49171 accepted 1  lowest_f -1.58638
 warning: basinhopping: local minimization failure
-basinhopping step 6: f -0.895994 trial_f -0.895994 accepted 1  lowest_f -0.965084
-basinhopping step 7: f -2.3168 trial_f -2.3168 accepted 1  lowest_f -2.3168
-found new global minimum on step 7 with function value -2.3168
+basinhopping step 5: f -1.44666 trial_f -1.44666 accepted 1  lowest_f -1.58638
+basinhopping step 6: f -0.13248 trial_f -0.13248 accepted 1  lowest_f -1.58638
+basinhopping step 7: f -2.08343 trial_f -2.08343 accepted 1  lowest_f -2.08343
+found new global minimum on step 7 with function value -2.08343
 warning: basinhopping: local minimization failure
-basinhopping step 8: f -1.79194 trial_f -1.79194 accepted 1  lowest_f -2.3168
-basinhopping step 9: f -1.56116 trial_f -1.56116 accepted 1  lowest_f -2.3168
+basinhopping step 8: f -2.08343 trial_f -0.423101 accepted 0  lowest_f -2.08343
 warning: basinhopping: local minimization failure
-basinhopping step 10: f -1.68585 trial_f -1.68585 accepted 1  lowest_f -2.3168
+basinhopping step 9: f -2.08343 trial_f -1.28466 accepted 0  lowest_f -2.08343
+warning: basinhopping: local minimization failure
+basinhopping step 10: f -1.86215 trial_f -1.86215 accepted 1  lowest_f -2.08343
+ Background settings: [1994, 136, 0, 0, 0, 0, 0, 3165, 0, 0]
+ Modulation settings: [0, 0, 355, 4092, 64, 421, 0, 1834, 4015, 3951]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -604,14 +632,15 @@ basinhopping step 10: f -1.68585 trial_f -1.68585 accepted 1  lowest_f -2.3168
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sc     0.000000
-mc    -0.000111
-lc    -0.000000
-rh     1.208343
-mel    2.316797
+sc     0.000016
+mc     0.000909
+lc    -0.000166
+rh     1.145618
+mel    2.083429
 dtype: float64
 </pre></div></div>
 </div>
+<p>208% melanopic contrast!</p>
 </section>
 </section>
 
