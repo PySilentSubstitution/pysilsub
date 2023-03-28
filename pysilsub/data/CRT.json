@@ -1,0 +1,22 @@
+{
+    "calibration": "/Users/jtm545/Projects/PySilSub/pysilsub/data/LEDCube.csv",
+    "calibration_wavelengths": [
+        380,
+        781,
+        1
+    ],
+    "primary_resolutions": [
+        255,
+        255,
+        255
+    ],
+    "primary_colors": [
+        "blue", 
+        "green",
+         "red"
+        ],
+    "name": "CRT",
+    "calibration_units": "W/$m^2$/nm",
+    "json_name": "CRT",
+    "notes": "Standard CRT monitor. Not very useful for silent substitution."
+}
