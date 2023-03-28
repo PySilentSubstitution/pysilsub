@@ -16,7 +16,7 @@ authors:
 - family-names: "Spitschan"
   given-names: "Manuel"
   orcid: "https://orcid.org/0000-0002-8572-9268"
-title: "silentsub"
+title: "pysilsub"
 version: 0.1.0
 doi: 10.5281/zenodo.7776769 
 date-released: 2023-03-31
