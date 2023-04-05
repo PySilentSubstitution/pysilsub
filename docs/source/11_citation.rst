@@ -5,15 +5,15 @@ If you use *PySilSub* in a scientific publication we would appreciate citations 
 
 .. code-block:: bibtex
 
-    @software{PySilSub2022,
-      author         = {Martin, Joel, T. and Spitschan, Manuel and Baker, Daniel, H. and Wade, Alex},
-      title          = {PySilSub (version 0.0.1)},
-      month          = {August},
-      year           = {2022},
+    @software{PySilSub2023,
+      author         = {Martin, Joel, T. and Boynton, Geoffrey, M. and Baker, Daniel, H. and Wade, Alex and Spitschan, Manuel},
+      title          = {PySilSub (version 0.1.0)},
+      month          = {March},
+      year           = {2023},
       publisher      = {Zenodo},
-      version        = {v0.0.1},
-      doi            = {10.5281/zenodo.1234},
-      url            = {https://github.com/PySilentSubstitution/silentsub}
+      version        = {v0.1.0},
+      doi            = {10.5281/zenodo.7776769},
+      url            = {https://github.com/PySilentSubstitution/pysilsub}
     }
 
 .. rubric:: Tables and indices

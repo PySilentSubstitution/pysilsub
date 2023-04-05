@@ -27,6 +27,9 @@ from . import CIE
 from . import preceps
 
 
+plt.style.use('bmh')
+
+
 class ObserverError(Exception):
     """Generic Python-exception-derived object.
 
@@ -109,10 +112,7 @@ class _Observer:
         """Set the observer action spectra."""
         self._action_spectra = action_spectra
         self.photoreceptors = action_spectra.columns.to_list()
-        print(
-            "Assigned new (probably not suitable) colors for action spectra."
-        )
-        nreceptors = len(self.photoreceptors)
+        self.nreceptors = len(self.photoreceptors)
 
     def save_action_spectra(self, save_to: str = "."):
         """Save observer action spectra to csv.

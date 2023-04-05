@@ -97,6 +97,7 @@ For more information, check out the code, read the docs, and run :code:`pip inst
    05_examples
    06_api
    07_project_notes
+   09_contributors
    10_funding
    11_citation
  

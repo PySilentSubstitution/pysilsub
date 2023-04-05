@@ -27,6 +27,9 @@ from . import CIE
 from . import observers
 
 
+plt.style.use('bmh')
+
+
 # Type aliases
 PrimaryInput = Union[int, float]
 PrimaryWeights = Sequence[float]
@@ -117,7 +120,7 @@ class StimulationDevice:
             self.calibration.index.get_level_values(0).unique().tolist()
         )
         self.nprimaries = len(self.primaries)
-
+        
         self._assert_wavelengths_are_valid(calibration_wavelengths)
         self.calibration_wavelengths = calibration_wavelengths
 
@@ -357,7 +360,7 @@ class StimulationDevice:
                 "primaries.",
             )
 
-        for primary, primary_input in enumerate(multiprimary_input):
+        for primary, primary_input in zip(self.primaries, multiprimary_input):
             self._assert_primary_input_is_valid(primary, primary_input)
 
     def _assert_wavelengths_are_valid(
@@ -566,7 +569,7 @@ class StimulationDevice:
         legend = kwargs.pop("legend", True)
 
         # Plot spds
-        for primary, color in enumerate(self.primary_colors):
+        for primary, color in zip(self.primaries, self.primary_colors):
             self.calibration.loc[primary].T.plot(
                 c=color, lw=lw, ax=ax, legend=False
             )
@@ -696,7 +699,7 @@ class StimulationDevice:
         if name is None:
             name = 0
         spd = []
-        for primary, primary_input in enumerate(multiprimary_input):
+        for primary, primary_input in zip(self.primaries, multiprimary_input):
             spd.append(
                 self.predict_primary_spd(primary, primary_input, name=primary)
             )
@@ -963,7 +966,7 @@ class StimulationDevice:
             gamma_table.append(new_x)
 
         gamma_table = (
-            pd.DataFrame(gamma_table, columns=settings)
+            pd.DataFrame(gamma_table, columns=settings, index=self.primaries)
             .reindex(columns=range(0, max(self.primary_resolutions) + 1))
             .interpolate("linear", axis=1)
             .astype("int")
@@ -1086,7 +1089,7 @@ class StimulationDevice:
         self._assert_multiprimary_input_is_valid(multiprimary_input)
         return [
             self.gamma_lookup(primary, primary_input)
-            for primary, primary_input in enumerate(multiprimary_input)
+            for primary, primary_input in zip(self.primaries, multiprimary_input)
         ]
 
     def s2w(self, settings: PrimarySettings) -> list[float]:

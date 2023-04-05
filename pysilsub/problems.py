@@ -26,6 +26,7 @@ from . import observers
 from . import CIE
 from . import waves
 
+plt.style.use('bmh')
 
 class SilSubProblemError(Exception):
     """Generic Python-exception-derived object.
@@ -1051,7 +1052,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
         ax.legend()
         return ax
 
-    def plot_solution_aopic(self, solution, ax=None, **kwargs):
+    def plot_solution_aopic(self, solution, ax: plt.Axes = None, **kwargs):
         """Plot barchart of alphaopic irradiances .
 
         Parameters
@@ -1182,7 +1183,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
         return solutions
 
     # TODO: Fix
-    def plot_contrast_modulation(self, solutions: list, **kwargs):
+    def plot_contrast_modulation(self, solutions: list, ax: plt.Axes = None, **kwargs):
         """Plot photoreceptor contrast over time for a list of solutions.
 
         Parameters
@@ -1197,7 +1198,8 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
             The plot.
 
         """
-        fig, ax = plt.subplots(1, 1, figsize=(3.54, 3.54))
+        if ax is None:
+            ax = plt.gca()
 
         # Calculate contrast for all photoreceptors
         contrasts = [self.get_photoreceptor_contrasts(s) for s in solutions]
@@ -1209,7 +1211,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
         ax.set_title(self.name)
         ax.set_xlabel("Time point")
 
-        return fig
+        return ax
 
     def animate_solutions(self, solutions, save_to=None):
         """Something here.

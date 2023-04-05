@@ -11,9 +11,9 @@
         255
     ],
     "primary_colors": [
-        "red",
+        "blue",
         "green",
-        "blue"
+        "red"
     ],
     "name": "ProPixx Projector",
     "calibration_units": "Counts/s/nm",

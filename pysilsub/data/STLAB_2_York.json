@@ -1,0 +1,38 @@
+{
+    "calibration": "/Users/jtm545/Projects/PySilSub/pysilsub/data/STLAB/STLAB_2_York.csv",
+    "calibration_wavelengths": [
+        380,
+        781,
+        1
+    ],
+    "primary_resolutions": [
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095
+    ],
+    "primary_colors": [
+        "blueviolet",
+        "royalblue",
+        "darkblue",
+        "blue",
+        "cyan",
+        "green",
+        "lime",
+        "orange",
+        "red",
+        "darkred"
+    ],
+    "observer": "CIE_standard_observer",
+    "calibration_units": "$\\mu$W/cm$^2$/nm",
+    "calibration_date": "14/07/2022",
+    "name": "STLAB_2 (binocular, right eye)",
+    "json_name": "STLAB_2_York",
+    "notes": "STLAB_2 is used in the psychology department at the University of York to stimulate the left eye in a binocular stimulation setup for the BakerWadeBBSRC project. For this setup, light is transported from STLAB via liquid light guides and diffused by discs of white diffuser glass, which are fused into a single image courtesy of a VR headset. Measurements taken with an OceanOptics JAZ spectrometer through the VR goggles. Absolute irradiance calibration is with reference to a spectral measurement of a lamp with known power output immediately prior to obtaining the data."
+}
