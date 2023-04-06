@@ -1,0 +1,37 @@
+{
+    "calibration_fpath": "/Users/jtm545/Projects/PySilSub/data/S2_corrected_oo_spectra.csv",
+    "wavelengths": [
+        380,
+        781,
+        1
+    ],
+    "resolutions": [
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095,
+        4095
+    ],
+    "colors": [
+        "blueviolet",
+        "royalblue",
+        "darkblue",
+        "blue",
+        "cyan",
+        "green",
+        "lime",
+        "orange",
+        "red",
+        "darkred"
+    ],
+    "name": "STLAB_1 (binocular, left eye)",
+    "calibration_units": "Counts/s/nm",
+    "calibration_date": "14/07/2022",
+    "json_name": "STLAB_1_York",
+    "notes": "STLAB_1 is used in the psychology department at the University of York to stimulate the left eye in a binocular stimulation setup for the BakerWadeBBSRC project. For this setup, light is transported from STLAB via liquid light guides and diffused by discs of white diffuser glass, which are fused into a single image courtesy of a VR headset. Measurements taken with an OceanOptics JAZ spectrometer through the VR goggles."
+}
