@@ -2,7 +2,16 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+  <head><!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C89QBCQ4PJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C89QBCQ4PJ');
+</script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
@@ -1255,12 +1264,15 @@ device.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation">
-<span class="sig-name descname"><span class="pre">plot_contrast_modulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot_contrast_modulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysilsub.problems.SilentSubstitutionProblem.plot_contrast_modulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot photoreceptor contrast over time for a list of solutions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>solutions</strong> (<em>list</em>) – List of solutions returned by one of the solvers (one for each
-timepoint in the modulation).</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>solutions</strong> (<em>list</em>) – List of solutions returned by one of the solvers (one for each
+timepoint in the modulation).</p></li>
+<li><p><strong>ax</strong> (<em>Optional</em><em>[</em><em>Axes</em><em>]</em>) – </p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>fig</strong> – The plot.</p>
@@ -2045,6 +2057,7 @@ timebase.</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_contributors.html">Contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
@@ -2054,6 +2067,8 @@ timebase.</p></li>
 <ul>
     
     <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+    <li class="toctree-l1"><a href="https://www.biorxiv.org/content/10.1101/2023.03.30.533110v1">BioRxiv</a></li>
     
 </ul>
 <div class="relations">

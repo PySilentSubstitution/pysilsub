@@ -2,7 +2,16 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+  <head><!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C89QBCQ4PJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C89QBCQ4PJ');
+</script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
@@ -295,24 +304,21 @@ div.rendered_html tbody tr:hover {
 </style>
 <section id="Colorimetric-observer-models">
 <h1>Colorimetric observer models<a class="headerlink" href="#Colorimetric-observer-models" title="Permalink to this heading">¶</a></h1>
-<p>For silent substitution we quantify light in terms of photoreceptor excitation by computing a weighted integral:</p>
+<p>For silent substitution we quantify light in terms of photoreceptor excitation using the equation:</p>
 <p><span class="math">\begin{equation}
-w = \int\limits_{\lambda_1}^{\lambda_2}E(\lambda)V(\lambda)d\lambda
+E_{\alpha} = \sum\limits_{380}^{780}E(\lambda)S_\alpha(\lambda)\Delta_{\lambda}
 \end{equation}</span></p>
-<p>Where <span class="math notranslate nohighlight">\(\lambda_1\)</span> and <span class="math notranslate nohighlight">\(\lambda_2\)</span> define the wavelength range, <span class="math notranslate nohighlight">\(E(\lambda)\)</span> is the measured light spectrum (radiance or irradiance, in photons or watts), <span class="math notranslate nohighlight">\(V(\lambda)\)</span> is the estimated photoreceptor sensitivity function, and <span class="math notranslate nohighlight">\(d\lambda\)</span> is the size of the wavelength bins.</p>
-<p>By convention (<a class="reference external" href="https://cie.co.at/publications/cie-system-metrology-optical-radiation-iprgc-influenced-responses-light-0">CIE S 026/E:2018</a>), when this computation concerns the spectral sensitivity functions of retinal photoreceptors, the resulting measures may be called <span class="math notranslate nohighlight">\(\alpha\)</span>-opic irradiance, where <span class="math notranslate nohighlight">\(\alpha\)</span> denotes the opsin-based photopigment of one of the five photoreceptors (cyanolabe for the S cones, chlorolabe for the M cones, erythrolabe for the L cones, rhodopsin for
-the rods and melanopsin for the ipRGCs). The example below shows how a measured spectrum is converted to <span class="math notranslate nohighlight">\(\alpha\)</span>-opic irradiance.</p>
-<p><span class="math">\begin{equation}
-w = \sum\limits_{380}^{780}E(\lambda)S_\alpha(\lambda)\Delta\lambda
-\end{equation}</span></p>
-<img alt="aopic irradiance" src="_images/alphaopic_irradiance.svg" /><p>The International Commission on Illumination (CIE) define <a class="reference external" href="https://cie.co.at/publications/colorimetric-observers">average colorimetric observer models</a> with estimates of the photoreceptor spectral sensitivities for a given age and field size. These estimates are based on decades of research involving predominantly psychophysical methods. The CIE 1964 Standard Colorimetric Observer assumes an age and field size of 32 years and 10°, and is deemed suitable for most situations.</p>
+<p>where <span class="math notranslate nohighlight">\(E_\alpha\)</span> is a scalar representing the photoreceptor activation for photoreceptor class <span class="math notranslate nohighlight">\(\alpha\)</span>, <span class="math notranslate nohighlight">\(E(\lambda)\)</span> is the spectral power distribution of the light source (radiance or irradiance in photons or watts), <span class="math notranslate nohighlight">\(S_\alpha(\lambda)\)</span> is the estimated photoreceptor action spectrum, and <span class="math notranslate nohighlight">\(\mathrm{\Delta}_\lambda\)</span> is the width of the spectral sampling.</p>
+<p>By convention (<a class="reference external" href="https://cie.co.at/publications/cie-system-metrology-optical-radiation-iprgc-influenced-responses-light-0">CIE S 026/E:2018</a>), when this computation concerns the spectral sensitivity functions of retinal photoreceptors, the resulting measures may be called <span class="math notranslate nohighlight">\(\alpha\)</span>-opic irradiance, where <span class="math notranslate nohighlight">\(\alpha\)</span> denotes the opsin-based photopigment of one of the five photoreceptors (S cones, M cones, L cones, rods and ipRGCs).</p>
+<p>The example below shows how a measured spectrum is converted to <span class="math notranslate nohighlight">\(\alpha\)</span>-opic irradiance.</p>
+<img alt="aopic irradiance" src="_images/alphaopic_irradiance.svg" /><p>The International Commission on Illumination (CIE) define <a class="reference external" href="https://cie.co.at/publications/colorimetric-observers">average colorimetric observer models</a> with estimates of the photoreceptor spectral sensitivities for a given age and field size. The estimates are based on decades of research involving predominantly psychophysical methods. The CIE 1964 Standard Colorimetric Observer assumes an age and field size of 32 years and 10°, and is deemed suitable for most situations.</p>
 <p>For silent substitution, it may be preferable to address <a class="reference external" href="07b_prereceptoral_filtering.ipynb">inter-observer differences in ocular physiology</a> by adjusting the spectral sensitivity functions to account for prereceptoral filtering of incident light by the lens and other ocular media. To support this, <em>PySilSub</em> uses a <code class="docutils literal notranslate"><span class="pre">ColorimetricObserver</span></code> class, which can be passed as an argument when instantiating a <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> or <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code>.</p>
 <section id="pysilsub.observers.ColorimetricObserver">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers.ColorimetricObserver</span></code><a class="headerlink" href="#pysilsub.observers.ColorimetricObserver" title="Permalink to this heading">¶</a></h2>
 <p>When instantiated without arguments, this corresponds to the CIE Standard Physiological Observer for a 32-year-old and 10° field size. Action spectra are obtained from the <a class="reference external" href="https://cie.co.at/publications/cie-system-metrology-optical-radiation-iprgc-influenced-responses-light-0">CIE S026/E:2018 toolbox</a> and normalised in the radiometric system.</p>
 <p><strong>Note:</strong> For quantities expressed in the spectral photon system, a wavelength-dependent conversion and renormalisation is required to generate applicable action spectra.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysilsub</span> <span class="kn">import</span> <span class="n">observers</span>
@@ -332,7 +338,7 @@ ColorimetricObserver(age=32, field_size=10)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -464,7 +470,7 @@ ColorimetricObserver(age=32, field_size=10)
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">observer</span><span class="o">.</span><span class="n">plot_action_spectra</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">7.08</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -584,6 +590,7 @@ Assigned new (probably not suitable) colors for action spectra.
 <li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_contributors.html">Contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
@@ -593,6 +600,8 @@ Assigned new (probably not suitable) colors for action spectra.
 <ul>
     
     <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+    <li class="toctree-l1"><a href="https://www.biorxiv.org/content/10.1101/2023.03.30.533110v1">BioRxiv</a></li>
     
 </ul>
 <div class="relations">

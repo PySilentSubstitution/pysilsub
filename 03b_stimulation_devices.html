@@ -2,7 +2,16 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+  <head><!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C89QBCQ4PJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C89QBCQ4PJ');
+</script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
@@ -1328,14 +1337,16 @@ Name: Half max $a$-opic, dtype: float64
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-basinhopping step 0: f 4.12966e-09
-basinhopping step 1: f 4.12802e-06 trial_f 4.12802e-06 accepted 1  lowest_f 4.12966e-09
-basinhopping step 2: f 4.0308e-07 trial_f 4.0308e-07 accepted 1  lowest_f 4.12966e-09
+basinhopping step 0: f 0.618782
+basinhopping step 1: f 0.11714 trial_f 0.11714 accepted 1  lowest_f 0.11714
+found new global minimum on step 1 with function value 0.11714
+basinhopping step 2: f 4.76585e-08 trial_f 4.76585e-08 accepted 1  lowest_f 4.76585e-08
+found new global minimum on step 2 with function value 4.76585e-08
 Requested LMS: L    8.737379
 M    7.810517
 S    4.455637
 dtype: float64
-Solution LMS: [ 8.73731997  7.81053648  4.45562096]
+Solution LMS: [ 8.73754327  7.81047938  4.45549767]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -1442,7 +1453,7 @@ Solution LMS: [ 8.73731997  7.81053648  4.45562096]
 <h2>Package data<a class="headerlink" href="#Package-data" title="Permalink to this heading">¶</a></h2>
 <p><em>PySilSub</em> comes with calibration and configuration data for various multiprimary stimulation systems. This means you can experiment with the package without having to calibrate and configure your own system.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">available</span> <span class="o">=</span> <span class="n">StimulationDevice</span><span class="o">.</span><span class="n">show_package_data</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1451,24 +1462,23 @@ Solution LMS: [ 8.73731997  7.81053648  4.45562096]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 [&#39;STLAB_2_York&#39;,
  &#39;OneLight&#39;,
- &#39;LEDCube&#39;,
+ &#39;CRT&#39;,
  &#39;ProPixx&#39;,
  &#39;BCGAR&#39;,
  &#39;VirtualSky&#39;,
- &#39;STLAB_Oxford&#39;,
  &#39;STLAB_1_York&#39;]
 </pre></div></div>
 </div>
 <p>One can easily create a <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> from example package data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
@@ -1505,6 +1515,14 @@ Solution LMS: [ 8.73731997  7.81053648  4.45562096]
 </div>
 <div class="output_area docutils container">
 <img alt="_images/03b_stimulation_devices_39_3.png" src="_images/03b_stimulation_devices_39_3.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
 </div>
 </div>
 </section>
@@ -1552,6 +1570,7 @@ Solution LMS: [ 8.73731997  7.81053648  4.45562096]
 <li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_contributors.html">Contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
@@ -1561,6 +1580,8 @@ Solution LMS: [ 8.73731997  7.81053648  4.45562096]
 <ul>
     
     <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+    <li class="toctree-l1"><a href="https://www.biorxiv.org/content/10.1101/2023.03.30.533110v1">BioRxiv</a></li>
     
 </ul>
 <div class="relations">

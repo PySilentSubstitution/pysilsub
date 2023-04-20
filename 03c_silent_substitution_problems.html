@@ -2,7 +2,16 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+  <head><!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C89QBCQ4PJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C89QBCQ4PJ');
+</script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
@@ -334,7 +343,7 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 <span class="ansi-red-fg">Type:</span>        property
-<span class="ansi-red-fg">String form:</span> &lt;property object at 0x7f92ebeb5df0&gt;
+<span class="ansi-red-fg">String form:</span> &lt;property object at 0x7f8ff256dfd0&gt;
 <span class="ansi-red-fg">Docstring:</span>
 Photoreceptor(s) to be ignored.
 
@@ -411,8 +420,8 @@ Retinal photoreceptors:
 Device: STLAB_1 (binocular, left eye)
 Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
-Minimising: [&#39;mc&#39;, &#39;lc&#39;, &#39;mel&#39;]
-Modulating: [&#39;sc&#39;]
+Silencing: [&#39;mc&#39;, &#39;lc&#39;, &#39;mel&#39;]
+Targeting: [&#39;sc&#39;]
 Target contrast: [ 0.2]
 Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
@@ -476,8 +485,8 @@ dtype: float64
 <div class="highlight"><pre>
 ~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
 &gt; Performing local optimization with SLSQP.
-[ 0.95180767  0.24221276  0.79303403  0.88903416  0.00752077  0.42491479
-  0.79642052  0.38099734  0.29926413  0.75991943]
+[ 0.67844402  0.95669101  0.03640049  0.01812555  0.81756096  0.78596596
+  0.09764588  0.8009693   0.28556816  0.14244418]
 </pre></div></div>
 </div>
 </section>
@@ -530,7 +539,7 @@ dtype: float64
 <div class="output_area docutils container">
 <div class="highlight"><pre>
  Background settings: [2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047]
- Modulation settings: [3897, 991, 3247, 3640, 30, 1740, 3261, 1560, 1225, 3111]
+ Modulation settings: [2778, 3917, 149, 74, 3347, 3218, 399, 3279, 1169, 583]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -586,6 +595,7 @@ dtype: float64
 <li class="toctree-l1"><a class="reference internal" href="05_examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_contributors.html">Contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
@@ -595,6 +605,8 @@ dtype: float64
 <ul>
     
     <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+    <li class="toctree-l1"><a href="https://www.biorxiv.org/content/10.1101/2023.03.30.533110v1">BioRxiv</a></li>
     
 </ul>
 <div class="relations">

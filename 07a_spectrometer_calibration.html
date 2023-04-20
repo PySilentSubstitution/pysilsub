@@ -2,7 +2,16 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+  <head><!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C89QBCQ4PJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C89QBCQ4PJ');
+</script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
@@ -665,7 +674,7 @@ Name: Counts, Length: 2048, dtype: float64
 </ul>
 <p>The JAZ stores wavelength coefficients from when it was last calibrated, but wavelength calibrations are liable to drift over time due to various factors (e.g., mechanical shock, environmental conditions).</p>
 <p>The ground truth for wavelength calibration is dervied from sampling a light source that produces <a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line">spectral lines</a>, so we borrowed a <a class="reference external" href="http://www.lamptech.co.uk/Spec%20Sheets/D%20SP%20Philips%20LL%20Ar.htm">Philips argon lamp</a> from our local physics department.</p>
-<p><img alt="a2cd7431dcd74436935dde6b1458f0cb" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
+<p><img alt="e9671b532c02401da5d66a5be79bae85" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
 <p>Measurement of the lamp produced a spectrum with lots of lines. I consulted the <a class="reference external" href="https://physics.nist.gov/PhysRefData/ASD/lines_form.html">NIST atomic spectra database</a> to find the known positions of the lines.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -824,7 +833,7 @@ I_p = (S_p - D_p) * C_p / (T * A * dL_p)
 <p>Our NIST-traceable HL-2000-CAL light source is suitable for absolute irradiance calculation. It has a tungsten-halogen bulb with a color temperature of 3100 kelvin, and it came with calibration files expressing its known power output at certain wavelengths in <span class="math notranslate nohighlight">\(\mu W/cm^2/nm\)</span>, when measured with either a fibre optic probe or cosine corrector (the sampling optic affects the measured power).</p>
 <p>It is relatively easy to perform an absolute irradiance calibration with the <a class="reference external" href="https://www.oceaninsight.com/products/software/acquisition-and-analysis/oceanview/">Ocean View software</a>, which is available for a 30-day free trial.</p>
 <p>Turn the light source on and wait for it to reach thermal equilibrium (~15 mins) and then select the <em>Absolute Irradiance Calibration</em> option. The software guides you through the process of taking a reference measurement, a dark measurement to compensate for electrical noise in the CCD, uploading the relevant lamp calibration file, and obtaining the <span class="math notranslate nohighlight">\(\mu J/count\)</span> pixel calibration file.</p>
-<p><img alt="e0fc0c4080af49fd9bbd5227a94e56f8" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
+<p><img alt="70a2f99d7bc94872b93f09061b6797f6" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
 <p>The calibration output looks like this.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
@@ -1254,6 +1263,7 @@ Now block all light and hit enter to obtain dark counts:
 <li class="toctree-l2"><a class="reference internal" href="07b_individual_differences.html">Individual differences</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="09_contributors.html">Contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
@@ -1263,6 +1273,8 @@ Now block all light and hit enter to obtain dark counts:
 <ul>
     
     <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+    <li class="toctree-l1"><a href="https://www.biorxiv.org/content/10.1101/2023.03.30.533110v1">BioRxiv</a></li>
     
 </ul>
 <div class="relations">

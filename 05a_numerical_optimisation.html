@@ -2,7 +2,16 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+  <head><!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C89QBCQ4PJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C89QBCQ4PJ');
+</script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
@@ -350,8 +359,8 @@ zero. In all cases, <span class="math notranslate nohighlight">\(x\)</span> is a
 Device: STLAB_1 (binocular, left eye)
 Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
-Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
-Modulating: [&#39;mel&#39;]
+Silencing: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
+Targeting: [&#39;mel&#39;]
 Target contrast: [ 0.5]
 Background: None
 
@@ -359,8 +368,8 @@ Background: None
 ~~~~~~~~~~~~~~~~~~~~~~~ optim_solve ~~~~~~~~~~~~~~~~~~~~~~~~
 &gt; No background specified, will optimise background.
 &gt; Performing local optimization with SLSQP.
- Background settings: [1288, 1111, 0, 0, 926, 1106, 4013, 1111, 1820, 0]
- Modulation settings: [569, 65, 1093, 3328, 2743, 3176, 855, 2266, 4088, 1244]
+ Background settings: [4085, 1346, 5, 0, 69, 2877, 4094, 3496, 1294, 222]
+ Modulation settings: [2102, 452, 999, 4036, 4011, 1267, 2098, 3777, 4094, 4069]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -384,11 +393,11 @@ Background: None
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sc     0.000308
-mc     0.000688
-lc    -0.000042
-rh     0.286329
-mel    0.493534
+sc    -0.000051
+mc     0.000338
+lc    -0.000136
+rh     0.281317
+mel    0.496757
 dtype: float64
 </pre></div></div>
 </div>
@@ -426,8 +435,8 @@ dtype: float64
 Device: STLAB_1 (binocular, left eye)
 Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
-Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
-Modulating: [&#39;mel&#39;]
+Silencing: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
+Targeting: [&#39;mel&#39;]
 Target contrast: [inf]
 Background: None
 
@@ -436,8 +445,8 @@ Background: None
 &gt; No background specified, will optimise background.
 &gt; Aiming to maximise contrast.
 &gt; Performing local optimization with SLSQP.
- Background settings: [3054, 2294, 0, 4095, 0, 2644, 4030, 2428, 0, 0]
- Modulation settings: [3965, 0, 4094, 3839, 4094, 2805, 1677, 2431, 4028, 3964]
+ Background settings: [2585, 0, 2729, 0, 0, 260, 1951, 3720, 0, 0]
+ Modulation settings: [0, 0, 3069, 4027, 3058, 0, 0, 3451, 3983, 3969]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -460,11 +469,11 @@ Background: None
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sc     0.000099
-mc     0.000282
-lc    -0.000058
-rh     0.232616
-mel    0.336895
+sc     0.000023
+mc     0.000024
+lc    -0.000017
+rh     0.536400
+mel    0.859438
 dtype: float64
 </pre></div></div>
 </div>
@@ -500,8 +509,8 @@ dtype: float64
 Device: STLAB_1 (binocular, left eye)
 Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
-Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
-Modulating: [&#39;mel&#39;]
+Silencing: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
+Targeting: [&#39;mel&#39;]
 Target contrast: [inf]
 Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
@@ -510,7 +519,7 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 &gt; Aiming to maximise contrast.
 &gt; Performing local optimization with SLSQP.
  Background settings: [2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047, 2047]
- Modulation settings: [1889, 1820, 3250, 1213, 4016, 0, 2638, 1260, 4077, 3989]
+ Modulation settings: [2207, 452, 4094, 4030, 3583, 0, 2468, 1403, 4094, 3966]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -533,15 +542,15 @@ Background: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sc     0.000106
-mc     0.000006
-lc    -0.000017
-rh     0.069045
-mel    0.092677
+sc    -0.000002
+mc     0.000001
+lc    -0.000001
+rh     0.101365
+mel    0.154778
 dtype: float64
 </pre></div></div>
 </div>
-<p>Note that pinning a background spectrum is a big constraint on the optimisation and is why in this case we only got about 9% contrast on melanopsin.</p>
+<p>Note that pinning a background spectrum is a big constraint on the optimisation and is why in this case we only got about 15% contrast on melanopsin.</p>
 </section>
 </section>
 <section id="Local-vs. global-optimisation">
@@ -577,8 +586,8 @@ dtype: float64
 Device: STLAB_1 (binocular, left eye)
 Observer: ColorimetricObserver(age=32, field_size=10)
 Ignoring: [&#39;rh&#39;]
-Minimising: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
-Modulating: [&#39;mel&#39;]
+Silencing: [&#39;sc&#39;, &#39;mc&#39;, &#39;lc&#39;]
+Targeting: [&#39;mel&#39;]
 Target contrast: [inf]
 Background: None
 
@@ -587,29 +596,25 @@ Background: None
 &gt; No background specified, will optimise background.
 &gt; Aiming to maximise contrast.
 &gt; Performing global optimization with basinhopping and SLSQP
+basinhopping step 0: f -0.572419
+basinhopping step 1: f -1.19937 trial_f -1.19937 accepted 1  lowest_f -1.19937
+found new global minimum on step 1 with function value -1.19937
+basinhopping step 2: f -1.19937 trial_f -0.739083 accepted 0  lowest_f -1.19937
 warning: basinhopping: local minimization failure
-basinhopping step 0: f -0.641801
+basinhopping step 3: f -2.11003 trial_f -2.11003 accepted 1  lowest_f -2.11003
+found new global minimum on step 3 with function value -2.11003
 warning: basinhopping: local minimization failure
-basinhopping step 1: f -1.04344 trial_f -1.04344 accepted 1  lowest_f -1.04344
-found new global minimum on step 1 with function value -1.04344
-basinhopping step 2: f -1.04095 trial_f -1.04095 accepted 1  lowest_f -1.04344
-basinhopping step 3: f -1.58638 trial_f -1.58638 accepted 1  lowest_f -1.58638
-found new global minimum on step 3 with function value -1.58638
+basinhopping step 4: f -2.11003 trial_f -1.26673 accepted 0  lowest_f -2.11003
 warning: basinhopping: local minimization failure
-basinhopping step 4: f -0.49171 trial_f -0.49171 accepted 1  lowest_f -1.58638
+basinhopping step 5: f -2.11003 trial_f -0.762291 accepted 0  lowest_f -2.11003
+basinhopping step 6: f -1.39862 trial_f -1.39862 accepted 1  lowest_f -2.11003
+basinhopping step 7: f -1.69061 trial_f -1.69061 accepted 1  lowest_f -2.11003
 warning: basinhopping: local minimization failure
-basinhopping step 5: f -1.44666 trial_f -1.44666 accepted 1  lowest_f -1.58638
-basinhopping step 6: f -0.13248 trial_f -0.13248 accepted 1  lowest_f -1.58638
-basinhopping step 7: f -2.08343 trial_f -2.08343 accepted 1  lowest_f -2.08343
-found new global minimum on step 7 with function value -2.08343
-warning: basinhopping: local minimization failure
-basinhopping step 8: f -2.08343 trial_f -0.423101 accepted 0  lowest_f -2.08343
-warning: basinhopping: local minimization failure
-basinhopping step 9: f -2.08343 trial_f -1.28466 accepted 0  lowest_f -2.08343
-warning: basinhopping: local minimization failure
-basinhopping step 10: f -1.86215 trial_f -1.86215 accepted 1  lowest_f -2.08343
- Background settings: [1994, 136, 0, 0, 0, 0, 0, 3165, 0, 0]
- Modulation settings: [0, 0, 355, 4092, 64, 421, 0, 1834, 4015, 3951]
+basinhopping step 8: f -1.69061 trial_f -1.02817 accepted 0  lowest_f -2.11003
+basinhopping step 9: f -1.72187 trial_f -1.72187 accepted 1  lowest_f -2.11003
+basinhopping step 10: f -1.72187 trial_f -0.888427 accepted 0  lowest_f -2.11003
+ Background settings: [2145, 0, 0, 0, 0, 0, 0, 3212, 0, 0]
+ Modulation settings: [65, 36, 801, 2730, 468, 0, 0, 1976, 3262, 4010]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -632,15 +637,15 @@ basinhopping step 10: f -1.86215 trial_f -1.86215 accepted 1  lowest_f -2.08343
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sc     0.000016
-mc     0.000909
-lc    -0.000166
-rh     1.145618
-mel    2.083429
+sc    -0.000035
+mc     0.000030
+lc    -0.000041
+rh     1.120994
+mel    2.110031
 dtype: float64
 </pre></div></div>
 </div>
-<p>208% melanopic contrast!</p>
+<p>211% melanopic contrast!</p>
 </section>
 </section>
 
@@ -687,6 +692,7 @@ dtype: float64
 </li>
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07_project_notes.html">Project notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_contributors.html">Contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_funding.html">Funding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11_citation.html">Citation</a></li>
 </ul>
@@ -696,6 +702,8 @@ dtype: float64
 <ul>
     
     <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
+    
+    <li class="toctree-l1"><a href="https://www.biorxiv.org/content/10.1101/2023.03.30.533110v1">BioRxiv</a></li>
     
 </ul>
 <div class="relations">
