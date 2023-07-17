@@ -5,7 +5,7 @@ Welcome to PySilentSubstitution!
 
 <img src="https://github.com/PySilentSubstitution/pysilsub/blob/main/logo/photoreceptor_characters.png?raw=True" alt="photoreceptor-characters" width="200"/>
 
-*PySilSub* is a Python toolbox for performing the method of [silent substitution](https://pysilentsubstitution.github.io/pysilsub/01_background.html) in vision and circadian research.
+*PySilSub* is a Python toolbox for performing the method of [silent substitution](https://pysilentsubstitution.github.io/pysilsub/01_background.html) in vision and nonvisual photoreception research.
 
 **Note:** See also, [PyPlr](https://pyplr.github.io/cvd_pupillometry/index.html),
 a sister project offering a Python framework for researching the pupillary 
@@ -50,8 +50,8 @@ from pysilsub import problems
 ssp = problems.SilentSubstitutionProblem.from_package_data('STLAB_1_York')  # Load example data
 ssp.background = [.5] * ssp.nprimaries  # Specify background spectrum
 ssp.ignore = ['rh']  # Ignore rod photoreceptors
-ssp.silence = ['sc', 'mc', 'lc']  # Minimise cone contrast
-ssp.target = ['mel']  # Target melanopsin
+ssp.silence = ['mc', 'lc', 'mel']  # Silence L/M cones and melanopsin
+ssp.target = ['sc']  # Target S cones
 ssp.target_contrast = .45  # With 45% contrast 
 solution = ssp.linalg_solve()  # Solve with linear algebra
 fig = ssp.plot_solution(solution)  # Plot the solution

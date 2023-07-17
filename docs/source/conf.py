@@ -22,7 +22,7 @@ copyright = '2022, Joel T. Martin'
 author = 'Joel T. Martin'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.14'
+release = '0.1.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -72,9 +72,10 @@ html_theme_options = {
     'github_user': 'PySilentSubstitution',
     'github_repo': 'pysilsub',
         'extra_nav_links': {
-        'PyPi': 'https://pypi.org/project/pysilsub/' 
+        'PyPi': 'https://pypi.org/project/pysilsub/',
+        'Paper': 'https://jov.arvojournals.org/article.aspx?articleid=2791309'
     },
-    'description': 'A Python software for performing the method of silent substitution.'
+    'description': 'A Python toolbox for performing the method of silent substitution.'
 }
 #    ,
 #    'extra_nav_links': {'PyPi': 'https://pypi.org/project/pyplr/', 

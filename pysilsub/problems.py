@@ -18,7 +18,11 @@ import scipy
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import animation
-import colour
+try:
+    import colour
+except ImportError:
+    print('Failed to import "colour" package. Chromaticity plots will not be '
+          'as nice.')
 
 from . import devices
 from . import colorfuncs
@@ -661,13 +665,13 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
 
         if contrast_statistic == "simple":
             return mod_aopic.sub(bg_aopic).div(bg_aopic)
-
-        max_aopic = pd.concat([bg_aopic, mod_aopic], axis=1).max(axis=1)
-        min_aopic = pd.concat([bg_aopic, mod_aopic], axis=1).min(axis=1)
-        if contrast_statistic == "weber":
-            return (max_aopic - min_aopic) / (max_aopic)
-        elif contrast_statistic == "michelson":
-            return (max_aopic - min_aopic) / (max_aopic + min_aopic)
+        else:
+            max_aopic = pd.concat([bg_aopic, mod_aopic], axis=1).max(axis=1)
+            min_aopic = pd.concat([bg_aopic, mod_aopic], axis=1).min(axis=1)
+            if contrast_statistic == "weber":
+                return (max_aopic - min_aopic) / (max_aopic)
+            elif contrast_statistic == "michelson":
+                return (max_aopic - min_aopic) / (max_aopic + min_aopic)
 
     def objective_function(self, x0: devices.PrimaryWeights) -> float:
         """Calculate contrast error on targeted photoreceptor(s).
@@ -1022,9 +1026,13 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
             ax = plt.gca()
 
         # Plot solution on horseshoe
-        colour.plotting.plot_chromaticity_diagram_CIE1931(
-            axes=ax, title=False, standalone=False
-        )
+        try:
+            colour.plotting.plot_chromaticity_diagram_CIE1931(
+                axes=ax, title=False, standalone=False
+            )
+        except NameError:
+            print('Unable to display chromaticity horseshoe as the ',
+                  '"colour" package is not installed.')
 
         cie170_2 = CIE.get_CIE170_2_chromaticity_coordinates()
         ax.plot(cie170_2["x"], cie170_2["y"], c="k", ls=":", label="CIE 170-2")
@@ -1141,7 +1149,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
         self,
         frequency: int | float,
         sampling_frequency: int,
-        target_contrast: float,
+        target_contrasts: list[float],
         phase: int | float = 0,
         duration: int | float = 1
         ):
@@ -1155,8 +1163,8 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
             Sampling frequency of the modulation. This should not exceed the
             temporal resolution (spectral switching time) of the stimulation
             device.
-        target_contrast : float
-            Peak contrast of the modulation for targetted photoreceptor(s).
+        target_contrast : list(float)
+            Peak contrast of the modulation for targeted photoreceptor(s).
         phase : int | float, optional
             Phase offset. The default is 0. Use np.pi
         duration : int | float, optional
@@ -1177,7 +1185,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
 
         solutions = []
         for point in waveform:
-            contrast = point * target_contrast
+            contrast = [point * c for c in target_contrasts]
             self.target_contrast = contrast
             solutions.append(self.linalg_solve())
         return solutions
@@ -1206,7 +1214,7 @@ class SilentSubstitutionProblem(devices.StimulationDevice):
         contrasts = pd.concat(contrasts, axis=1)
 
         # Plot
-        contrasts.T.plot(ax=ax, color=self.observer.photoreceptor_colors)
+        contrasts.T.plot(ax=ax, color=self.observer.photoreceptor_colors, **kwargs)
         ax.set_ylabel("Contrast")
         ax.set_title(self.name)
         ax.set_xlabel("Time point")

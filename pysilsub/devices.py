@@ -20,8 +20,12 @@ import matplotlib as mpl
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
-import colour
-
+try:
+    import colour
+except ImportError:
+    print('Failed to import "colour" package. Chromaticity plots will not be '
+          'as nice.')
+    
 from . import colorfuncs
 from . import CIE
 from . import observers
@@ -500,9 +504,14 @@ class StimulationDevice:
         if ax is None:
             ax = plt.gca()
         if show_1931_horseshoe:
-            colour.plotting.plot_chromaticity_diagram_CIE1931(
-                axes=ax, title=False, standalone=False
-            )
+            try:
+                colour.plotting.plot_chromaticity_diagram_CIE1931(
+                    axes=ax, title=False, standalone=False
+                    )
+            except NameError:
+                print('Unable to display chromaticity horseshoe as the ',
+                      '"colour" package is not installed.')
+
         if show_CIE170_2_horseshoe:
             cie170_2 = CIE.get_CIE170_2_chromaticity_coordinates()
             cie_horse = ax.plot(

@@ -38,13 +38,16 @@ Which is the same as doing an editable install with *pip*:
 Requirements
 ------------
 
-*PySilSub* requires Python (>=3.8, <3.11), a set of standard numerical computing packages, and some plotting libraries:
+*PySilSub* requires Python (>=3.7), a set of standard numerical computing packages, and some plotting libraries:
 
 - numpy
 - scipy
 - matplotlib
 - pandas
 - importlib-resources
+
+The `colour-science` package is an optional dependency that makes for pretty chromaticity horseshoe plots, but which requires Python >=3.7 and <=3.11. 
+
 - colour-science
 
 The following additional packages may also be helpful for development:
@@ -54,10 +57,11 @@ The following additional packages may also be helpful for development:
 
 All requirements can be installed by running :code:`pip install -r requirements.txt`.
 
+
 Virtual environments
 --------------------
 
-It is best to install *PySilSub* in a virtual environment. This can be done using either `Python's virtual environments <https://docs.python.org/3/tutorial/venv.html>`_ or `conda <https://docs.conda.io/en/latest/>`_:
+Install *PySilSub* in a virtual environment. This can be done using either `Python's virtual environments <https://docs.python.org/3/tutorial/venv.html>`_ or `conda <https://docs.conda.io/en/latest/>`_:
 
 .. code-block:: bash
 

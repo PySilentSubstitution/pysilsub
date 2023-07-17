@@ -9,7 +9,7 @@ Welcome to PySilSub's documentation!
 |DOI| |PyPI version| |Contributor Covenant| |PyPi license| |PyPI status|
 
 *PySilSub* is a Python toolbox for performing the method of `silent
-substitution <01_background.ipynb>`_ in vision and circadian research.
+substitution <01_background.ipynb>`_ in vision and nonvisual photoreception research.
 
 **Note:** See also, `PyPlr <https://pyplr.github.io/cvd_pupillometry/index.html#>`_,
 a sister project offering a Python framework for researching the pupillary 
@@ -37,7 +37,7 @@ intuitive interface.
    solution = ssp.optim_solve()  # Solve with optimisation
    fig = ssp.plot_solution(solution.x)  # Plot the solution
 
-.. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg
+.. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg
    :alt: Plot of result
    :class: no-scaled-link
 
@@ -55,13 +55,13 @@ intuitive interface.
    ssp = problems.SilentSubstitutionProblem.from_package_data('STLAB_1_York')  # Load example data
    ssp.background = [.5] * ssp.nprimaries  # Specify background spectrum
    ssp.ignore = ['rh']  # Ignore rod photoreceptors
-   ssp.silence = ['sc', 'mc', 'lc']  # Minimise cone contrast
-   ssp.target = ['mel']  # Target melanopsin
+   ssp.silence = ['mc', 'lc', 'mel']  # Silence L/M cones and melanopsin
+   ssp.target = ['sc']  # Target S cones
    ssp.target_contrast = .45  # With 45% contrast 
    solution = ssp.linalg_solve()  # Solve with linear algebra
    fig = ssp.plot_solution(solution)  # Plot the solution
 
-.. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_1.svg
+.. image:: https://raw.githubusercontent.com/PySilentSubstitution/pysilsub/main/img/example_2.svg
    :alt: Plot of result
    :class: no-scaled-link
 

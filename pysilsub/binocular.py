@@ -113,8 +113,8 @@ class BinocularStimulationDevice:
             method="L-BFGS-B",
             options={
                 "disp": False,
-                "ftol": 2.220446049250313e-09,
-                "gtol": 1e-05,
+                "ftol": 2.220446049250313e-10,
+                "gtol": 1e-06,
             },
         )
         #print(result.x)

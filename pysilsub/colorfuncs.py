@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 ``pysilsub.colorfuncs``
-======================
+=======================
 
 Tools for navigating between colorspaces.
 
