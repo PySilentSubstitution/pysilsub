@@ -15,7 +15,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Spectrometer &#8212; PySilSub 0.0.14 documentation</title>
+    <title>Spectrometer &#8212; PySilSub 0.1.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -28,7 +28,7 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Individual differences" href="07b_individual_differences.html" />
+    <link rel="next" title="Contributors" href="09_contributors.html" />
     <link rel="prev" title="Project notes" href="07_project_notes.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -305,7 +305,7 @@ div.rendered_html tbody tr:hover {
 <section id="Spectrometer">
 <h1>Spectrometer<a class="headerlink" href="#Spectrometer" title="Permalink to this heading">¶</a></h1>
 <p>Spectrometers may be used to measure the spectral response of a system. A probe is pointed at the light source and the sample feeds through to the internal optical bench, which typically comprises routing mirrors, a prism or diffraction grating to separate the sample into its constituent wavelength components, and a sensor.</p>
-<p><img alt="OceanOptics JAZ spectrometer" class="no-scaled-link" src="_images/jaz.png" style="width: 300px;" /></p>
+<p><img alt="OceanOptics JAZ spectrometer" class="no-scaled-link" src="../../img/jaz.png" style="width: 300px;" /></p>
 <p>Our JAZ spectrometer has a 16-bit CCD sensor with 2048 pixels and reports wavelengths from 330-1030 nm. The raw spectrum is reported in <em>counts</em>, a unit of measurement relating to the number of photons hitting the sensor during the integration period.</p>
 <section id="Obtaining-measurements">
 <h2>Obtaining measurements<a class="headerlink" href="#Obtaining-measurements" title="Permalink to this heading">¶</a></h2>
@@ -674,7 +674,7 @@ Name: Counts, Length: 2048, dtype: float64
 </ul>
 <p>The JAZ stores wavelength coefficients from when it was last calibrated, but wavelength calibrations are liable to drift over time due to various factors (e.g., mechanical shock, environmental conditions).</p>
 <p>The ground truth for wavelength calibration is dervied from sampling a light source that produces <a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line">spectral lines</a>, so we borrowed a <a class="reference external" href="http://www.lamptech.co.uk/Spec%20Sheets/D%20SP%20Philips%20LL%20Ar.htm">Philips argon lamp</a> from our local physics department.</p>
-<p><img alt="e9671b532c02401da5d66a5be79bae85" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
+<p><img alt="8714f4e30dae4b3b891b2dd7b2e773e8" class="no-scaled-link" src="_images/jaz_argon_lamp.png" style="width: 300px;" /></p>
 <p>Measurement of the lamp produced a spectrum with lots of lines. I consulted the <a class="reference external" href="https://physics.nist.gov/PhysRefData/ASD/lines_form.html">NIST atomic spectra database</a> to find the known positions of the lines.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -833,7 +833,7 @@ I_p = (S_p - D_p) * C_p / (T * A * dL_p)
 <p>Our NIST-traceable HL-2000-CAL light source is suitable for absolute irradiance calculation. It has a tungsten-halogen bulb with a color temperature of 3100 kelvin, and it came with calibration files expressing its known power output at certain wavelengths in <span class="math notranslate nohighlight">\(\mu W/cm^2/nm\)</span>, when measured with either a fibre optic probe or cosine corrector (the sampling optic affects the measured power).</p>
 <p>It is relatively easy to perform an absolute irradiance calibration with the <a class="reference external" href="https://www.oceaninsight.com/products/software/acquisition-and-analysis/oceanview/">Ocean View software</a>, which is available for a 30-day free trial.</p>
 <p>Turn the light source on and wait for it to reach thermal equilibrium (~15 mins) and then select the <em>Absolute Irradiance Calibration</em> option. The software guides you through the process of taking a reference measurement, a dark measurement to compensate for electrical noise in the CCD, uploading the relevant lamp calibration file, and obtaining the <span class="math notranslate nohighlight">\(\mu J/count\)</span> pixel calibration file.</p>
-<p><img alt="70a2f99d7bc94872b93f09061b6797f6" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
+<p><img alt="e8814bf7e4e5430cb9bff52fbf94a870" class="no-scaled-link" src="_images/jaz_hl_2000_cal.png" style="width: 400px;" /></p>
 <p>The calibration output looks like this.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
@@ -1236,7 +1236,7 @@ Now block all light and hit enter to obtain dark counts:
 
 
 
-<p class="blurb">A Python software for performing the method of silent substitution.</p>
+<p class="blurb">A Python toolbox for performing the method of silent substitution.</p>
 
 
 
@@ -1260,7 +1260,6 @@ Now block all light and hit enter to obtain dark counts:
 <li class="toctree-l1"><a class="reference internal" href="06_api.html">API Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="07_project_notes.html">Project notes</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Spectrometer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="07b_individual_differences.html">Individual differences</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="09_contributors.html">Contributors</a></li>
@@ -1274,7 +1273,7 @@ Now block all light and hit enter to obtain dark counts:
     
     <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
     
-    <li class="toctree-l1"><a href="https://www.biorxiv.org/content/10.1101/2023.03.30.533110v1">BioRxiv</a></li>
+    <li class="toctree-l1"><a href="https://jov.arvojournals.org/article.aspx?articleid=2791309">Paper</a></li>
     
 </ul>
 <div class="relations">
@@ -1283,7 +1282,7 @@ Now block all light and hit enter to obtain dark counts:
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="07_project_notes.html">Project notes</a><ul>
       <li>Previous: <a href="07_project_notes.html" title="previous chapter">Project notes</a></li>
-      <li>Next: <a href="07b_individual_differences.html" title="next chapter">Individual differences</a></li>
+      <li>Next: <a href="09_contributors.html" title="next chapter">Contributors</a></li>
   </ul></li>
   </ul></li>
 </ul>

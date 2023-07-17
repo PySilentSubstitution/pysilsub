@@ -15,7 +15,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Colorimetric observer models &#8212; PySilSub 0.0.14 documentation</title>
+    <title>Colorimetric observer models &#8212; PySilSub 0.1.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -311,7 +311,7 @@ E_{\alpha} = \sum\limits_{380}^{780}E(\lambda)S_\alpha(\lambda)\Delta_{\lambda}
 <p>where <span class="math notranslate nohighlight">\(E_\alpha\)</span> is a scalar representing the photoreceptor activation for photoreceptor class <span class="math notranslate nohighlight">\(\alpha\)</span>, <span class="math notranslate nohighlight">\(E(\lambda)\)</span> is the spectral power distribution of the light source (radiance or irradiance in photons or watts), <span class="math notranslate nohighlight">\(S_\alpha(\lambda)\)</span> is the estimated photoreceptor action spectrum, and <span class="math notranslate nohighlight">\(\mathrm{\Delta}_\lambda\)</span> is the width of the spectral sampling.</p>
 <p>By convention (<a class="reference external" href="https://cie.co.at/publications/cie-system-metrology-optical-radiation-iprgc-influenced-responses-light-0">CIE S 026/E:2018</a>), when this computation concerns the spectral sensitivity functions of retinal photoreceptors, the resulting measures may be called <span class="math notranslate nohighlight">\(\alpha\)</span>-opic irradiance, where <span class="math notranslate nohighlight">\(\alpha\)</span> denotes the opsin-based photopigment of one of the five photoreceptors (S cones, M cones, L cones, rods and ipRGCs).</p>
 <p>The example below shows how a measured spectrum is converted to <span class="math notranslate nohighlight">\(\alpha\)</span>-opic irradiance.</p>
-<img alt="aopic irradiance" src="_images/alphaopic_irradiance.svg" /><p>The International Commission on Illumination (CIE) define <a class="reference external" href="https://cie.co.at/publications/colorimetric-observers">average colorimetric observer models</a> with estimates of the photoreceptor spectral sensitivities for a given age and field size. The estimates are based on decades of research involving predominantly psychophysical methods. The CIE 1964 Standard Colorimetric Observer assumes an age and field size of 32 years and 10°, and is deemed suitable for most situations.</p>
+<img alt="aopic irradiance" src="../../img/alphaopic_irradiance.svg" /><p>The International Commission on Illumination (CIE) define <a class="reference external" href="https://cie.co.at/publications/colorimetric-observers">average colorimetric observer models</a> with estimates of the photoreceptor spectral sensitivities for a given age and field size. The estimates are based on decades of research involving predominantly psychophysical methods. The CIE 1964 Standard Colorimetric Observer assumes an age and field size of 32 years and 10°, and is deemed suitable for most situations.</p>
 <p>For silent substitution, it may be preferable to address <a class="reference external" href="07b_prereceptoral_filtering.ipynb">inter-observer differences in ocular physiology</a> by adjusting the spectral sensitivity functions to account for prereceptoral filtering of incident light by the lens and other ocular media. To support this, <em>PySilSub</em> uses a <code class="docutils literal notranslate"><span class="pre">ColorimetricObserver</span></code> class, which can be passed as an argument when instantiating a <code class="docutils literal notranslate"><span class="pre">StimulationDevice</span></code> or <code class="docutils literal notranslate"><span class="pre">SilentSubstitutionProblem</span></code>.</p>
 <section id="pysilsub.observers.ColorimetricObserver">
 <h2><code class="docutils literal notranslate"><span class="pre">pysilsub.observers.ColorimetricObserver</span></code><a class="headerlink" href="#pysilsub.observers.ColorimetricObserver" title="Permalink to this heading">¶</a></h2>
@@ -562,7 +562,7 @@ Assigned new (probably not suitable) colors for action spectra.
 
 
 
-<p class="blurb">A Python software for performing the method of silent substitution.</p>
+<p class="blurb">A Python toolbox for performing the method of silent substitution.</p>
 
 
 
@@ -601,7 +601,7 @@ Assigned new (probably not suitable) colors for action spectra.
     
     <li class="toctree-l1"><a href="https://pypi.org/project/pysilsub/">PyPi</a></li>
     
-    <li class="toctree-l1"><a href="https://www.biorxiv.org/content/10.1101/2023.03.30.533110v1">BioRxiv</a></li>
+    <li class="toctree-l1"><a href="https://jov.arvojournals.org/article.aspx?articleid=2791309">Paper</a></li>
     
 </ul>
 <div class="relations">

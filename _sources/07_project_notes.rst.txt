@@ -6,5 +6,4 @@ Project notes
    :caption: Contents:
    
    07a_spectrometer_calibration
-   07b_individual_differences
    
