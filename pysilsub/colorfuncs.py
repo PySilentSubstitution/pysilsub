@@ -39,8 +39,6 @@ def xyY_to_XYZ(xyY: Sequence[float]) -> pd.Series:
         Tristimulus values.
 
     """
-    if isinstance(xyY, pd.Series):
-        xyY = np.array(xyY)
     XYZ = np.zeros(3)
     z = 1 - xyY[0] - xyY[1]
     XYZ[0] = xyY[2] * xyY[0] / xyY[1]
@@ -63,8 +61,6 @@ def XYZ_to_xyY(XYZ: Sequence[float]) -> pd.Series:
         Chromaticity coordinates (xy) and luminance (Y).
 
     """
-    if isinstance(XYZ, pd.Series):
-        XYZ = np.array(XYZ)
     xyY = np.zeros(3)
     xyY[0] = XYZ[0] / np.sum(XYZ)
     xyY[1] = XYZ[1] / np.sum(XYZ)
